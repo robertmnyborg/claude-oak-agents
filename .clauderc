@@ -1,0 +1,157 @@
+#!/bin/bash
+
+# Claude Code Environment Setup
+# Source this file in your shell profile (.bashrc, .zshrc, etc.)
+
+# Claude Code environment variables
+export CLAUDE_CODE_ENABLE_AGENTS=1
+export CLAUDE_CODE_SUBAGENT_MODEL=sonnet
+export CLAUDE_CONFIG_DIR="${HOME}/.claude"
+
+# Add Claude utilities to PATH if they exist
+if [ -d "${CLAUDE_CONFIG_DIR}/local" ]; then
+    export PATH="${CLAUDE_CONFIG_DIR}/local:${PATH}"
+fi
+
+# Claude Code aliases for common operations
+alias claude-backup="${CLAUDE_CONFIG_DIR}/backup.sh"
+alias claude-restore="${CLAUDE_CONFIG_DIR}/restore.sh"
+alias claude-install="${CLAUDE_CONFIG_DIR}/install.sh"
+
+# Function to create new project with Claude templates
+claude-new-project() {
+    local project_name="$1"
+    local template_type="${2:-basic}"
+
+    if [ -z "$project_name" ]; then
+        echo "Usage: claude-new-project <project_name> [template_type]"
+        echo "Available templates:"
+        ls "${CLAUDE_CONFIG_DIR}/templates/" 2>/dev/null | sed 's/\.md$//' | grep -E '(CLAUDE|SPEC|README)' | head -1 >/dev/null && echo "  basic (default)"
+        return 1
+    fi
+
+    mkdir -p "$project_name"
+    cd "$project_name" || return 1
+
+    # Copy templates if they exist
+    if [ -f "${CLAUDE_CONFIG_DIR}/templates/CLAUDE.md" ]; then
+        cp "${CLAUDE_CONFIG_DIR}/templates/CLAUDE.md" ./
+    fi
+
+    if [ -f "${CLAUDE_CONFIG_DIR}/templates/SPEC.md" ]; then
+        cp "${CLAUDE_CONFIG_DIR}/templates/SPEC.md" ./
+    fi
+
+    if [ -f "${CLAUDE_CONFIG_DIR}/templates/README.md" ]; then
+        cp "${CLAUDE_CONFIG_DIR}/templates/README.md" ./
+    fi
+
+    if [ -f "${CLAUDE_CONFIG_DIR}/templates/.gitignore" ]; then
+        cp "${CLAUDE_CONFIG_DIR}/templates/.gitignore" ./
+    fi
+
+    echo "✅ Created new Claude project: $project_name"
+    echo "📝 Edit CLAUDE.md to customize project-specific rules"
+    echo "📋 Edit SPEC.md to define project specifications"
+}
+
+# Function to show Claude agent status
+claude-agents() {
+    echo "🤖 Claude Code Agent System"
+    echo "==========================="
+
+    if [ -f "${CLAUDE_CONFIG_DIR}/settings.json" ]; then
+        if grep -q '"enabled": true' "${CLAUDE_CONFIG_DIR}/settings.json"; then
+            echo "✅ Agents: ENABLED"
+        else
+            echo "❌ Agents: DISABLED"
+        fi
+
+        if grep -q '"autoInvoke": true' "${CLAUDE_CONFIG_DIR}/settings.json"; then
+            echo "✅ Auto-invoke: ENABLED"
+        else
+            echo "❌ Auto-invoke: DISABLED"
+        fi
+    fi
+
+    echo ""
+    echo "📊 Available Agents:"
+    if [ -d "${CLAUDE_CONFIG_DIR}/agents" ]; then
+        ls "${CLAUDE_CONFIG_DIR}/agents/" | sed 's/\.md$//' | while read -r agent; do
+            echo "  🤖 $agent"
+        done
+    else
+        echo "  No agents found"
+    fi
+}
+
+# Function to edit Claude configuration
+claude-config() {
+    local config_file="${1:-CLAUDE.md}"
+
+    case "$config_file" in
+        "settings"|"settings.json")
+            ${EDITOR:-vi} "${CLAUDE_CONFIG_DIR}/settings.json"
+            ;;
+        "agents"|"AGENTS.md")
+            ${EDITOR:-vi} "${CLAUDE_CONFIG_DIR}/AGENTS.md"
+            ;;
+        "claude"|"CLAUDE.md")
+            ${EDITOR:-vi} "${CLAUDE_CONFIG_DIR}/CLAUDE.md"
+            ;;
+        *)
+            if [ -f "${CLAUDE_CONFIG_DIR}/$config_file" ]; then
+                ${EDITOR:-vi} "${CLAUDE_CONFIG_DIR}/$config_file"
+            else
+                echo "Available config files:"
+                echo "  settings.json - Main Claude configuration"
+                echo "  CLAUDE.md     - Personal development rules"
+                echo "  AGENTS.md     - Agent system documentation"
+                ls "${CLAUDE_CONFIG_DIR}/" | grep -E '\.(json|md)$' | grep -v -E '^(settings\.json|CLAUDE\.md|AGENTS\.md)$' | sed 's/^/  /'
+            fi
+            ;;
+    esac
+}
+
+# Function to show Claude status
+claude-status() {
+    echo "🔧 Claude Code Status"
+    echo "===================="
+    echo "Config Dir: ${CLAUDE_CONFIG_DIR}"
+    echo "Agents Enabled: $(grep -o '"enabled": [^,]*' "${CLAUDE_CONFIG_DIR}/settings.json" 2>/dev/null | head -1 | cut -d' ' -f2 || echo 'unknown')"
+    echo "Model: $(grep -o '"defaultModel": "[^"]*"' "${CLAUDE_CONFIG_DIR}/settings.json" 2>/dev/null | cut -d'"' -f4 || echo 'unknown')"
+
+    if command -v claude >/dev/null 2>&1; then
+        echo "Claude CLI: $(command -v claude)"
+    else
+        echo "Claude CLI: not found in PATH"
+    fi
+
+    echo ""
+    echo "📁 Directory Structure:"
+    if [ -d "${CLAUDE_CONFIG_DIR}" ]; then
+        ls -la "${CLAUDE_CONFIG_DIR}" | head -10
+    else
+        echo "  Claude config directory not found"
+    fi
+}
+
+# Auto-completion for claude-config function
+if [ -n "$BASH_VERSION" ]; then
+    _claude_config_completion() {
+        local cur="${COMP_WORDS[COMP_CWORD]}"
+        local opts="settings.json CLAUDE.md AGENTS.md"
+        COMPREPLY=( $(compgen -W "$opts" -- "$cur") )
+    }
+    complete -F _claude_config_completion claude-config
+fi
+
+# Welcome message on first load
+if [ -z "$CLAUDE_RC_LOADED" ]; then
+    export CLAUDE_RC_LOADED=1
+    if [ -t 1 ]; then  # Only show if terminal is interactive
+        echo "🤖 Claude Code environment loaded"
+        echo "   Run 'claude-status' to see current configuration"
+        echo "   Run 'claude-agents' to see available agents"
+    fi
+fi

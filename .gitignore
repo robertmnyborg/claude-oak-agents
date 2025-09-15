@@ -1,0 +1,82 @@
+# Claude Code Configuration .gitignore
+# Prevents accidental commits of sensitive Claude data
+
+# Runtime data - contains conversation logs and session data
+projects/
+todos/
+shell-snapshots/
+statsig/
+
+# Local settings and temporary files
+.claude/settings.local.json
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+
+# Backup files
+backups/
+*.backup
+*.bak
+
+# Memory and cache files
+memory/cache/
+memory/temp/
+cache/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Personal API keys or tokens (if any get stored accidentally)
+*.key
+*.token
+*.secret
+*_key
+*_token
+*_secret
+api_keys/
+secrets/
+
+# Node modules from local installations
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package manager lock files in config
+package-lock.json
+yarn.lock
+
+# Temporary telemetry or debug data
+telemetry/
+debug/
+crash-reports/
+
+# Personal workspace settings
+workspace/
+personal/
+
+# Auto-generated documentation
+docs/generated/
+
+# Test outputs
+test-results/
+coverage/
+
+# Build artifacts
+dist/
+build/
+out/

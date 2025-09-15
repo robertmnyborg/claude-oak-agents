@@ -1,0 +1,33 @@
+{
+  "feedbackSurveyState": {
+    "lastShownTime": 1754085923371
+  },
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "agents": {
+    "enabled": true,
+    "orchestrator": {
+      "enabled": true,
+      "autoInvoke": true,
+      "triggers": [
+        "all_requests"
+      ]
+    },
+    "defaultModel": "sonnet",
+    "timeout": 60000
+  },
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "TodoWrite(*)"
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_ENABLE_AGENTS": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  }
+}
