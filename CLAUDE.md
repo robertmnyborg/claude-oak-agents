@@ -1,85 +1,88 @@
 # Rules for Development Process
 
+# 🚨 CRITICAL: DIRECT ORCHESTRATION WORKFLOW 🚨
+
+**STEP 1: DETECT COMPLEX TASKS**
+Trigger direct agent orchestration for:
+- **Action verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate
+- **Multi-component work**: numbered lists, bullet points, "and" conjunctions
+- **Complex patterns**: phase, component, architecture, infrastructure, monitoring, security
+
+**STEP 2: DIRECT AGENT DELEGATION**
+Main LLM acts as orchestrator and directly invokes appropriate agents:
+
+**Programming Work**: ALL coding tasks → `programmer` agent
+```
+Task(subagent_type="programmer", prompt="[specific programming task]")
+```
+
+**Infrastructure Work**: CDK, deployment, cloud architecture → `infrastructure-specialist` agent
+```
+Task(subagent_type="infrastructure-specialist", prompt="[infrastructure task]")
+```
+
+**Security Work**: Security analysis, vulnerability detection → `security-auditor` agent
+```
+Task(subagent_type="security-auditor", prompt="[security task]")
+```
+
+**Quality Gates**: Code review, testing validation → `code-reviewer` agent
+```
+Task(subagent_type="code-reviewer", prompt="[review task]")
+```
+
+**STEP 3: PARALLEL EXECUTION**
+- Execute multiple agent tasks in parallel when possible
+- Use single message with multiple Task calls for parallel execution
+- Each agent operates independently with specialized rule domains
+
+**STEP 4: WORKFLOW COORDINATION**
+- Main LLM coordinates between agents based on task dependencies
+- Quality gates (code-reviewer) block workflow until resolved
+- Git operations only after all quality checks pass
+
+---
+
 <PersistentRules>
-<SelectiveOrchestration id="orchestrator-triggers">
-⚠️ **SELECTIVE ORCHESTRATION - MANDATORY FOR SPECIFIC SCENARIOS** ⚠️
 
-The agent-orchestrator MUST be invoked for these scenarios:
-1. **Code Changes**: Any modification to source files (create, edit, refactor)
-2. **Multi-Step Tasks**: Tasks requiring 3+ distinct operations
-3. **Error/Debug Scenarios**: Build failures, test failures, runtime errors
-4. **Architecture/Design**: System design, infrastructure planning, tech specs
-5. **Complex Analysis**: Performance optimization, security audits, code reviews
-6. **Project Setup**: New project initialization, major feature implementation
-7. **Git Operations**: Commits, PR creation, branch management
-8. **Data Analysis**: Processing uploaded data files (CSV, JSON, etc.)
-9. **Testing Tasks**: Creating tests, improving coverage, test refactoring
-10. **Agent System Work**: Creating or modifying agents
-
-Invoke with: Task(subagent_type="agent-orchestrator", prompt="Plan workflow for: [specific task]")
-
-SKIP orchestration for:
-- Simple questions ("What is X?", "How does Y work?")
-- File reading without modification
-- Running single commands
-- Explanations or documentation lookups
-- Configuration checks
-</SelectiveOrchestration>
-
-<InfiniteRecursionPrevention id="orchestrator-validation">
-🚨 **CRITICAL: PREVENT ORCHESTRATOR SELF-INVOCATION** 🚨
-Before executing ANY Task calls from orchestrator JSON response:
-1. VALIDATE that NO `subagent_type` equals "agent-orchestrator"
-2. If found, REJECT the entire dispatch plan
-3. Report error: "Orchestrator attempted self-invocation - infinite recursion prevented"
-4. This prevents memory overflow and system crashes
-
-The orchestrator uses `next_steps` field to request re-invocation, NOT Task calls.
-</InfiniteRecursionPrevention>
-</PersistentRules>
-
-<TechnologyConstraints>
-<Rule id="language-hierarchy">
-**STRICT LANGUAGE HIERARCHY**: Go > TypeScript > Bash > Ruby
-NEVER use: Java, C++, C#
+<AgentDelegationRules>
+<Rule id="programming-delegation">
+**PROGRAMMING DELEGATION**: ALL coding tasks must be delegated to `programmer` agent
+- Language selection, code structure, functional programming
+- Class usage restrictions, dependency management
+- Implementation patterns and code organization
 </Rule>
 
-<Rule id="cdk-framework">
-**CDK EXCLUSIVE**: Use AWS CDK constructs and patterns exclusively for infrastructure
+<Rule id="infrastructure-delegation">
+**INFRASTRUCTURE DELEGATION**: CDK, deployment, cloud architecture → `infrastructure-specialist` agent
+- AWS CDK constructs and patterns
+- Cloud architecture and deployment strategies
+- Infrastructure-as-code best practices
 </Rule>
 
-<Rule id="functional-programming">
-**NO CLASSES RULE**: Functional programming approach - avoid creating JavaScript/TypeScript classes
-EXCEPTION: CDK constructs only
+<Rule id="main-llm-coordination">
+**MAIN LLM ROLE**: Orchestration and coordination only
+- Detect complex tasks requiring agent delegation
+- Coordinate between agents based on dependencies
+- NO direct programming work - delegate to specialist agents
+</Rule>
+</AgentDelegationRules>
+
+<RuleInheritance>
+<Rule id="local-overrides">
+**LOCAL RULE OVERRIDES**: Project-specific rules can override global rules
+- Local `./CLAUDE.md` overrides global `/Users/jamsa/.claude/CLAUDE.md`
+- Local agents `./claude/agents/agent-name.md` override global agents
+- Example: Local project can specify "Python > TypeScript" override
 </Rule>
 
-<Rule id="minimal-dependencies">
-**DEPENDENCY MINIMALISM**: Don't add new dependencies when simple solutions exist in a few lines of code
+<Rule id="agent-overrides">
+**AGENT OVERRIDE RESOLUTION**:
+1. Check `./claude/agents/agent-name.md` (local project)
+2. Fall back to `/Users/jamsa/.claude/agents/agent-name.md` (global)
+3. Same agent name = complete override (not merge)
 </Rule>
-
-<Rule id="distributed-architecture">
-**ARCHITECTURE PATTERN**: Distributed stack of functions (lambdas) or static assets, NOT single runtime
-</Rule>
-</TechnologyConstraints>
-
-<ClassUsageGuidelines>
-<PermittedCases>
-CLASSES ARE ONLY ALLOWED FOR:
-- **CDK Constructs**: Classes required for CDK construct interfaces (extending Construct)
-- **Framework Requirements**: Classes mandated by external frameworks/libraries
-</PermittedCases>
-
-<ClassDesignPrinciples>
-WHEN classes are used, they MUST follow these principles:
-<Rule id="framework-methods-only">**Framework Methods Only**: Classes should only contain framework defined/required methods</Rule>
-<Rule id="no-business-logic">**No Business Logic**: Move all business logic to pure utility functions</Rule>
-<Rule id="thin-wrappers">**Thin Wrappers**: Classes act as thin wrappers around functional code</Rule>
-<Rule id="no-side-effects">**No Custom Side Effects**: Classes should not create side effects beyond framework requirements</Rule>
-<Rule id="no-external-calls">**No External Calls**: Classes should not make API calls, file system operations, or network requests</Rule>
-<Rule id="no-global-state">**No Global State**: Classes should not modify global variables or singletons</Rule>
-<Rule id="no-logging-metrics">**No Logging/Metrics**: Move logging and metrics collection to utility functions</Rule>
-</ClassDesignPrinciples>
-</ClassUsageGuidelines>
+</RuleInheritance>
 
 <CommunicationStyle>
 <Rule id="direct-concise">**DIRECT AND CONCISE**: Communication must be direct and to the point</Rule>

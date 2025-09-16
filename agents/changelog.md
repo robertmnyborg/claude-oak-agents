@@ -1,6 +1,6 @@
 ---
 name: changelog-recorder
-description: INVOKED BY AGENT-ORCHESTRATOR immediately after git commits are made. This agent no longer monitors git independently - it is triggered by the orchestrator in sequence after git-workflow-manager completes commits.
+description: INVOKED BY MAIN LLM immediately after git commits are made. This agent is triggered by the main LLM in sequence after git-workflow-manager completes commits.
 color: changelog-recorder
 ---
 

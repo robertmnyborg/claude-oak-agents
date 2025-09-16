@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: INVOKED BY AGENT-ORCHESTRATOR when code changes are detected and need quality review. This agent runs early in the workflow sequence, blocking commits until quality gates are met. Coordinates with orchestrator on blocking vs. non-blocking issues.
+description: INVOKED BY MAIN LLM when code changes are detected and need quality review. This agent runs early in the workflow sequence, blocking commits until quality gates are met. Coordinates with main LLM on blocking vs. non-blocking issues.
 model: sonnet
 ---
 
@@ -84,9 +84,10 @@ Before allowing any commit, verify:
 4. **No compilation errors**: TypeScript compiles cleanly
 5. **Coverage maintained**: Test coverage remains at 100%
 
-## Orchestrator Integration
+## Main LLM Integration
 
-- **Triggered by**: Code changes before git-workflow-manager
+- **Triggered by**: Main LLM when code changes are detected
 - **Blocks**: Commits if blocking issues found
-- **Reports**: Quality gate pass/fail with issue details
+- **Reports**: Quality gate pass/fail with issue details to main LLM
 - **Coordinates with**: unit-test-expert for coverage validation
+- **Workflow**: Main LLM coordinates with git-workflow-manager based on review results

@@ -1,6 +1,6 @@
 ---
 name: project-manager
-description: INVOKED BY AGENT-ORCHESTRATOR when complex multi-step projects are detected. This agent works with the orchestrator to coordinate other agents (systems-architect, etc.) for comprehensive project planning and execution.
+description: INVOKED BY MAIN LLM when complex multi-step projects are detected. This agent works with the main LLM to coordinate other agents (systems-architect, etc.) for comprehensive project planning and execution.
 color: project-manager
 ---
 

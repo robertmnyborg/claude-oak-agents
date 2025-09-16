@@ -1,6 +1,6 @@
 ---
 name: code-clarity-manager
-description: INVOKED BY AGENT-ORCHESTRATOR after code-reviewer approves but before unit-test-expert. Manages dual analysis of code maintainability using top-down and bottom-up analyzers. Blocks commits if code isn't human-readable and maintainable.
+description: INVOKED BY MAIN LLM after code-reviewer approves but before unit-test-expert. Manages dual analysis of code maintainability using top-down and bottom-up analyzers. Blocks commits if code isn't human-readable and maintainable.
 color: code-clarity-manager
 ---
 

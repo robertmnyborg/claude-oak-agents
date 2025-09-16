@@ -1,6 +1,6 @@
 ---
 name: debug-specialist
-description: INVOKED BY AGENT-ORCHESTRATOR with HIGHEST PRIORITY when errors, bugs, or issues are detected. This agent blocks all other workflow agents until issues are resolved. The orchestrator ensures debugging takes precedence over other work.
+description: INVOKED BY MAIN LLM with HIGHEST PRIORITY when errors, bugs, or issues are detected. This agent blocks all other workflow agents until issues are resolved. The main LLM ensures debugging takes precedence over other work.
 color: debug-specialist
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: git-workflow-manager
-description: INVOKED BY AGENT-ORCHESTRATOR when code changes need to be committed, branches need management, or pull requests should be created. This agent no longer has independent triggers - it is coordinated by the orchestrator after code review and testing are complete.
+description: INVOKED BY MAIN LLM when code changes need to be committed, branches need management, or pull requests should be created. This agent is coordinated by the main LLM after code review and testing are complete.
 color: git-workflow-manager
 ---
 

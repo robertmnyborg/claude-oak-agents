@@ -1,6 +1,6 @@
 ---
 name: data-scientist
-description: INVOKED BY AGENT-ORCHESTRATOR when data files are uploaded, analytical requests are detected, or data-driven insights are needed. This agent can run in parallel with other non-conflicting agents when coordinated by the orchestrator.
+description: INVOKED BY MAIN LLM when data files are uploaded, analytical requests are detected, or data-driven insights are needed. This agent can run in parallel with other non-conflicting agents when coordinated by the main LLM.
 color: data-scientist
 ---
 
