@@ -41,6 +41,12 @@ Task(subagent_type="code-reviewer", prompt="[review task]")
 - Quality gates (code-reviewer) block workflow until resolved
 - Git operations only after all quality checks pass
 
+**STEP 5: AUTOMATIC QUALITY GATES**
+- **MANDATORY**: After any code changes, automatically invoke `code-reviewer` agent
+- **MANDATORY**: After code-reviewer approval, automatically invoke `code-clarity-manager` agent
+- **BLOCKING**: Both agents must pass before any git operations
+- **SEQUENCE**: programmer → code-reviewer → code-clarity-manager → git-workflow-manager
+
 ---
 
 <PersistentRules>
@@ -65,6 +71,22 @@ Task(subagent_type="code-reviewer", prompt="[review task]")
 - Detect complex tasks requiring agent delegation
 - Coordinate between agents based on dependencies
 - NO direct programming work - delegate to specialist agents
+</Rule>
+
+<Rule id="automatic-code-review">
+**AUTOMATIC CODE REVIEW**: MANDATORY quality gates after code changes
+- ALWAYS invoke `code-reviewer` agent after any file modifications
+- ALWAYS invoke `code-clarity-manager` agent after code-reviewer approval
+- NEVER commit without both agents passing review
+- Block all git operations until quality gates clear
+</Rule>
+
+<Rule id="quality-gate-sequence">
+**QUALITY GATE SEQUENCE**: Enforce strict workflow order
+1. Code changes detected → invoke `code-reviewer`
+2. Code-reviewer passes → invoke `code-clarity-manager`
+3. Code-clarity-manager passes → allow `git-workflow-manager`
+4. Any failure → return to `programmer` agent for fixes
 </Rule>
 </AgentDelegationRules>
 
