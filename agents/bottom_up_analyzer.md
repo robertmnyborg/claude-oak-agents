@@ -183,6 +183,8 @@ MAINTAINABILITY IMPACT:
 3. **Magic numbers** - Unexplained values
 4. **Dead code** - Unused functions/variables
 5. **Copy-paste code** - Should be extracted
+6. **Premature optimization** - Complex code without proven need
+7. **Over-engineered solutions** - Using patterns where simple code would suffice
 
 ### Comment Analysis
 
@@ -208,6 +210,20 @@ function processData(data) {
 - Misleading names
 - Hungarian notation in modern code
 - Overly generic names
+
+### Premature Optimization Issues (Knuth's Principle)
+- **Micro-optimizations without profiling**:
+  - Bit manipulation for simple math
+  - Manual loop unrolling
+  - Inline assembly without benchmarks
+- **Unnecessary complexity**:
+  - Custom algorithms for standard operations
+  - Hand-rolled data structures vs standard library
+  - Clever code that sacrifices readability
+- **Good practices**:
+  - Profile first, optimize second
+  - Optimize algorithms, not code
+  - Readability > micro-performance
 
 ### Logic Issues
 - Convoluted boolean logic

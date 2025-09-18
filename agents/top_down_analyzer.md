@@ -160,6 +160,18 @@ MAINTAINABILITY IMPACT:
 - Are extension points clear?
 - Is the architecture flexible but not over-engineered?
 
+### Over-Engineering Detection ("YAGNI" Principle)
+- **Red Flags**:
+  - Multiple abstraction layers for single implementations
+  - Generic solutions for specific problems
+  - Interfaces with only one implementation
+  - Complex patterns for simple requirements
+  - "Future-proofing" without concrete requirements
+- **Good Balance**:
+  - Simple solutions that work today
+  - Refactor when complexity is actually needed
+  - Clear code over clever abstractions
+
 ### Documentation Needs
 - Does structure self-document purpose?
 - Are non-obvious decisions explained?
@@ -172,6 +184,9 @@ MAINTAINABILITY IMPACT:
 3. **Stovepipe System**: No component reuse
 4. **Swiss Army Knife**: Components doing too much
 5. **Golden Hammer**: One pattern used everywhere
+6. **Premature Optimization**: Over-engineered architecture without proven need
+7. **Astronaut Architecture**: Excessive abstraction for hypothetical futures
+8. **Inner Platform Effect**: Recreating language/framework features
 
 ## Integration with code-clarity-manager
 
