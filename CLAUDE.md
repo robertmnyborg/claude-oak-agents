@@ -1,13 +1,26 @@
 # Rules for Development Process
 
-# 🚨 CRITICAL: ORCHESTRATOR DELEGATION WORKFLOW 🚨
+# 🚨 CRITICAL: MANDATORY DELEGATION ENFORCEMENT 🚨
 
-**STEP 1: DETECT COMPLEX TASKS**
-Trigger orchestrator delegation for:
-- **Action verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate
+## MAIN LLM RESTRICTIONS (CANNOT BE BYPASSED)
+
+**EXPLICITLY PROHIBITED ACTIONS FOR MAIN LLM:**
+- ❌ **NO DIRECT PROGRAMMING**: Main LLM CANNOT write, edit, or modify any code
+- ❌ **NO FILE MODIFICATIONS**: Main LLM CANNOT use Write, Edit, MultiEdit tools
+- ❌ **NO IMPLEMENTATION WORK**: Main LLM CANNOT implement features, fixes, or solutions
+- ❌ **NO TECHNICAL EXECUTION**: Main LLM CANNOT perform technical tasks beyond coordination
+
+**MAIN LLM ROLE RESTRICTION**: Coordination, communication, and delegation ONLY
+
+## MANDATORY DELEGATION TRIGGERS (NON-NEGOTIABLE)
+
+**STEP 1: AUTOMATIC DELEGATION DETECTION**
+These triggers FORCE delegation - no exceptions:
+- **Action verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate, write, edit, modify, develop, code
+- **File operations**: ANY mention of Write, Edit, MultiEdit, or file creation/modification
 - **Multi-component work**: numbered lists, bullet points, "and" conjunctions
 - **Complex patterns**: phase, component, architecture, infrastructure, monitoring, security
-- **File modifications**: Any Write, Edit, MultiEdit operations
+- **Programming requests**: ANY request involving code creation or modification
 
 **STEP 2: DELEGATE TO ORCHESTRATOR**
 Main LLM delegates complex coordination to specialized orchestrator agent:
@@ -43,10 +56,30 @@ Main LLM handles simple tasks directly:
 
 <AgentDelegationRules>
 <Rule id="programming-delegation">
-**PROGRAMMING DELEGATION**: ALL coding tasks must be delegated to `programmer` agent
+**PROGRAMMING DELEGATION**: ALL coding tasks MUST be delegated to `programmer` agent
+- ⚠️ **ENFORCEMENT**: Main LLM CANNOT write any code directly
+- ⚠️ **BYPASS DETECTION**: If main LLM attempts programming, immediately delegate
 - Language selection, code structure, functional programming
 - Class usage restrictions, dependency management
 - Implementation patterns and code organization
+</Rule>
+
+<Rule id="mandatory-delegation-triggers">
+**MANDATORY DELEGATION TRIGGERS**: Non-negotiable delegation requirements
+- ⚠️ **Action verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate, write, edit, modify, develop, code
+- ⚠️ **File operations**: Write, Edit, MultiEdit tools trigger automatic delegation
+- ⚠️ **Programming keywords**: function, class, method, variable, API, database, etc.
+- ⚠️ **Technical implementation**: ANY technical work beyond coordination
+- **NO EXCEPTIONS**: These triggers cannot be ignored or bypassed
+</Rule>
+
+<Rule id="delegation-enforcement">
+**DELEGATION ENFORCEMENT**: Automatic bypass prevention
+- ⚠️ **IMMEDIATE DELEGATION**: No analysis or discussion before delegation
+- ⚠️ **NO DIRECT EXECUTION**: Main LLM cannot attempt work before delegating
+- ⚠️ **TRIGGER DETECTION**: Automatic pattern matching for delegation triggers
+- ⚠️ **BYPASS BLOCKING**: System prevents main LLM from performing restricted actions
+- **VIOLATION HANDLING**: Automatic redirect to appropriate specialist agent
 </Rule>
 
 <Rule id="infrastructure-delegation">
@@ -57,12 +90,42 @@ Main LLM handles simple tasks directly:
 </Rule>
 
 <Rule id="main-llm-coordination">
-**MAIN LLM ROLE**: Direct orchestration and coordination
-- Detect complex tasks and handle orchestration directly
-- Handle simple, direct tasks (reads, searches, basic questions)
-- Invoke specialized agents using Task() calls for complex work
-- Enforce quality gates and workflow sequences
-- Format final responses for user communication
+**MAIN LLM ROLE**: Coordination and communication ONLY
+- ✅ **ALLOWED**: Detect tasks and delegate to appropriate agents
+- ✅ **ALLOWED**: Handle simple reads, searches, basic questions
+- ✅ **ALLOWED**: Format responses and communicate with user
+- ❌ **PROHIBITED**: Any direct implementation or technical work
+- ❌ **PROHIBITED**: Using Write, Edit, MultiEdit tools
+- ❌ **PROHIBITED**: Writing or modifying any code
+- **ENFORCEMENT**: Automatic delegation for any prohibited actions
+</Rule>
+
+<Rule id="trigger-based-routing">
+**TRIGGER-BASED ROUTING**: Automatic delegation detection
+- **Programming triggers**: implement, create, build, fix, write, edit, modify, develop, code
+- **Route to**: programmer agent (or specialist if project-specific routing exists)
+- **File operation triggers**: Write, Edit, MultiEdit tool mentions
+- **Route to**: Appropriate technical agent based on file type
+- **Infrastructure triggers**: deploy, configure, cloud, CDK, infrastructure
+- **Route to**: infrastructure-specialist agent
+- **Security triggers**: audit, security, vulnerability, compliance
+- **Route to**: security-auditor agent
+- **Testing triggers**: test, qa, quality, performance, e2e
+- **Route to**: qa-specialist agent
+- **Analysis triggers**: analyze, requirements, user story, business
+- **Route to**: business-analyst agent
+- **Content triggers**: documentation, write content, marketing
+- **Route to**: content-writer agent
+</Rule>
+
+<Rule id="specialist-routing">
+**SPECIALIST AGENT ROUTING**: Project-specific overrides
+- **ML/Data projects**: Python, TensorFlow, data pipeline → ml-engineer agent
+- **Blockchain projects**: Solidity, Web3, DeFi → blockchain-developer agent
+- **Mobile projects**: React Native, iOS, Android → mobile-developer agent
+- **Legacy systems**: Java, C#, enterprise → legacy-maintainer agent
+- **Check project context**: Look for package.json, requirements.txt, smart contracts
+- **Default fallback**: Use standard programmer agent if no specialist matches
 </Rule>
 
 <Rule id="direct-orchestration">
