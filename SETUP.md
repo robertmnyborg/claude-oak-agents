@@ -61,7 +61,7 @@ Edit `~/.claude/settings.json`:
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "agents": {
     "enabled": true,
-    "orchestrator": {
+    "coordinator": {
       "enabled": true,
       "autoInvoke": true,
       "triggers": ["all_requests"]
@@ -96,7 +96,7 @@ Customize `~/.claude/CLAUDE.md` for your preferences:
 
 ⚠️ MANDATORY WORKFLOW ⚠️
 EVERY user request must begin with:
-Task(subagent_type="agent-orchestrator", prompt="Plan workflow for: [user's request]")
+Task(subagent_type="agent-coordinator", prompt="Plan workflow for: [user's request]")
 
 ## Technology Stack Constraints
 - **Languages**: [Your preferred languages]
@@ -185,9 +185,9 @@ Edit files in `~/.claude/templates/` to match your project standards.
 
 ## 🤖 Agent System Configuration
 
-### Orchestrator Settings
+### Coordinator Settings
 
-The agent-orchestrator is configured to:
+The agent-coordinator is configured to:
 - **Auto-invoke** on all requests
 - **Maximize parallelism** when possible
 - **Enforce quality gates** for code changes
@@ -302,7 +302,7 @@ The agent-creator can build new agents automatically, or you can create manually
 claude-config agents/my-custom-agent.md
 
 # Add agent capabilities and integration points
-# The orchestrator will automatically detect and use it
+# The coordinator will automatically detect and use it
 ```
 
 ### Plugin Configuration

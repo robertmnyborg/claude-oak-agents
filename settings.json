@@ -5,67 +5,6 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "agents": {
     "enabled": true,
-    "orchestrator": {
-      "enabled": true,
-      "autoInvoke": true,
-      "triggers": [
-        "action_verbs",
-        "multi_component",
-        "file_operations",
-        "git_operations",
-        "code_changes",
-        "complex_tasks"
-      ],
-      "actionVerbs": [
-        "implement",
-        "create",
-        "build",
-        "fix",
-        "deploy",
-        "test",
-        "add",
-        "update",
-        "refactor",
-        "improve",
-        "design",
-        "setup",
-        "configure",
-        "analyze",
-        "optimize",
-        "migrate",
-        "integrate"
-      ],
-      "multiComponentIndicators": [
-        "phase",
-        "component",
-        "architecture",
-        "infrastructure",
-        "monitoring",
-        "security",
-        "testing",
-        "validation",
-        "and",
-        "then",
-        "also",
-        "additionally"
-      ],
-      "gitKeywords": [
-        "commit",
-        "push",
-        "PR",
-        "pull request",
-        "branch",
-        "merge"
-      ],
-      "skipPatterns": [
-        "what is",
-        "how does",
-        "explain",
-        "show me",
-        "read",
-        "display"
-      ]
-    },
     "defaultModel": "sonnet",
     "timeout": 60000
   },
@@ -107,7 +46,11 @@
       },
       "buildStatus": {
         "enabled": true,
-        "watchCommands": ["npm run build", "npm test", "cdk synth"]
+        "watchCommands": [
+          "npm run build",
+          "npm test",
+          "cdk synth"
+        ]
       },
       "projectInfo": {
         "enabled": true,
@@ -133,6 +76,6 @@
         "wide": "{project} | {file}:{line}:{col} | {branch}±{changes} | {build} | {errors}"
       }
     }
-  }
+  },
+  "model": "opusplan"
 }
-

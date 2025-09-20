@@ -1,4 +1,4 @@
-# DRAFT: Supercharging Claude Code with Specialized Subagents: A Developer's Guide to Orchestrated AI
+# DRAFT: Supercharging Claude Code with Specialized Subagents: A Developer's Guide to Coordinated AI
 
 ## The Problem: When One AI Isn't Enough
 
@@ -8,22 +8,22 @@ What if your AI assistant could mirror this specialized expertise? What if inste
 
 That's exactly what the Claude Code subagent system provides.
 
-## Enter the Orchestrator: How Subagents Transform Your Workflow
+## Enter the Coordinator: How Subagents Transform Your Workflow
 
-The subagent architecture introduces a powerful concept: **the Main LLM as an orchestrator**. Instead of trying to be an expert at everything, the main AI becomes a project manager, intelligently delegating tasks to specialized agents who excel in specific domains.
+The subagent architecture introduces a powerful concept: **the Main LLM as a coordinator**. Instead of trying to be an expert at everything, the main AI becomes a project manager, intelligently delegating tasks to specialized agents who excel in specific domains.
 
 Here's how it works:
 
 ```mermaid
 graph TD
-    User[Your Request] --> MainLLM[Claude Orchestrator]
+    User[Your Request] --> MainLLM[Claude Coordinator]
     MainLLM --> Programmer[👨‍💻 Programmer Agent]
     MainLLM --> Infrastructure[🏗️ Infrastructure Specialist]
     MainLLM --> Security[🔒 Security Auditor]
     MainLLM --> Reviewer[✅ Code Reviewer]
 ```
 
-When you say "implement a REST API with authentication," the orchestrator immediately recognizes this as a complex task and delegates:
+When you say "implement a REST API with authentication," the coordinator immediately recognizes this as a complex task and delegates:
 - **Programmer Agent**: Implements the API endpoints using your preferred language hierarchy
 - **Security Auditor**: Reviews authentication patterns for vulnerabilities
 - **Code Reviewer**: Ensures code quality and best practices
@@ -74,7 +74,7 @@ Trigger direct agent orchestration for:
 - **Complex patterns**: architecture, infrastructure, monitoring
 
 **STEP 2: DIRECT AGENT DELEGATION**
-Main LLM acts as orchestrator and directly invokes appropriate agents:
+Main LLM acts as coordinator and directly invokes appropriate agents:
 
 **Programming Work**: ALL coding tasks → `programmer` agent
 **Infrastructure Work**: CDK, deployment → `infrastructure-specialist` agent
@@ -143,15 +143,15 @@ EOF
 
 ## Usage: Putting Your Agent Team to Work
 
-### Basic Usage: Let the Orchestrator Handle It
+### Basic Usage: Let the Coordinator Handle It
 
-Simply describe what you need, and the orchestrator will automatically detect complexity and delegate:
+Simply describe what you need, and the coordinator will automatically detect complexity and delegate:
 
 ```
 "Implement user authentication with JWT tokens and role-based access control"
 ```
 
-The orchestrator will:
+The coordinator will:
 1. Detect this as a complex, multi-component task
 2. Invoke the `programmer` agent for implementation
 3. Trigger `security-auditor` for vulnerability review
@@ -193,7 +193,7 @@ Let's say you request: "Create a Go microservice with health checks, metrics, an
 
 Here's what happens behind the scenes:
 
-1. **Orchestrator Detection**: Recognizes "create," "microservice," and multiple components
+1. **Coordinator Detection**: Recognizes "create," "microservice," and multiple components
 2. **Parallel Delegation**:
    - `programmer`: Implements Go service with health endpoints
    - `infrastructure-specialist`: Creates K8s manifests and CDK setup

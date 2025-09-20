@@ -88,7 +88,7 @@ flowchart TD
 - Provide confidence intervals
 - Include data limitations
 
-## Orchestrator Integration
+## Coordinator Integration
 
 - **Triggered by**: Data file uploads or analytical requests
 - **Runs parallel**: Can work alongside non-data agents

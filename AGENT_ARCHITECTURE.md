@@ -2,13 +2,13 @@
 
 ## System Overview
 
-The agent system operates with the **Main LLM as the primary orchestrator**, directly delegating specialized tasks to appropriate agents. This eliminates re-entrant orchestration patterns and creates a clear delegation hierarchy.
+The enhanced agent system features **21 specialized agents** with mandatory delegation enforcement that prevents main LLM bypass. The system uses trigger-based routing, direct coordination, and intelligent specialist selection to ensure proper task delegation.
 
 ## Architecture Diagram
 
 ```mermaid
 graph TD
-    User[User Request] --> MainLLM[Main LLM Orchestrator]
+    User[User Request] --> MainLLM[Main LLM Coordinator]
 
     MainLLM --> DetectComplex{Complex Task<br/>Detection}
 
@@ -21,10 +21,18 @@ graph TD
     Delegate --> Quality{Quality<br/>Review?}
     Delegate --> Analysis{Analysis<br/>Task?}
 
-    Programming -->|ALL Code Tasks| Programmer[programmer]
+    Programming -->|Core Programming| Programmer[programmer]
+    Programming -->|Frontend/UI| FrontendDev[frontend-developer]
+    Programming -->|Backend/API| BackendArch[backend-architect]
+    Programming -->|ML/Data| MLEngineer[ml-engineer]
+    Programming -->|Blockchain| BlockchainDev[blockchain-developer]
+    Programming -->|Mobile| MobileDev[mobile-developer]
+    Programming -->|Legacy Systems| LegacyMaint[legacy-maintainer]
+
     Infrastructure -->|CDK/Cloud| InfraSpec[infrastructure-specialist]
     Security -->|Security Analysis| SecAuditor[security-auditor]
     Quality -->|Code Review| CodeReviewer[code-reviewer]
+    Quality -->|Testing| QASpec[qa-specialist]
     Analysis -->|Performance/Debug| AnalysisAgents[performance-optimizer<br/>debug-specialist]
 
     %% Workflow Dependencies
@@ -54,39 +62,47 @@ graph TD
     AgentResolution --> CodeReviewer
 
     %% Styling
-    classDef orchestrator fill:#ff9999,stroke:#333,stroke-width:3px
+    classDef coordinator fill:#ff9999,stroke:#333,stroke-width:3px
     classDef agent fill:#99ccff,stroke:#333,stroke-width:2px
     classDef workflow fill:#99ff99,stroke:#333,stroke-width:2px
     classDef config fill:#ffcc99,stroke:#333,stroke-width:2px
 
-    class MainLLM orchestrator
+    class MainLLM coordinator
     class Programmer,InfraSpec,SecAuditor,CodeReviewer,UnitTest,GitOps,Changelog agent
     class QualityGate,DetectComplex,AgentResolution workflow
     class GlobalRules,LocalRules,GlobalAgents,LocalAgents config
 ```
 
-## Orchestration Flow
+## Coordination Flow
 
 ### 1. Task Detection Phase
 ```
 User Request → Main LLM → Complex Task Detection
 ```
 
-**Detection Triggers:**
-- **Action Verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate
-- **Multi-component Work**: numbered lists, bullet points, "and" conjunctions
-- **Complex Patterns**: phase, component, architecture, infrastructure, monitoring, security
+**Delegation Enforcement Triggers:**
+- **Action Verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate, write, edit, modify, develop, code
+- **File Operations**: ANY mention of Write, Edit, MultiEdit tools
+- **Programming Keywords**: function, class, method, variable, API, database
+- **Technical Implementation**: ANY technical work beyond coordination
 
 ### 2. Direct Agent Delegation
 ```
 Main LLM → Task Analysis → Direct Agent Invocation
 ```
 
-**Delegation Rules:**
-- **Programming Work** → `programmer` agent (ALL coding tasks)
-- **Infrastructure Work** → `infrastructure-specialist` agent (CDK, deployment, cloud)
-- **Security Work** → `security-auditor` agent (vulnerability analysis)
-- **Quality Gates** → `code-reviewer` agent (code review, testing validation)
+**Specialist Routing Rules:**
+- **Core Programming** → `programmer` agent (language hierarchy: Go > TypeScript > Bash > Ruby)
+- **Frontend/UI** → `frontend-developer` agent (React/Vue/Angular, browser compatibility)
+- **Backend/API** → `backend-architect` agent (database design, microservices)
+- **ML/Data** → `ml-engineer` agent (Python/TensorFlow, MLOps)
+- **Blockchain** → `blockchain-developer` agent (Solidity, Web3, DeFi)
+- **Mobile** → `mobile-developer` agent (React Native, iOS, Android)
+- **Legacy Systems** → `legacy-maintainer` agent (Java, C#, enterprise)
+- **Infrastructure** → `infrastructure-specialist` agent (CDK, cloud architecture)
+- **Security** → `security-auditor` agent (penetration testing, compliance)
+- **Testing** → `qa-specialist` agent (end-to-end, integration testing)
+- **Quality Gates** → `code-reviewer` agent (mandatory quality validation)
 
 ### 3. Parallel Execution
 ```
@@ -95,9 +111,10 @@ Main LLM → Multiple Task() calls → Parallel Agent Execution
 
 **Execution Pattern:**
 ```typescript
-// Single message with multiple agent tasks
-Task(subagent_type="programmer", prompt="Implement user authentication")
-Task(subagent_type="security-auditor", prompt="Review auth security")
+// Single message with multiple specialist tasks
+Task(subagent_type="backend-architect", prompt="Design authentication API")
+Task(subagent_type="frontend-developer", prompt="Implement auth UI components")
+Task(subagent_type="security-auditor", prompt="Review auth security patterns")
 Task(subagent_type="infrastructure-specialist", prompt="Setup auth infrastructure")
 ```
 
@@ -106,19 +123,20 @@ Task(subagent_type="infrastructure-specialist", prompt="Setup auth infrastructur
 Agent Results → Main LLM → Dependency Resolution → Next Actions
 ```
 
-**Quality Gate Workflow:**
-1. **Code Implementation** (programmer)
-2. **Code Review** (code-reviewer) - *BLOCKS if issues found*
-3. **Test Coverage** (unit-test-expert)
-4. **Git Operations** (git-workflow-manager) - *Only after quality gates pass*
-5. **Documentation** (changelog-recorder)
+**Enhanced Quality Gate Workflow:**
+1. **Code Implementation** (specialist agents: programmer, frontend-developer, backend-architect, etc.)
+2. **Code Review** (code-reviewer) - *BLOCKS if security/quality issues found*
+3. **Code Clarity** (code-clarity-manager → top-down-analyzer + bottom-up-analyzer)
+4. **Test Coverage** (unit-test-expert) - *BLOCKS if coverage insufficient*
+5. **Git Operations** (git-workflow-manager) - *Only after all quality gates pass*
+6. **Documentation** (changelog-recorder)
 
 ## Rule Inheritance System
 
 ### Global Configuration
 ```
 /Users/jamsa/.claude/
-├── CLAUDE.md                    # Global rules and orchestration logic
+├── CLAUDE.md                    # Global rules and coordination logic
 └── agents/
     ├── programmer.md            # Global programming agent
     ├── infrastructure-specialist.md
@@ -247,4 +265,4 @@ description: Python-focused programmer for this FastAPI project
 3. Bash (deployment scripts)
 ```
 
-This architecture ensures clean separation of concerns, eliminates re-entrant orchestration, and provides flexible rule inheritance while maintaining the main LLM as the central coordinator.
+This architecture ensures clean separation of concerns, eliminates re-entrant coordination complexity, and provides flexible rule inheritance while maintaining the main LLM as the central coordinator.

@@ -151,9 +151,9 @@ gantt
 - `gitgraph` for release and branching strategies
 - Use consistent colors to represent different agent roles
 
-## Orchestrator Integration
+## Main LLM Coordination
 
 - **Triggered by**: Complex multi-step projects
-- **Coordinates**: All agent activities through orchestrator
+- **Coordinates**: All agent activities through main LLM
 - **Reports**: Project status, risks, and progress
-- **Blocks**: Can request priority changes from orchestrator
+- **Blocks**: Can request priority changes from main LLM

@@ -168,7 +168,7 @@ MIT
 6. **Update docs** before merging
 7. **Version documentation** with releases
 
-## Orchestrator Integration
+## Coordinator Integration
 
 - **Triggered by**: Code completion or feature releases
 - **Works after**: Implementation and testing complete

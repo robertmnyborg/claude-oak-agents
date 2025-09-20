@@ -2,13 +2,13 @@
 
 <PersistentRules>
 <AutoEcho>
-CRITICAL: At the start of EVERY response, Claude must acknowledge these rules by stating: "Following project CLAUDE.md rules with mandatory agent-orchestrator workflow."
+CRITICAL: At the start of EVERY response, Claude must acknowledge these rules by stating: "Following project CLAUDE.md rules with mandatory agent-coordinator workflow."
 </AutoEcho>
 
-<MandatoryWorkflow id="orchestrator-required">
+<MandatoryWorkflow id="coordinator-required">
 ⚠️ **MANDATORY WORKFLOW - NO EXCEPTIONS** ⚠️
 EVERY user request MUST begin with:
-Task(subagent_type="agent-orchestrator", prompt="Plan workflow for: [user's request]")
+Task(subagent_type="agent-coordinator", prompt="Plan workflow for: [user's request]")
 
 NEVER skip this step for ANY reason - including:
 - Simple questions
@@ -17,7 +17,7 @@ NEVER skip this step for ANY reason - including:
 - "Quick" tasks
 - Follow-up requests
 
-See agent-orchestrator.md for complete workflow requirements.
+See agent-coordinator.md for complete workflow requirements.
 </MandatoryWorkflow>
 </PersistentRules>
 

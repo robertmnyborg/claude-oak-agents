@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Complete agent system with 21 specialized agents
-- Agent orchestrator for workflow coordination and maximum parallelism
+- Agent coordinator for workflow coordination and maximum parallelism
 - Core configuration files (CLAUDE.md, AGENTS.md, settings.json)
 - Personal development rules and technology constraints
 - Quality gates for security and maintainability
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Memory and workflow directories
 
 ### Agent System
-- **agent-orchestrator** - Workflow dispatch planner for optimal coordination
+- **agent-coordinator** - Workflow dispatch planner for optimal coordination
 - **code-reviewer** - Security analysis and code quality validation
 - **debug-specialist** - Critical error resolution with highest priority
 - **code-clarity-manager** - Maintainability orchestration (top-down + bottom-up)
@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **bottom-up-analyzer** - Implementation-level clarity analysis
 
 ### Configuration
-- Mandatory agent-orchestrator workflow for all requests
+- Mandatory agent-coordinator workflow for all requests
 - Technology stack constraints (Go > TypeScript > Bash > Ruby)
 - Functional programming approach with CDK construct exceptions
 - Direct and concise communication style
@@ -108,8 +108,8 @@ Before major version upgrades:
 ## Migration Notes
 
 ### From 0.x to 1.0.0
-- Agent system completely redesigned with orchestrator pattern
-- All requests now require agent-orchestrator invocation
+- Agent system completely redesigned with coordinator pattern
+- All requests now require agent-coordinator invocation
 - Quality gates enforced sequentially
 - Maximum parallelism implemented where safe
 
@@ -138,7 +138,7 @@ Before major version upgrades:
 ## Breaking Changes
 
 ### Version 1.0.0
-- **BREAKING**: All requests must start with agent-orchestrator
+- **BREAKING**: All requests must start with agent-coordinator
 - **BREAKING**: Agent naming conventions standardized
 - **BREAKING**: Quality gates now block commits on failure
 - **BREAKING**: Directory structure reorganized with templates/

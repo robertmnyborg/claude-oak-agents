@@ -235,7 +235,7 @@ security-auditor → Security requirements driving architecture
 performance-optimizer → Performance bottlenecks requiring design changes
 ```
 
-## Orchestrator Integration
+## Coordinator Integration
 
 - **Triggered by**: Project initiation or major technical decisions
 - **Requires input from**: All analysis agents before major architecture decisions

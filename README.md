@@ -1,6 +1,6 @@
 # Claude Code Bootstrap Configuration
 
-A comprehensive Claude Code setup with 21 specialized agents, development workflow automation, and project management tools.
+A comprehensive Claude Code setup with 21 specialized agents, mandatory delegation enforcement, and direct workflow coordination.
 
 ## 🚀 Quick Start
 
@@ -23,45 +23,49 @@ claude-backup
 
 ## 🤖 Agent System
 
-This configuration includes **21 specialized agents** that handle every aspect of development:
+This configuration includes **21 specialized agents** with mandatory delegation enforcement that prevents main LLM bypass:
 
-### Core Workflow Agents
-- **agent-orchestrator** - Coordinates all agent workflows with maximum parallelism
+### 🏗️ Core Development Agents
+- **frontend-developer** - UI/UX implementation, React/Vue/Angular, browser compatibility
+- **backend-architect** - Database design, API architecture, microservices patterns
+- **programmer** - Core programming with language hierarchy (Go > TypeScript > Bash > Ruby)
+- **qa-specialist** - End-to-end testing, integration testing, performance validation
+- **business-analyst** - Requirements analysis, user stories, stakeholder communication
+- **content-writer** - Technical documentation, marketing content, API documentation
+
+### 🔬 Specialist Programming Agents
+- **ml-engineer** - Python/TensorFlow, data pipelines, MLOps practices
+- **blockchain-developer** - Solidity smart contracts, Web3 integration, DeFi protocols
+- **mobile-developer** - React Native, iOS, Android development
+- **legacy-maintainer** - Java, C#, enterprise systems maintenance and modernization
+
+### 🛡️ Security & Quality Agents
+- **security-auditor** - Enhanced penetration testing, compliance validation (SOC2, GDPR, PCI DSS)
 - **code-reviewer** - Security analysis, code quality, vulnerability detection
-- **debug-specialist** - Critical error resolution (highest priority)
-
-### Code Quality & Analysis
 - **code-clarity-manager** - Orchestrates maintainability analysis
-- **top-down-analyzer** - Architectural clarity analysis
-- **bottom-up-analyzer** - Implementation-level clarity analysis
-- **unit-test-expert** - Comprehensive test creation and coverage
-- **performance-optimizer** - Performance analysis and optimization
+- **top-down-analyzer** - Architectural clarity analysis (invoked by code-clarity-manager)
+- **bottom-up-analyzer** - Implementation-level clarity analysis (invoked by code-clarity-manager)
+- **unit-test-expert** - Comprehensive unit test creation and coverage
 
-### Development Workflow
+### ⚙️ Infrastructure & Operations Agents
+- **infrastructure-specialist** - CDK constructs, cloud architecture, deployment strategies
+- **systems-architect** - System design, infrastructure planning, technical specifications
+- **performance-optimizer** - Performance analysis, bottleneck identification, optimization
+- **dependency-scanner** - Third-party dependency analysis, vulnerability scanning
+- **debug-specialist** - Critical error resolution (highest priority, blocks all other agents)
+
+### 📋 Workflow & Management Agents
 - **git-workflow-manager** - Git operations, branch management, PR creation
 - **changelog-recorder** - Automatic changelog generation
 - **project-manager** - Multi-step project coordination
+- **data-scientist** - Data analysis, insights, statistical processing
 
-### Architecture & Infrastructure
-- **systems-architect** - System design and technical specifications
-- **infrastructure-specialist** - CDK constructs, cloud architecture
-- **dependency-scanner** - Security scanning of third-party dependencies
-
-### Security & Compliance
-- **security-auditor** - Security analysis and compliance checking
-
-### Documentation & Communication
-- **technical-documentation-writer** - API docs and technical writing
-
-### Specialized Analysis
-- **data-scientist** - Data processing and analytical insights
-
-### Configuration & Setup
+### 🔧 Configuration Agents
 - **statusline-setup** - Claude Code status line configuration
-- **output-style-setup** - Claude Code output customization
+- **output-style-setup** - Claude Code output style customization
 
-### Meta System
-- **agent-creator** - Automatically creates new specialized agents when gaps are detected
+### 🤖 Meta Agents
+- **agent-creator** - Design and implement new specialized agents, update coordination patterns
 
 ## 📁 Directory Structure
 
@@ -73,7 +77,7 @@ This configuration includes **21 specialized agents** that handle every aspect o
 │   ├── settings.json          # Main Claude configuration
 │   └── .clauderc              # Shell environment setup
 ├── 🤖 Agent System
-│   └── agents/                # 21 specialized agents
+│   └── agents/                # 21 specialized agents with delegation enforcement
 ├── 📋 Project Templates
 │   └── templates/             # CLAUDE.md, SPEC.md, README.md templates
 ├── 🔧 Utilities
@@ -92,11 +96,17 @@ This configuration includes **21 specialized agents** that handle every aspect o
 
 ## ⚙️ Key Features
 
-### Automated Workflow Management
-- **Mandatory orchestrator** for every request ensures optimal agent coordination
-- **Maximum parallelism** - agents run concurrently when possible
-- **Quality gates** - security and maintainability checks before commits
-- **Auto-creation** - new agents created automatically for specialized needs
+### Delegation Enforcement System
+- **Mandatory delegation** - Main LLM prohibited from programming work
+- **Enhanced contextual routing** - Priority-based agent selection with test-specific pattern recognition
+- **Bypass prevention** - 5-layer enforcement prevents main LLM technical work
+- **Intelligent routing** - Project context and compound phrases determine specialist agent selection
+
+### Direct Coordination Architecture
+- **Direct main LLM coordination** - Main LLM coordinates all agent workflows directly
+- **Solved re-entrant state problem** - Main LLM maintains consistent workflow state
+- **Efficient delegation** - Direct coordination with specialized agents
+- **Quality gates** - Sequential validation (code-reviewer → code-clarity-manager → testing)
 
 ### Development Standards
 - **Technology constraints** - Go > TypeScript > Bash > Ruby preference
@@ -133,18 +143,18 @@ claude-restore <path>  # Restore from backup
 ## 📝 Configuration Files
 
 ### CLAUDE.md
-Personal development rules and technology constraints. Defines:
-- Mandatory agent-orchestrator workflow
-- Technology stack preferences
-- Class usage guidelines
-- Communication style preferences
+Personal development rules and delegation enforcement. Defines:
+- Mandatory delegation triggers and enforcement mechanisms
+- Technology stack preferences and language hierarchy
+- Agent routing rules and specialist selection
+- Communication style and workflow coordination
 
 ### AGENTS.md
 Complete agent system architecture documentation including:
-- Agent capabilities and specializations
-- Workflow coordination patterns
-- Quality gates and dependencies
-- Auto-creation system
+- 21 specialized agents with delegation enforcement
+- Trigger-based routing and direct coordination
+- Quality gates and sequential validation
+- Specialist selection and project-specific routing
 
 ### settings.json
 Main Claude Code configuration with:
@@ -184,9 +194,11 @@ Main Claude Code configuration with:
 
 ## 🚨 Important Notes
 
-- **Every request must start with agent-orchestrator** - no exceptions
-- **One task in progress** - agents coordinate to avoid conflicts
-- **Quality gates enforced** - failing security/quality blocks commits
+- **Delegation enforcement active** - Main LLM cannot perform programming tasks
+- **Enhanced contextual routing** - Test-specific patterns route to appropriate testing specialists
+- **Quality gates mandatory** - Sequential validation prevents low-quality commits
+- **Specialist routing** - Project context and compound phrases determine optimal agent selection
+- **Test routing fixed** - "Fix tests" now correctly routes to qa-specialist instead of programmer
 - **Automatic backups recommended** before major changes
 
 ## 🆘 Support

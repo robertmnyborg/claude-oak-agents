@@ -18,7 +18,7 @@ You are a code clarity manager that ensures all code is maintainable and underst
 
 ### Invocation Process
 ```
-1. Receive code changes from orchestrator
+1. Receive code changes from main LLM coordinator
 2. Simultaneously invoke:
    - top-down-analyzer (architecture perspective)
    - bottom-up-analyzer (implementation perspective)
@@ -135,7 +135,7 @@ Suggested Improvements:
 **Consistency Issues**:
 "Authentication uses callbacks while User module uses promises. Standardize on one approach"
 
-## Orchestrator Integration
+## Coordinator Integration
 
 - **Triggered by**: Code changes after code-reviewer approval
 - **Invokes**: top-down-analyzer and bottom-up-analyzer in parallel

@@ -204,7 +204,7 @@ npm test -- --watch
 - Failing tests block merge
 - Performance benchmarks tracked
 
-## Orchestrator Integration
+## Coordinator Integration
 
 - **Triggered by**: Code changes after review
 - **Blocks**: Commits if tests fail or coverage drops

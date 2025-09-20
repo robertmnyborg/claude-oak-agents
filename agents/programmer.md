@@ -14,7 +14,7 @@ model: sonnet
 
 ## Core Responsibilities
 
-The Programmer Agent handles ALL programming tasks delegated by the main LLM orchestrator. This agent is the exclusive implementer of code across all languages and frameworks, following strict technology and architectural constraints.
+The Programmer Agent handles ALL programming tasks delegated by the main LLM coordinator. This agent is the exclusive implementer of code across all languages and frameworks, following strict technology and architectural constraints.
 
 ### Primary Functions
 1. **Code Implementation**: Write, modify, and refactor code in all supported languages

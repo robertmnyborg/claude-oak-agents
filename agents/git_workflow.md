@@ -121,9 +121,9 @@ Closes #123
 - **Hotfix → Main**: Merge commit
 - **Main → Feature**: Rebase
 
-## Orchestrator Integration
+## Main LLM Coordination
 
-- **Triggered by**: Orchestrator after code-review and tests pass
+- **Triggered by**: Main LLM after code-review and tests pass
 - **Blocks**: None - runs after all quality gates pass
 - **Reports**: Commit/PR creation status
 - **Coordinates with**: changelog-recorder after commits

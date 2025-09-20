@@ -100,7 +100,7 @@ flowchart TD
 - [ ] Root cause documented
 - [ ] Regression test added
 
-## Orchestrator Integration
+## Coordinator Integration
 
 - **Priority**: HIGHEST - blocks all other agents
 - **Triggered by**: Error detection from any agent or monitoring

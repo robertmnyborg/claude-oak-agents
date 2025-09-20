@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Claude Code agent system uses a dispatch planner architecture where the **agent-orchestrator** analyzes context and returns specific Task tool calls for maximum parallel execution. This creates an efficient workflow system that coordinates specialized agents while maintaining quality gates.
+The Claude Code agent system uses a dispatch planner architecture where the **agent-coordinator** analyzes context and returns specific Task tool calls for maximum parallel execution. This creates an efficient workflow system that coordinates specialized agents while maintaining quality gates.
 
 ## How the Agent System Works
 
@@ -10,15 +10,15 @@ The Claude Code agent system uses a dispatch planner architecture where the **ag
 
 The agent system operates through a **functional dispatch planner**:
 
-1. **Main LLM invokes orchestrator**: `Task(subagent_type="agent-orchestrator", prompt="Plan workflow for [situation]")`
-2. **Orchestrator returns dispatch plan**: Specific Task calls to execute + re-invocation instructions
+1. **Main LLM invokes coordinator**: `Task(subagent_type="agent-coordinator", prompt="Plan workflow for [situation]")`
+2. **Coordinator returns dispatch plan**: Specific Task calls to execute + re-invocation instructions
 3. **Main LLM executes Task calls**: Runs the specified agents (in parallel when possible)
-4. **Main LLM re-invokes orchestrator**: With completion status using specified format
-5. **Orchestrator continues workflow**: Plans next parallel batch based on results
+4. **Main LLM re-invokes coordinator**: With completion status using specified format
+5. **Coordinator continues workflow**: Plans next parallel batch based on results
 
 ### 2. Maximum Parallelism Strategy
 
-The orchestrator is designed to **maximize parallel execution** at every opportunity:
+The coordinator is designed to **maximize parallel execution** at every opportunity:
 
 #### Always Parallel (No conflicts ever)
 - **Configuration agents**: `statusline-setup` + `output-style-setup`
@@ -69,7 +69,7 @@ Sequential dependencies are enforced through quality gates:
 
 ### 5. Re-invocation Protocol
 
-The main LLM re-invokes the orchestrator using these exact formats:
+The main LLM re-invokes the coordinator using these exact formats:
 
 **After successful completion:**
 ```
@@ -117,7 +117,7 @@ The main LLM re-invokes the orchestrator using these exact formats:
 - **output-style-setup**: Claude Code output style customization
 
 ### Meta Agents
-- **agent-creator**: Design and implement new specialized agents, update orchestrator integration
+- **agent-creator**: Design and implement new specialized agents, update coordinator integration
 
 ## Priority Levels
 
@@ -135,7 +135,7 @@ The main LLM re-invokes the orchestrator using these exact formats:
 
 ### Initial Invocation
 ```
-Task(subagent_type="agent-orchestrator", description="Plan workflow", prompt="Analyze current context and create dispatch plan for [specific situation]")
+Task(subagent_type="agent-coordinator", description="Plan workflow", prompt="Analyze current context and create dispatch plan for [specific situation]")
 ```
 
 ### Examples
@@ -148,11 +148,11 @@ Task(subagent_type="agent-orchestrator", description="Plan workflow", prompt="An
 ## Auto-Agent Creation
 
 ### Capability Gap Detection
-The orchestrator automatically detects when specialized capabilities are needed and creates new agents on-demand:
+The coordinator automatically detects when specialized capabilities are needed and creates new agents on-demand:
 
 **Example Auto-Creation Flow:**
 1. **User Request**: "Test this REST API for performance"
-2. **Gap Detection**: Orchestrator detects no existing agent optimally handles API testing
+2. **Gap Detection**: Coordinator detects no existing agent optimally handles API testing
 3. **Auto-Creation**: Creates `api-tester` agent specialized for REST/GraphQL testing
 4. **Task Execution**: New agent handles the original request with specialized expertise
 
@@ -178,7 +178,7 @@ The orchestrator automatically detects when specialized capabilities are needed 
 
 1. **Maximum Efficiency**: Parallel execution wherever possible reduces total workflow time
 2. **Quality Assurance**: Sequential quality gates ensure code standards are maintained
-3. **Flexible Coordination**: Orchestrator adapts workflow based on context and results
+3. **Flexible Coordination**: Coordinator adapts workflow based on context and results
 4. **Comprehensive Coverage**: All aspects of development are covered by specialized agents
 5. **Automatic Recovery**: Failed agents trigger workflow adjustments through re-invocation
 6. **Self-Evolving System**: Agent ecosystem grows automatically to meet new requirements
