@@ -48,9 +48,9 @@ Main LLM handles simple tasks directly:
 
 **STEP 5: RESULT INTEGRATION**
 - Main LLM coordinates specialists and enforces quality gates
-- Ensures proper workflow sequence (code-reviewer → code-clarity-manager → testing)
+- Ensures proper workflow sequence (code-reviewer → code-clarity-manager → testing → pre-commit simplicity)
 - Formats final user response
-- Manages git operations through git-workflow-manager
+- Manages git operations through git-workflow-manager with pre-commit simplicity enforcement
 
 ---
 
@@ -139,6 +139,9 @@ Main LLM handles simple tasks directly:
 - **content-writer**: Marketing content, user-facing documentation
 - **technical-documentation-writer**: API docs, technical specifications, system documentation
 
+#### Pre-Implementation (Mandatory)
+- **design-simplicity-advisor**: KISS principle enforcement before ANY implementation (MANDATORY - BLOCKS IMPLEMENTATION)
+
 #### Special Purpose
 - **debug-specialist**: Critical error resolution (HIGHEST PRIORITY - blocks all others)
 - **qa-specialist**: Integration testing, E2E testing, system validation
@@ -174,6 +177,7 @@ Main LLM handles simple tasks directly:
 ### Exclusion Rules (Agent Boundaries)
 
 #### What Each Agent Does NOT Handle
+- **design-simplicity-advisor**: Does NOT implement solutions, write code, or perform actual implementation work (analysis only)
 - **programmer**: Does NOT write tests, handle infrastructure, or perform security audits
 - **frontend-developer**: Does NOT handle backend APIs, database design, or server deployment
 - **backend-architect**: Does NOT implement frontend, handle infrastructure deployment, or write tests
@@ -195,18 +199,18 @@ Main LLM handles simple tasks directly:
 
 #### Security + Implementation
 - **Patterns**: "fix security bug", "implement secure authentication", "security code review"
-- **Route to**: security-auditor (analysis) + programmer/specialist (implementation) + code-reviewer (validation)
-- **Coordination**: Main LLM coordinates security requirements with implementation
+- **Route to**: design-simplicity-advisor (MANDATORY FIRST) → security-auditor (analysis) + programmer/specialist (implementation) + code-reviewer (validation)
+- **Coordination**: Main LLM coordinates security requirements with implementation using simplicity constraints
 
 #### Performance + Testing + Infrastructure
 - **Patterns**: "optimize performance", "fix slow queries", "scale application performance"
-- **Route to**: performance-optimizer (analysis) + qa-specialist (testing) + infrastructure-specialist (scaling)
-- **Coordination**: Main LLM synthesizes optimization strategy across all domains
+- **Route to**: design-simplicity-advisor (MANDATORY FIRST) → performance-optimizer (analysis) + qa-specialist (testing) + infrastructure-specialist (scaling)
+- **Coordination**: Main LLM synthesizes optimization strategy across all domains with simplicity-first approach
 
 #### Architecture + Implementation + Infrastructure
 - **Patterns**: "design and implement new service", "build scalable system", "architect microservices"
-- **Route to**: systems-architect (design) + backend-architect (implementation) + infrastructure-specialist (deployment)
-- **Coordination**: Main LLM ensures architectural consistency across all levels
+- **Route to**: design-simplicity-advisor (MANDATORY FIRST) → systems-architect (design) + backend-architect (implementation) + infrastructure-specialist (deployment)
+- **Coordination**: Main LLM ensures architectural consistency across all levels with simplicity constraints
 
 #### Testing + Debugging + Quality
 - **Patterns**: "debug failing tests", "troubleshoot test issues", "fix test performance"
@@ -258,7 +262,7 @@ Main LLM handles simple tasks directly:
 ### Coordination Patterns
 
 #### Sequential Workflows
-1. **Quality Gate Sequence**: specialist-implementation → code-reviewer → code-clarity-manager → unit-test-expert → git-workflow-manager
+1. **Quality Gate Sequence**: specialist-implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
 2. **Security Review Sequence**: implementation → security-auditor → code-reviewer → dependency-scanner
 3. **Architecture Sequence**: systems-architect → backend-architect → infrastructure-specialist
 
@@ -281,11 +285,12 @@ Main LLM handles simple tasks directly:
 
 #### Type 1: Sequential Quality Gates (Mandatory)
 ```
-Implementation Agent → code-reviewer → code-clarity-manager → unit-test-expert → git-workflow-manager
+Implementation Agent → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
 ```
 - **Blocking**: Each stage must pass before proceeding
 - **Enforcement**: Main LLM enforces sequence
 - **Rollback**: Failure at any stage returns to implementation
+- **Pre-Commit Simplicity**: Mandatory complexity analysis before git operations
 
 #### Type 2: Parallel Analysis (Independent)
 ```
@@ -377,7 +382,7 @@ Coordination: Main LLM ensures documentation consistency and completeness
 ```
 1. Parallel Analysis: security-auditor + performance-optimizer
 2. Implementation: backend-architect (fixes based on analysis)
-3. Quality Gates: code-reviewer → code-clarity-manager → unit-test-expert
+3. Quality Gates: code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit)
 4. Testing: qa-specialist (integration testing)
 5. Documentation: technical-documentation-writer (security/performance notes)
 6. Deployment: infrastructure-specialist (if scaling changes needed)
@@ -389,6 +394,7 @@ Coordination: Main LLM ensures documentation consistency and completeness
 2. Test Analysis: qa-specialist (integration) + unit-test-expert (unit)
 3. Performance Review: performance-optimizer (if performance-related)
 4. Quality Review: code-reviewer (ensure fixes don't break other things)
+5. Pre-commit Simplicity: design-simplicity-advisor (complexity analysis before commit)
 5. Documentation: technical-documentation-writer (document issues and solutions)
 ```
 </Rule>
@@ -424,7 +430,7 @@ Coordination: Main LLM ensures documentation consistency and completeness
 - Performance issues → performance-optimizer + qa-specialist + infrastructure-specialist coordination
 - Architecture tasks → systems-architect + backend-architect + infrastructure-specialist coordination
 - Wait for each agent completion, then synthesize results for multi-agent scenarios
-- Enforce mandatory quality sequence: code-reviewer → code-clarity-manager → unit-test-expert
+- Enforce mandatory quality sequence: code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit)
 - Handle parallel execution by sending multiple Task() calls in single message
 - Resolve conflicts using domain priority rules (security > performance > convenience)
 - NO ORCHESTRATOR: Main LLM coordinates directly with overlap resolution capabilities
@@ -473,11 +479,139 @@ Coordination: Main LLM ensures documentation consistency and completeness
 
 ### Resolution Priority Rules
 1. **debug-specialist**: ALWAYS highest priority, blocks all other work
-2. **Security-first**: Security requirements override performance/convenience concerns
-3. **Architecture-consistency**: High-level design guides implementation decisions
-4. **Quality-gates**: Code reviewer decisions are non-negotiable
-5. **Domain-expertise**: More specific domain knowledge takes precedence
-6. **User-requirements**: Business analyst findings guide technical decisions
+2. **design-simplicity-advisor**: MANDATORY before ANY implementation - no exceptions
+3. **Security-first**: Security requirements override performance/convenience concerns
+4. **Architecture-consistency**: High-level design guides implementation decisions
+5. **Quality-gates**: Code reviewer decisions are non-negotiable
+6. **Domain-expertise**: More specific domain knowledge takes precedence
+7. **User-requirements**: Business analyst findings guide technical decisions
+</Rule>
+
+<Rule id="mandatory-simplicity-workflow">
+**MANDATORY SIMPLICITY WORKFLOW**: Pre-implementation AND pre-commit simplicity enforcement
+
+### Workflow Sequence (NON-NEGOTIABLE)
+```
+Task Detection → design-simplicity-advisor (MANDATORY pre-implementation) → Implementation Agent → Quality Gates → design-simplicity-advisor (MANDATORY pre-commit) → git-workflow-manager
+```
+
+### Implementation Blocking Rules
+- **NO IMPLEMENTATION** can begin until design-simplicity-advisor completes analysis
+- **NO BYPASS ALLOWED** - Main LLM must invoke simplicity advisor for ANY implementation task
+- **TRIGGERS**: All implementation verbs (implement, create, build, develop, code, design, etc.)
+- **EXCEPTIONS**: Only debug-specialist can bypass (critical errors only)
+
+### Main LLM Enforcement
+```python
+def implementation_workflow_enforcement(task_context):
+    # STEP 1: Mandatory simplicity analysis
+    if is_implementation_task(task_context):
+        # CANNOT BE BYPASSED
+        simplicity_result = Task(
+            subagent_type="design-simplicity-advisor",
+            prompt=f"Analyze simplicity options for: {task_context.requirements}"
+        )
+
+        # BLOCKING: Wait for completion
+        if not simplicity_result.complete:
+            return "Blocking: Waiting for simplicity analysis"
+
+    # STEP 2: Implementation with simplicity constraints
+    implementation_result = Task(
+        subagent_type=determine_implementation_agent(task_context),
+        prompt=f"Implement using simplicity constraints: {simplicity_result.recommendation}"
+    )
+
+    # STEP 3: Quality gates sequence (including pre-commit simplicity)
+    quality_sequence = [
+        "code-reviewer",
+        "code-clarity-manager",
+        "unit-test-expert",
+        "design-simplicity-advisor"  # Pre-commit complexity analysis
+    ]
+
+    return coordinate_quality_gates(implementation_result, quality_sequence)
+```
+
+### Trigger Integration
+- **Implementation triggers**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, develop, code
+- **Architecture triggers**: architect, structure, organize, system design
+- **Feature triggers**: add feature, new functionality, enhancement
+- **Problem-solving triggers**: solve problem, address requirement
+
+### Simplicity Enforcement
+- **Simple-first principle**: Always start with simplest viable solution
+- **Complexity justification**: Complex solutions require explicit justification
+- **Deferred optimization**: Performance optimization only when proven necessary
+- **Minimal dependencies**: Prefer built-in solutions over external libraries
+
+### Integration with Existing Workflows
+- **Security workflows**: design-simplicity-advisor → security-auditor → implementation
+- **Performance workflows**: design-simplicity-advisor → performance-optimizer → implementation
+- **Architecture workflows**: design-simplicity-advisor → systems-architect → implementation
+- **Debug exception**: debug-specialist bypasses simplicity advisor for critical errors only
+
+### Pre-Commit Simplicity Enforcement
+- **MANDATORY PRE-COMMIT REVIEW**: design-simplicity-advisor MUST review before any git operations
+- **GIT WORKFLOW BLOCKING**: git-workflow-manager cannot proceed until simplicity review complete
+- **COMPLEXITY ANALYSIS REQUIREMENTS**: Pre-commit review must analyze:
+  - Overall solution complexity vs. requirements
+  - Unnecessary abstractions or over-engineering
+  - Opportunities for simplification before commit
+  - Compliance with KISS principle across all changes
+- **INTEGRATION WITH QUALITY GATES**: Pre-commit simplicity is final quality gate before git operations
+- **NO BYPASS ALLOWED**: Even emergency fixes require post-commit simplicity review and potential refactoring
+</Rule>
+
+<Rule id="pre-commit-simplicity-enforcement">
+**PRE-COMMIT SIMPLICITY ENFORCEMENT**: Mandatory complexity analysis before git operations
+
+### Git Workflow Blocking Requirements
+- **MANDATORY SEQUENCE**: unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
+- **NO GIT OPERATIONS** can proceed until pre-commit simplicity review is complete
+- **BLOCKING ENFORCEMENT**: git-workflow-manager agent MUST wait for simplicity advisor completion
+- **QUALITY GATE INTEGRATION**: Pre-commit simplicity is the final mandatory quality gate
+
+### Pre-Commit Complexity Analysis
+- **HOLISTIC REVIEW**: Analyze entire changeset for unnecessary complexity
+- **KISS PRINCIPLE VALIDATION**: Ensure all changes follow Keep It Simple, Stupid principle
+- **ABSTRACTION ANALYSIS**: Identify and flag over-abstraction or premature optimization
+- **SIMPLIFICATION OPPORTUNITIES**: Recommend specific simplifications before commit
+- **TECHNICAL DEBT ASSESSMENT**: Flag complexity that creates future maintenance burden
+
+### Main LLM Pre-Commit Workflow
+```python
+def pre_commit_workflow_enforcement(implementation_complete):
+    # STEP 1: Complete standard quality gates
+    quality_gates_result = run_quality_gates(implementation_complete)
+
+    # STEP 2: MANDATORY pre-commit simplicity review
+    pre_commit_simplicity = Task(
+        subagent_type="design-simplicity-advisor",
+        prompt=f"Pre-commit complexity analysis for changeset: {implementation_complete.changes}"
+    )
+
+    # BLOCKING: Wait for pre-commit simplicity completion
+    if not pre_commit_simplicity.complete:
+        return "Blocking: Waiting for pre-commit simplicity analysis"
+
+    # STEP 3: Git operations only after simplicity approval
+    if pre_commit_simplicity.approved:
+        git_result = Task(
+            subagent_type="git-workflow-manager",
+            prompt=f"Proceed with git operations: {pre_commit_simplicity.recommendations}"
+        )
+    else:
+        return "Blocking: Simplicity review requires changes before commit"
+
+    return git_result
+```
+
+### Integration Rules
+- **EMERGENCY EXCEPTION HANDLING**: debug-specialist can bypass for critical production issues, but MUST schedule post-commit simplicity review
+- **REFACTORING REQUIREMENT**: If pre-commit review identifies complexity issues, implementation agent must address before git operations
+- **DOCUMENTATION REQUIREMENT**: All complexity decisions must be documented with explicit justification
+- **CONSISTENCY ENFORCEMENT**: Pre-commit simplicity review ensures consistency with project's established simplicity standards
 </Rule>
 </AgentDelegationRules>
 
@@ -533,19 +667,24 @@ ALWAYS acknowledge following CLAUDE.md rules at the start of responses
 <Rule id="direct-coordination-phrases">
 **DIRECT COORDINATION PHRASES**: Exact phrases for direct orchestration
 - Complex task detected: "This requires coordinated agent workflow"
-- Programming work: "Invoking programmer agent for implementation"
+- Implementation detected: "Mandatory simplicity analysis required before implementation"
+- Simplicity phase: "Invoking design-simplicity-advisor for KISS principle enforcement"
+- Programming work: "Invoking programmer agent for implementation with simplicity constraints"
 - Quality gates: "Now invoking code-reviewer for quality validation"
+- Pre-commit simplicity: "Invoking design-simplicity-advisor for pre-commit complexity analysis"
+- Git operations: "Pre-commit simplicity review complete, proceeding with git workflow"
 - Infrastructure: "Invoking infrastructure-specialist for deployment"
 - Simple task: "Handling this directly as a simple task"
 - Workflow completion: "All workflow steps completed successfully"
 </Rule>
 
 <Rule id="simplified-main-llm">
-**SIMPLIFIED MAIN LLM WORKFLOW**: Direct coordination
-- DETECT complex task → Plan and execute agent sequence directly
-- HANDLE simple task → Process directly without agents
+**SIMPLIFIED MAIN LLM WORKFLOW**: Direct coordination with mandatory simplicity
+- DETECT implementation task → MANDATORY design-simplicity-advisor first
+- DETECT simple task → Process directly without agents
+- ENFORCE simplicity → No implementation without simplicity analysis
 - COORDINATE agents → Use Task() calls with proper sequencing
-- ENFORCE quality gates → Always invoke code-reviewer → code-clarity-manager
+- ENFORCE quality gates → Always invoke code-reviewer → code-clarity-manager → design-simplicity-advisor (pre-commit)
 - FORMAT final response → Communicate results to user
 </Rule>
 </ThinkingProcess>

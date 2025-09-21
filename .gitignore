@@ -6,6 +6,8 @@ projects/
 todos/
 shell-snapshots/
 statsig/
+ide/
+*.lock
 
 # Local settings and temporary files
 .claude/settings.local.json
@@ -30,6 +32,7 @@ cache/
 .vscode/
 .idea/
 *.code-workspace
+
 
 # OS generated files
 .DS_Store

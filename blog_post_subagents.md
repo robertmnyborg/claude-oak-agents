@@ -8,22 +8,22 @@ What if your AI assistant could mirror this specialized expertise? What if inste
 
 That's exactly what the Claude Code subagent system provides.
 
-## Enter the Coordinator: How Subagents Transform Your Workflow
+## Enter the Direct Coordination: How Subagents Transform Your Workflow
 
-The subagent architecture introduces a powerful concept: **the Main LLM as a coordinator**. Instead of trying to be an expert at everything, the main AI becomes a project manager, intelligently delegating tasks to specialized agents who excel in specific domains.
+The subagent architecture introduces a powerful concept: **the Main LLM as a direct coordinator**. Instead of trying to be an expert at everything, the main AI becomes a project manager, intelligently delegating tasks to specialized agents who excel in specific domains.
 
 Here's how it works:
 
 ```mermaid
 graph TD
-    User[Your Request] --> MainLLM[Claude Coordinator]
+    User[Your Request] --> MainLLM[Claude Direct Coordinator]
     MainLLM --> Programmer[👨‍💻 Programmer Agent]
     MainLLM --> Infrastructure[🏗️ Infrastructure Specialist]
     MainLLM --> Security[🔒 Security Auditor]
     MainLLM --> Reviewer[✅ Code Reviewer]
 ```
 
-When you say "implement a REST API with authentication," the coordinator immediately recognizes this as a complex task and delegates:
+When you say "implement a REST API with authentication," the main LLM immediately recognizes this as a complex task and delegates:
 - **Programmer Agent**: Implements the API endpoints using your preferred language hierarchy
 - **Security Auditor**: Reviews authentication patterns for vulnerabilities
 - **Code Reviewer**: Ensures code quality and best practices
@@ -65,16 +65,16 @@ cd ~/.claude
 Create the main orchestration rules in `~/.claude/CLAUDE.md`:
 
 ```markdown
-# 🚨 CRITICAL: DIRECT ORCHESTRATION WORKFLOW 🚨
+# 🚨 CRITICAL: DIRECT COORDINATION WORKFLOW 🚨
 
 **STEP 1: DETECT COMPLEX TASKS**
-Trigger direct agent orchestration for:
+Trigger direct agent coordination for:
 - **Action verbs**: implement, create, build, fix, deploy, test
 - **Multi-component work**: numbered lists, bullet points
 - **Complex patterns**: architecture, infrastructure, monitoring
 
 **STEP 2: DIRECT AGENT DELEGATION**
-Main LLM acts as coordinator and directly invokes appropriate agents:
+Main LLM coordinates directly and invokes appropriate agents:
 
 **Programming Work**: ALL coding tasks → `programmer` agent
 **Infrastructure Work**: CDK, deployment → `infrastructure-specialist` agent
@@ -143,15 +143,15 @@ EOF
 
 ## Usage: Putting Your Agent Team to Work
 
-### Basic Usage: Let the Coordinator Handle It
+### Basic Usage: Let the Main LLM Handle It
 
-Simply describe what you need, and the coordinator will automatically detect complexity and delegate:
+Simply describe what you need, and the main LLM will automatically detect complexity and delegate:
 
 ```
 "Implement user authentication with JWT tokens and role-based access control"
 ```
 
-The coordinator will:
+The main LLM will:
 1. Detect this as a complex, multi-component task
 2. Invoke the `programmer` agent for implementation
 3. Trigger `security-auditor` for vulnerability review
@@ -193,7 +193,7 @@ Let's say you request: "Create a Go microservice with health checks, metrics, an
 
 Here's what happens behind the scenes:
 
-1. **Coordinator Detection**: Recognizes "create," "microservice," and multiple components
+1. **Main LLM Detection**: Recognizes "create," "microservice," and multiple components
 2. **Parallel Delegation**:
    - `programmer`: Implements Go service with health endpoints
    - `infrastructure-specialist`: Creates K8s manifests and CDK setup
@@ -243,12 +243,12 @@ Create custom agents for your needs:
 
 ## Conclusion: Your New Development Superpower
 
-The subagent system transforms Claude Code from a single AI assistant into an entire development team. Each agent brings specialized expertise, working in concert under intelligent orchestration.
+The subagent system transforms Claude Code from a single AI assistant into an entire development team. Each agent brings specialized expertise, working in concert under direct main LLM coordination.
 
 Whether you're building microservices, deploying infrastructure, or hunting bugs, you now have a specialized expert for each task. The system adapts to your project needs through inheritance, enforces quality through blocking gates, and accelerates delivery through parallel execution.
 
-Stop context-switching. Start orchestrating. Let specialized agents handle what they do best while you focus on what matters: shipping great software.
+Stop context-switching. Start coordinating. Let specialized agents handle what they do best while you focus on what matters: shipping great software.
 
 ---
 
-*Ready to supercharge your development workflow? Install the subagent system today and experience the power of orchestrated AI development. Your code quality will thank you.*
+*Ready to supercharge your development workflow? Install the subagent system today and experience the power of coordinated AI development. Your code quality will thank you.*

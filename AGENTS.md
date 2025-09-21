@@ -2,186 +2,331 @@
 
 ## Overview
 
-The Claude Code agent system uses a dispatch planner architecture where the **agent-coordinator** analyzes context and returns specific Task tool calls for maximum parallel execution. This creates an efficient workflow system that coordinates specialized agents while maintaining quality gates.
+The Claude Code agent system features **21 specialized agents** with comprehensive overlap resolution, mandatory delegation enforcement, intelligent multi-agent coordination, and direct workflow management by the Main LLM. The system eliminates agent confusion through clear domain boundaries while enabling sophisticated multi-agent collaboration for complex cross-domain tasks.
+
+## 🚨 Delegation Enforcement System
+
+### Main LLM Restrictions
+The main LLM is **EXPLICITLY PROHIBITED** from:
+- ❌ Writing, editing, or modifying any code
+- ❌ Using Write, Edit, MultiEdit tools
+- ❌ Performing any technical implementation work
+- ❌ Bypassing agent delegation
+
+**Role Restriction**: Main LLM handles coordination, communication, and delegation ONLY.
+
+### Automatic Delegation Triggers
+These patterns **FORCE** delegation with no exceptions:
+- **Action verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate, write, edit, modify, develop, code
+- **File operations**: ANY mention of Write, Edit, MultiEdit
+- **Programming keywords**: function, class, method, variable, API, database
+- **Technical implementation**: ANY technical work beyond coordination
 
 ## How the Agent System Works
 
-### 1. Dispatch Planning Architecture
+### Direct Coordination Architecture
 
-The agent system operates through a **functional dispatch planner**:
+The agent system operates through **direct Main LLM coordination**:
 
-1. **Main LLM invokes coordinator**: `Task(subagent_type="agent-coordinator", prompt="Plan workflow for [situation]")`
-2. **Coordinator returns dispatch plan**: Specific Task calls to execute + re-invocation instructions
-3. **Main LLM executes Task calls**: Runs the specified agents (in parallel when possible)
-4. **Main LLM re-invokes coordinator**: With completion status using specified format
-5. **Coordinator continues workflow**: Plans next parallel batch based on results
+1. **Main LLM detects task complexity**: Analyzes request for delegation triggers
+2. **Direct specialist delegation**: Main LLM invokes appropriate agents via Task() calls
+3. **Quality gate enforcement**: Mandatory sequential validation before commits
+4. **Parallel coordination**: Multiple Task() calls in single message for efficiency
+5. **Result synthesis**: Main LLM combines agent outputs and communicates with user
 
-### 2. Maximum Parallelism Strategy
+### Maximum Parallelism Strategy
 
-The coordinator is designed to **maximize parallel execution** at every opportunity:
+The Main LLM maximizes parallel execution wherever possible:
 
-#### Always Parallel (No conflicts ever)
-- **Configuration agents**: `statusline-setup` + `output-style-setup`
-- **Security + Documentation**: `security-auditor` + `technical-documentation-writer`
-- **Data analysis + Documentation**: `data-scientist` + `technical-documentation-writer`
-- **Planning agents**: `project-manager` + `systems-architect` + `security-auditor`
+#### Parallel Execution Opportunities
+- **Planning Phase**: `systems-architect` + `security-auditor` + `business-analyst`
+- **Analysis Phase**: `performance-optimizer` + `dependency-scanner`
+- **Documentation Phase**: `content-writer` + `technical-documentation-writer`
+- **Security Phase**: `security-auditor` + `code-reviewer` (independent components)
+- **Configuration**: `statusline-setup` + `output-style-setup` (can run with any phase)
 
-#### Contextually Parallel (When no code conflicts)
-- **Analysis + Documentation**: Any analyzer + `technical-documentation-writer`
-- **Testing + Documentation**: `unit-test-expert` + `technical-documentation-writer`
-- **Git operations + Changelog**: `git-workflow-manager` + `changelog-recorder`
-- **All utilities + Any workflow**: Configuration agents can run with anything
+#### Sequential Dependencies (Quality Gates)
+1. **Mandatory Pre-Implementation**: `design-simplicity-advisor` (blocks ALL implementation)
+2. **Implementation**: Appropriate specialist agent based on domain
+3. **Code Review**: `code-reviewer` (blocks progression until quality gates pass)
+4. **Clarity Analysis**: `code-clarity-manager` (orchestrates maintainability)
+5. **Testing**: `unit-test-expert` (validates implementation)
+6. **Pre-Commit Simplicity**: `design-simplicity-advisor` (mandatory complexity review)
+7. **Git Operations**: `git-workflow-manager` + `changelog-recorder`
 
-#### Maximum Batch Sizes by Phase
-- **Planning Phase**: 3 agents (`project-manager` + `systems-architect` + `security-auditor`)
-- **Analysis Phase**: 1 agent (`code-reviewer` - blocking quality gate)
-- **Clarity Phase**: 1 agent (`code-clarity-manager` - internally runs 2 analyzers in parallel)
-- **Testing Phase**: 2 agents (`unit-test-expert` + `technical-documentation-writer`)
-- **Finalization Phase**: 3 agents (`git-workflow-manager` + `changelog-recorder` + `technical-documentation-writer`)
-- **Utility Phase**: 2 agents (`statusline-setup` + `output-style-setup` - can run with any phase)
+#### Blocking Conditions
+- **HIGHEST**: `debug-specialist` (blocks ALL other agents - critical errors only)
+- **MANDATORY**: `design-simplicity-advisor` (blocks ALL implementation AND git operations)
+- **HIGH**: `code-reviewer` (must pass before other analysis)
+- **MEDIUM**: `code-clarity-manager`, `unit-test-expert`
+- **STANDARD**: All other agents based on dependencies
 
-### 3. Workflow Examples
+### Workflow Examples
 
-#### Code Change Workflow
+#### Code Implementation Workflow
 ```
-Batch 1: code-reviewer (blocking quality gate)
-Batch 2: code-clarity-manager (maintainability analysis)
-Batch 3: unit-test-expert (test creation)
-Batch 4: git-workflow-manager + changelog-recorder + technical-documentation-writer (parallel finalization)
-Batch 5: statusline-setup + output-style-setup (utilities, can run with any batch)
-```
-
-#### Complex Project Workflow
-```
-Batch 1: project-manager + systems-architect + general-purpose (parallel planning)
-Batch 2: technical-documentation-writer + unit-test-expert (parallel preparation)
-Batch 3: [Implementation phases follow code change workflow]
+1. design-simplicity-advisor (MANDATORY pre-implementation)
+2. programmer/specialist (implementation with simplicity constraints)
+3. code-reviewer (quality gate validation)
+4. code-clarity-manager (maintainability analysis)
+5. unit-test-expert (test creation and coverage)
+6. design-simplicity-advisor (MANDATORY pre-commit review)
+7. git-workflow-manager + changelog-recorder (parallel finalization)
 ```
 
-### 4. Quality Gates
-
-Sequential dependencies are enforced through quality gates:
-
-1. **Security & Quality Gate**: `code-reviewer` blocks all downstream analysis
-2. **Maintainability Gate**: `code-clarity-manager` blocks testing and commits
-3. **Test Coverage Gate**: `unit-test-expert` blocks git operations
-4. **Documentation Gate**: `technical-documentation-writer` (advisory, non-blocking)
-
-### 5. Re-invocation Protocol
-
-The main LLM re-invokes the coordinator using these exact formats:
-
-**After successful completion:**
+#### Complex Multi-Agent Coordination
 ```
-"Agent [agent-name] completed successfully. Results: [summary]. Continue workflow."
+User: "Build secure payment processing with mobile support"
+System coordinates:
+1. design-simplicity-advisor → simplicity-first architecture
+2. systems-architect → security-focused design
+3. backend-architect → payment API design
+4. mobile-developer → mobile payment UI
+5. security-auditor → security validation
+6. qa-specialist → comprehensive testing
+7. design-simplicity-advisor → pre-commit complexity review
 ```
 
-**After failure:**
+#### Debug Priority Workflow
 ```
-"Agent [agent-name] failed with error: [error-details]. Adjust workflow."
+User: "Debug failing performance tests"
+System coordinates:
+1. debug-specialist (HIGHEST PRIORITY - blocks others)
+2. performance-optimizer (analyze bottlenecks)
+3. qa-specialist (test framework issues)
+4. Main LLM synthesizes findings and solutions
 ```
 
-**After multiple parallel agents:**
-```
-"Agents [agent-a, agent-b, agent-c] completed. Results: [summaries]. Continue workflow."
-```
+### Quality Gates & Enforcement
 
-## Complete Agent Inventory
+Sequential dependencies are enforced through mandatory quality gates:
 
-### Code Quality & Security Agents
+1. **Pre-Implementation Simplicity Gate**: `design-simplicity-advisor` blocks ALL implementation (MANDATORY)
+2. **Security & Quality Gate**: `code-reviewer` blocks all downstream analysis
+3. **Maintainability Gate**: `code-clarity-manager` blocks testing and commits
+4. **Test Coverage Gate**: `unit-test-expert` blocks git operations
+5. **Pre-Commit Simplicity Gate**: `design-simplicity-advisor` blocks ALL git operations (MANDATORY)
+6. **Documentation Gate**: `technical-documentation-writer` (advisory, non-blocking)
+
+### Multi-Agent Coordination Patterns
+
+#### Coordination Types
+1. **Sequential Quality Gates**: Implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor → git-workflow-manager
+2. **Parallel Analysis**: security-auditor + performance-optimizer + dependency-scanner
+3. **Collaborative Architecture**: systems-architect → backend-architect + infrastructure-specialist
+4. **Domain Collaboration**: Multiple specialists with Main LLM reconciliation
+
+#### Conflict Resolution Rules
+1. **Domain Priority**: More specific domain takes precedence
+2. **Security First**: Security recommendations override performance/convenience
+3. **Architecture Consistency**: Higher-level architecture decisions guide implementation
+4. **User Requirements**: Business analyst requirements guide technical decisions
+5. **Quality Gates**: Code reviewer decisions are non-negotiable
+
+## Complete Agent Inventory (21 Agents)
+
+### 🏗️ Core Development Agents
+- **programmer**: Core programming tasks with language hierarchy (Go > TypeScript > Bash > Ruby)
+- **frontend-developer**: UI/UX implementation, React/Vue/Angular, browser compatibility
+- **backend-architect**: Database design, API architecture, microservices patterns
+- **qa-specialist**: End-to-end testing, integration testing, performance validation
+- **business-analyst**: Requirements analysis, user stories, stakeholder communication
+- **content-writer**: Technical documentation, marketing content, API documentation
+
+### 🔬 Specialist Programming Agents
+- **ml-engineer**: Python/TensorFlow, data pipelines, MLOps practices
+- **blockchain-developer**: Solidity smart contracts, Web3 integration, DeFi protocols
+- **mobile-developer**: React Native, iOS, Android development
+- **legacy-maintainer**: Java, C#, enterprise systems maintenance and modernization
+
+### 🛡️ Security & Quality Agents
+- **security-auditor**: Penetration testing, compliance validation (SOC2, GDPR, PCI DSS), threat modeling
 - **code-reviewer**: Security analysis, code quality, vulnerability detection
-- **code-clarity-manager**: Orchestrates maintainability analysis (runs top-down + bottom-up analyzers internally)
-- **top-down-analyzer**: High-level architectural clarity analysis (invoked by code-clarity-manager)
+- **code-clarity-manager**: Orchestrates maintainability analysis (runs top-down + bottom-up analyzers)
+- **top-down-analyzer**: Architectural clarity analysis (invoked by code-clarity-manager)
 - **bottom-up-analyzer**: Implementation-level clarity analysis (invoked by code-clarity-manager)
 - **unit-test-expert**: Comprehensive unit test creation and coverage
+- **design-simplicity-advisor**: KISS principle enforcement (MANDATORY before implementation AND commits)
 
-### Development Workflow Agents
+### ⚙️ Infrastructure & Operations Agents
+- **infrastructure-specialist**: CDK constructs, cloud architecture, deployment strategies
+- **systems-architect**: System design, infrastructure planning, technical specifications
+- **performance-optimizer**: Performance analysis, bottleneck identification, optimization
+- **dependency-scanner**: Third-party dependency analysis, vulnerability scanning
+- **debug-specialist**: Critical error resolution (highest priority, blocks all other agents)
+
+### 📋 Workflow & Management Agents
 - **git-workflow-manager**: Git operations, branch management, PR creation
 - **changelog-recorder**: Automatic changelog generation post-commit
-- **debug-specialist**: Critical error resolution and debugging (blocks all other agents)
-
-### Planning & Architecture Agents
-- **project-manager**: Multi-step project breakdown and coordination
-- **systems-architect**: System design, infrastructure planning, technical specifications
-- **security-auditor**: Security analysis, vulnerability detection, compliance checking
-- **performance-optimizer**: Performance analysis, bottleneck identification, optimization recommendations
-- **infrastructure-specialist**: CDK constructs, cloud architecture, deployment strategies
-- **dependency-scanner**: Third-party dependency analysis, vulnerability scanning, license compliance
-
-### Documentation & Analysis Agents
-- **technical-documentation-writer**: API docs, system documentation, technical writing
+- **project-manager**: Multi-step project coordination
 - **data-scientist**: Data analysis, insights, statistical processing
+- **technical-documentation-writer**: API docs, system documentation, technical writing
 
-### Configuration Agents
+### 🔧 Configuration & Meta Agents
 - **statusline-setup**: Claude Code status line configuration
 - **output-style-setup**: Claude Code output style customization
+- **agent-creator**: Design and implement new specialized agents
+- **general-purpose**: Complex research, multi-domain tasks requiring broad knowledge
 
-### Meta Agents
-- **agent-creator**: Design and implement new specialized agents, update coordinator integration
+## Overlap Resolution & Domain Boundaries
 
-## Priority Levels
+### Agent Responsibility Matrix
+Each agent has clearly defined primary responsibilities and explicit exclusions:
 
+#### Primary Domains (Single Agent Ownership)
+- **Testing Separation**: qa-specialist (execution) vs unit-test-expert (creation) vs performance-optimizer (analysis)
+- **Security Layers**: security-auditor (auditing) + code-reviewer (quality gates) + dependency-scanner (supply chain)
+- **Architecture Tiers**: systems-architect (design) + backend-architect (implementation) + infrastructure-specialist (deployment)
+- **Documentation Split**: technical-documentation-writer (technical) vs content-writer (user-facing)
+- **Analysis Domains**: data-scientist (data) vs performance-optimizer (performance) vs business-analyst (requirements)
+
+#### Multi-Agent Coordination Examples
+```yaml
+"fix security vulnerability":
+  agents: [security-auditor, code-reviewer, dependency-scanner]
+  coordination: Parallel analysis → Main LLM synthesis → Implementation
+
+"optimize slow database queries":
+  agents: [performance-optimizer, backend-architect, infrastructure-specialist]
+  coordination: Sequential analysis → Coordinated implementation
+
+"debug failing tests":
+  agents: [debug-specialist, qa-specialist, unit-test-expert]
+  coordination: Debug priority → Testing expertise → Resolution
 ```
-1. HIGHEST: debug-specialist (blocks all other agents)
-2. HIGH: code-reviewer (must pass before other analysis)
-3. MEDIUM: code-clarity-manager, unit-test-expert, systems-architect
-4. LOW: git-workflow-manager, changelog-recorder, technical-documentation-writer,
-        project-manager, data-scientist, security-auditor, performance-optimizer,
-        infrastructure-specialist, dependency-scanner
-5. UTILITY: statusline-setup, output-style-setup, agent-creator (non-blocking, run as needed)
+
+## Intelligent Routing System
+
+### Trigger-Based Routing
+Automatic agent selection based on request patterns:
+```yaml
+routing_triggers:
+  programming: implement, create, build, fix → programmer (or specialist)
+  infrastructure: deploy, configure, cloud → infrastructure-specialist
+  security: audit, vulnerability, compliance → security-auditor
+  testing: test, qa, performance → qa-specialist
+  analysis: requirements, business, user story → business-analyst
+  content: documentation, marketing → content-writer
 ```
 
-## Usage Instructions
-
-### Initial Invocation
+### Specialist Selection by Context
+```yaml
+project_specialists:
+  ml_projects: Python, TensorFlow, data → ml-engineer
+  blockchain_projects: Solidity, Web3, DeFi → blockchain-developer
+  mobile_projects: React Native, iOS, Android → mobile-developer
+  legacy_systems: Java, C#, enterprise → legacy-maintainer
+  frontend_files: src/components/, pages/, styles/ → frontend-developer
+  backend_files: api/, services/, models/ → backend-architect
+  infrastructure_files: cdk/, terraform/, docker/ → infrastructure-specialist
 ```
-Task(subagent_type="agent-coordinator", description="Plan workflow", prompt="Analyze current context and create dispatch plan for [specific situation]")
+
+### Usage Examples
+
+#### Simple Delegation
+```bash
+User: "Fix the authentication bug in login.ts"
+System: Automatically routes to programmer agent
+Result: Bug fixed, reviewed, tested, committed
 ```
 
-### Examples
-- "Plan workflow for code changes in authentication module"
-- "Coordinate agents for new feature implementation"
-- "Plan debugging workflow for test failures"
-- "Set up comprehensive analysis for data processing feature"
-- "Create new agent for API testing and validation"
+#### Specialist Routing
+```bash
+User: "Optimize the ML model training pipeline"
+System: Detects ML context, routes to ml-engineer specialist
+Result: Specialized ML optimization with domain expertise
+```
 
-## Auto-Agent Creation
+#### Complex Multi-Agent Coordination
+```bash
+User: "Build secure payment processing with mobile support"
+System coordinates multiple specialists:
+1. design-simplicity-advisor → simplicity-first architecture
+2. systems-architect → security-focused design
+3. backend-architect → payment API design
+4. mobile-developer → mobile payment UI
+5. security-auditor → security validation
+6. qa-specialist → comprehensive testing
+```
 
-### Capability Gap Detection
-The coordinator automatically detects when specialized capabilities are needed and creates new agents on-demand:
+## Architecture Components
 
-**Example Auto-Creation Flow:**
-1. **User Request**: "Test this REST API for performance"
-2. **Gap Detection**: Coordinator detects no existing agent optimally handles API testing
-3. **Auto-Creation**: Creates `api-tester` agent specialized for REST/GraphQL testing
-4. **Task Execution**: New agent handles the original request with specialized expertise
+### Rule Inheritance System
 
-### Supported Auto-Creation Domains
-- **API Testing**: REST/GraphQL endpoint testing, performance validation
-- **Database Migration**: PostgreSQL, MySQL, MongoDB migration tasks
-- **Container Optimization**: Docker, Kubernetes, image optimization
-- **Load Testing**: Stress testing, performance benchmarking
-- **Accessibility Auditing**: WCAG compliance, screen reader testing
-- **Mobile Development**: iOS, Android, React Native, Flutter
-- **Blockchain Development**: Smart contracts, Web3, DeFi
-- **Machine Learning**: Model training, data preprocessing
-- **DevOps Automation**: CI/CD pipelines, deployment automation
-- **Monitoring Setup**: Observability, alerting, metrics collection
+#### Global Configuration
+```
+/Users/jamsa/.claude/
+├── CLAUDE.md                    # Global rules and coordination logic
+└── agents/
+    ├── programmer.md            # Global programming agent
+    ├── infrastructure-specialist.md
+    ├── security-auditor.md
+    └── code-reviewer.md
+```
 
-### Quality Controls
-- **Validation**: Auto-created agents undergo validation before first use
-- **Conflict Prevention**: System prevents duplicate or overlapping capabilities
-- **Naming Conventions**: Automatic adherence to agent naming standards
-- **Integration Testing**: Ensures new agents integrate properly with existing workflows
+#### Local Project Overrides
+```
+project/
+├── .claude/
+│   ├── agents/
+│   │   ├── programmer.md        # Override: Python > TypeScript > Go
+│   │   └── custom-validator.md  # Project-specific agent
+│   └── CLAUDE.md                # Project-specific rules
+└── src/
+```
+
+#### Resolution Order
+1. Check `./claude/agents/agent-name.md` (local project)
+2. Fall back to `/Users/jamsa/.claude/agents/agent-name.md` (global)
+3. Same agent name = complete override (not merge)
+
+### Enforcement Mechanisms
+
+#### Main LLM Restrictions
+```yaml
+prohibited_actions:
+  - direct_programming: Cannot write/edit code
+  - file_modifications: Cannot use Write/Edit/MultiEdit
+  - technical_execution: Cannot perform implementation work
+```
+
+#### Agent Enforcement Reminders
+Key agents include bypass detection:
+```markdown
+🚨 ENFORCEMENT REMINDER 🚨
+IF MAIN LLM ATTEMPTS PROGRAMMING: This is a delegation bypass violation!
+```
+
+#### Mandatory Triggers
+```yaml
+mandatory_triggers:
+  action_verbs: [implement, create, build, fix, etc.]
+  file_operations: [Write, Edit, MultiEdit mentions]
+  programming_keywords: [function, class, method, etc.]
+```
 
 ## Key Benefits
 
-1. **Maximum Efficiency**: Parallel execution wherever possible reduces total workflow time
-2. **Quality Assurance**: Sequential quality gates ensure code standards are maintained
-3. **Flexible Coordination**: Coordinator adapts workflow based on context and results
-4. **Comprehensive Coverage**: All aspects of development are covered by specialized agents
-5. **Automatic Recovery**: Failed agents trigger workflow adjustments through re-invocation
-6. **Self-Evolving System**: Agent ecosystem grows automatically to meet new requirements
-7. **Optimal Specialization**: Creates agents only when genuine capability gaps exist
+1. **Overlap Elimination**: Clear domain boundaries prevent agent confusion
+2. **Multi-Agent Coordination**: Sophisticated collaboration for cross-domain tasks
+3. **Intelligent Trigger Detection**: Compound patterns invoke appropriate specialists
+4. **Conflict Resolution**: Domain priority rules ensure coherent recommendations
+5. **Comprehensive Coverage**: 21 specialized agents with coordinated workflows
+6. **Mandatory Delegation**: Prevents Main LLM from performing technical work
+7. **Quality Assurance**: Mandatory quality gates with multi-agent validation
+8. **Maximum Efficiency**: Parallel execution wherever possible reduces workflow time
+9. **Flexible Architecture**: Rule inheritance allows project-specific customization
 
-This architecture ensures that Claude Code can handle complex, multi-step development tasks efficiently while maintaining high code quality and comprehensive analysis coverage. The system evolves automatically to meet new specialized requirements.
+## System Statistics
+
+- **Total Agents**: 21 specialized agents with direct coordination
+- **Overlap Resolution**: 8 major overlap categories eliminated
+- **Multi-Agent Patterns**: 4 coordination workflow types implemented
+- **Trigger Detection**: Compound pattern recognition for multi-agent scenarios
+- **Conflict Resolution**: 6 priority rules for agent recommendation conflicts
+- **Enforcement Layers**: 5 different bypass prevention mechanisms
+- **Routing Rules**: Context-aware routing with file-path and project detection
+- **Quality Gates**: 3 mandatory sequential quality checkpoints with multi-agent validation
+- **Coordination**: Direct Main LLM coordination with sophisticated overlap resolution
+
+This enhanced agent system represents a significant evolution in AI-assisted development, eliminating agent overlap confusion while enabling sophisticated multi-agent collaboration. The system provides comprehensive expertise through intelligent coordination, maintains strict quality standards, and prevents inappropriate Main LLM behavior while ensuring optimal task delegation and execution.

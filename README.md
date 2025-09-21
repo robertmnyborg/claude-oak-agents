@@ -1,6 +1,6 @@
 # Claude Code Bootstrap Configuration
 
-A comprehensive Claude Code setup with 21 specialized agents, mandatory delegation enforcement, and direct workflow coordination.
+A comprehensive Claude Code setup with specialized agents, mandatory delegation enforcement, and direct main LLM coordination.
 
 ## 🚀 Quick Start
 
@@ -23,7 +23,7 @@ claude-backup
 
 ## 🤖 Agent System
 
-This configuration includes **21 specialized agents** with mandatory delegation enforcement that prevents main LLM bypass:
+This configuration includes specialized agents with mandatory delegation enforcement that prevents main LLM bypass:
 
 ### 🏗️ Core Development Agents
 - **frontend-developer** - UI/UX implementation, React/Vue/Angular, browser compatibility
@@ -77,7 +77,7 @@ This configuration includes **21 specialized agents** with mandatory delegation 
 │   ├── settings.json          # Main Claude configuration
 │   └── .clauderc              # Shell environment setup
 ├── 🤖 Agent System
-│   └── agents/                # 21 specialized agents with delegation enforcement
+│   └── agents/                # Specialized agents with delegation enforcement
 ├── 📋 Project Templates
 │   └── templates/             # CLAUDE.md, SPEC.md, README.md templates
 ├── 🔧 Utilities
@@ -151,8 +151,8 @@ Personal development rules and delegation enforcement. Defines:
 
 ### AGENTS.md
 Complete agent system architecture documentation including:
-- 21 specialized agents with delegation enforcement
-- Trigger-based routing and direct coordination
+- Specialized agents with delegation enforcement
+- Trigger-based routing and direct main LLM coordination
 - Quality gates and sequential validation
 - Specialist selection and project-specific routing
 
