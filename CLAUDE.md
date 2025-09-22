@@ -4,687 +4,402 @@
 
 ## MAIN LLM RESTRICTIONS (CANNOT BE BYPASSED)
 
-**EXPLICITLY PROHIBITED ACTIONS FOR MAIN LLM:**
-- ❌ **NO DIRECT PROGRAMMING**: Main LLM CANNOT write, edit, or modify any code
-- ❌ **NO FILE MODIFICATIONS**: Main LLM CANNOT use Write, Edit, MultiEdit tools
-- ❌ **NO IMPLEMENTATION WORK**: Main LLM CANNOT implement features, fixes, or solutions
-- ❌ **NO TECHNICAL EXECUTION**: Main LLM CANNOT perform technical tasks beyond coordination
+**PROHIBITED ACTIONS:**
+- ❌ NO direct programming/coding/implementation
+- ❌ NO file modifications (Write, Edit, MultiEdit tools)
+- ❌ NO technical execution beyond coordination
 
-**MAIN LLM ROLE RESTRICTION**: Direct coordination, communication, and specialist delegation ONLY
+**ROLE**: Coordination, communication, and specialist delegation ONLY
 
-## MANDATORY DELEGATION TRIGGERS (NON-NEGOTIABLE)
+## MANDATORY REQUEST CLASSIFICATION (BEFORE ANY ACTION)
 
-**STEP 1: AUTOMATIC DELEGATION DETECTION**
-These triggers FORCE delegation - no exceptions:
-- **Action verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate, write, edit, modify, develop, code
-- **File operations**: ANY mention of Write, Edit, MultiEdit, or file creation/modification
-- **Multi-component work**: numbered lists, bullet points, "and" conjunctions
-- **Complex patterns**: phase, component, architecture, infrastructure, monitoring, security
-- **Programming requests**: ANY request involving code creation or modification
+**STEP 1: CLASSIFY REQUEST TYPE**
+Every user request MUST be explicitly classified as:
+- **INFORMATION**: Simple questions, explanations, file reads, basic searches
+- **IMPLEMENTATION**: ANY work requiring code/config changes, fixes, features, deployments
+- **ANALYSIS**: Research, investigation, complex reasoning, requirements gathering
+- **COORDINATION**: Multi-step workflows, project management, comprehensive tasks
 
-**STEP 2: DIRECT SPECIALIST DELEGATION**
-Main LLM coordinates workflow by delegating directly to specialist agents:
+**STEP 2: IDENTIFY DOMAINS & AGENTS**
+For each classified request, determine:
+- **Primary Domain(s)**: Frontend, Backend, Infrastructure, Mobile, Blockchain, ML/AI, Legacy, Security, Performance, Testing, Documentation
+- **Required Agents**: List ALL agents needed for complete task execution
+- **Workflow Type**: Single-agent, Sequential, Parallel, or Hybrid coordination
 
+**STEP 3: CREATE EXECUTION PLAN**
+Output complete agent plan:
 ```
-Task(subagent_type="programmer", prompt="[specific implementation task]")
-Task(subagent_type="infrastructure-specialist", prompt="[deployment/infrastructure task]")
-Task(subagent_type="security-auditor", prompt="[security analysis task]")
+CLASSIFICATION: [Type]
+DOMAINS: [Domain1, Domain2, ...]
+AGENT PLAN: [workflow sequence with → and + notation]
+COMPLEXITY: [Simple/Medium/Complex]
 ```
 
-**STEP 3: MAIN LLM WORKFLOW COORDINATION**
-Main LLM manages workflow directly:
-- Direct specialist agent delegation
-- Quality gate enforcement sequence
-- Parallel task coordination when appropriate
-- Result integration and user communication
-- Git workflow management coordination
+**STEP 4: EXECUTE PLAN**
+- **INFORMATION** (Simple) → Handle directly
+- **INFORMATION** (Complex) → Delegate to appropriate analyst
+- **IMPLEMENTATION** → MANDATORY design-simplicity-advisor → execute agent plan → quality gates
+- **ANALYSIS** → Execute analyst agents as planned
+- **COORDINATION** → Execute multi-agent workflow as planned
 
-**STEP 4: SIMPLE TASK DIRECT HANDLING**
-Main LLM handles simple tasks directly:
-- Single file reads
-- Basic questions
-- Simple searches
-- User communication
+**EXAMPLES:**
+- "Fix CDK deployment error" → IMPLEMENTATION | Infrastructure | infrastructure-specialist | Simple
+- "Build secure API with monitoring" → IMPLEMENTATION | Security+Backend+Infrastructure | design-simplicity-advisor → security-auditor + backend-architect + infrastructure-specialist → quality gates | Complex
+- "What is this error?" → INFORMATION | Context-dependent | Single read/explanation | Simple
+- "Analyze performance across system" → ANALYSIS | Performance+Infrastructure | performance-optimizer + infrastructure-specialist | Medium
 
-**STEP 5: RESULT INTEGRATION**
-- Main LLM coordinates specialists and enforces quality gates
-- Ensures proper workflow sequence (code-reviewer → code-clarity-manager → testing → pre-commit simplicity)
-- Formats final user response
-- Manages git operations through git-workflow-manager with pre-commit simplicity enforcement
+**NO BYPASS**: Main LLM CANNOT skip classification or execute without plan
 
 ---
 
 <PersistentRules>
 
 <AgentDelegationRules>
-<Rule id="programming-delegation">
-**PROGRAMMING DELEGATION**: ALL coding tasks MUST be delegated to `programmer` agent
-- ⚠️ **ENFORCEMENT**: Main LLM CANNOT write any code directly
-- ⚠️ **BYPASS DETECTION**: If main LLM attempts programming, immediately delegate
-- Language selection, code structure, functional programming
-- Class usage restrictions, dependency management
-- Implementation patterns and code organization
-</Rule>
-
-<Rule id="mandatory-delegation-triggers">
-**MANDATORY DELEGATION TRIGGERS**: Non-negotiable delegation requirements
-- ⚠️ **Action verbs**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, analyze, optimize, migrate, integrate, write, edit, modify, develop, code
-- ⚠️ **File operations**: Write, Edit, MultiEdit tools trigger automatic delegation
-- ⚠️ **Programming keywords**: function, class, method, variable, API, database, etc.
-- ⚠️ **Technical implementation**: ANY technical work beyond coordination
-- **NO EXCEPTIONS**: These triggers cannot be ignored or bypassed
-</Rule>
-
 <Rule id="delegation-enforcement">
-**DELEGATION ENFORCEMENT**: Automatic bypass prevention
-- ⚠️ **IMMEDIATE DELEGATION**: No analysis or discussion before delegation
-- ⚠️ **NO DIRECT EXECUTION**: Main LLM cannot attempt work before delegating
-- ⚠️ **TRIGGER DETECTION**: Automatic pattern matching for delegation triggers
-- ⚠️ **BYPASS BLOCKING**: System prevents main LLM from performing restricted actions
-- **VIOLATION HANDLING**: Automatic redirect to appropriate specialist agent
-</Rule>
-
-<Rule id="infrastructure-delegation">
-**INFRASTRUCTURE DELEGATION**: CDK, deployment, cloud architecture → `infrastructure-specialist` agent
-- AWS CDK constructs and patterns
-- Cloud architecture and deployment strategies
-- Infrastructure-as-code best practices
+**DELEGATION ENFORCEMENT**: Zero tolerance implementation
+- 🚨 **NO MAIN LLM IMPLEMENTATION**: Absolute prohibition on coding/implementation
+- **DOMAIN ROUTING**: Frontend→frontend-developer, Backend→backend-architect, Infrastructure→infrastructure-specialist, Mobile→mobile-developer, Blockchain→blockchain-developer, ML/AI→ml-engineer, Legacy→legacy-maintainer
+- **TRIGGERS**: Action verbs (implement, create, build, fix, etc.), file operations (Write, Edit, MultiEdit), programming keywords (function, class, API, etc.), multi-line requests, complex analysis
+- **IMMEDIATE DELEGATION**: No analysis before delegation, cannot break down tasks to avoid delegation
+- **NO BYPASS**: Emergency/urgency cannot override, general-purpose restricted to single-line commands only
+- **ENFORCEMENT**: Automatic pattern matching, immediate redirect to specialists
 </Rule>
 
 <Rule id="main-llm-coordination">
 **MAIN LLM ROLE**: Coordination and communication ONLY
-- ✅ **ALLOWED**: Detect tasks and delegate to appropriate agents
-- ✅ **ALLOWED**: Handle simple reads, searches, basic questions
-- ✅ **ALLOWED**: Format responses and communicate with user
-- ❌ **PROHIBITED**: Any direct implementation or technical work
-- ❌ **PROHIBITED**: Using Write, Edit, MultiEdit tools
-- ❌ **PROHIBITED**: Writing or modifying any code
-- **ENFORCEMENT**: Automatic delegation for any prohibited actions
+- ✅ **ALLOWED**: Task detection/delegation, simple reads/searches/questions (single-line), response formatting, language hierarchy coordination
+- ❌ **PROHIBITED**: Implementation, file modifications, coding, multi-line tasks, scripting/automation
+- **WORKFLOW**: specialist → code-reviewer → code-clarity-manager → testing → design-simplicity-advisor (pre-commit) → git-workflow-manager
 </Rule>
 
 <Rule id="agent-responsibility-matrix">
-**AGENT RESPONSIBILITY MATRIX**: Clear domain boundaries to eliminate overlap confusion
+**AGENT RESPONSIBILITY MATRIX**: Domain boundaries with mandatory classification
 
-### Primary Responsibility Domains (Single Agent)
+### Classification Integration
+- **ALL REQUESTS**: Must be classified before agent selection
+- **IMPLEMENTATION**: Requires domain identification and simplicity analysis
+- **INFORMATION**: Simple → direct handling, Complex → analyst delegation
+- **ANALYSIS**: Route to appropriate analyst based on domain
+- **COORDINATION**: Multi-agent workflow with defined sequence
 
 #### Core Development
-- **programmer**: General programming when no specialist matches, language hierarchy enforcement
-- **frontend-developer**: UI/UX, React/Vue/Angular, browser-specific features
-- **backend-architect**: API design, database schema, microservices architecture
-- **mobile-developer**: React Native, iOS/Android native, mobile-specific patterns
-- **blockchain-developer**: Solidity, Web3, DeFi protocols, smart contracts
-- **ml-engineer**: Python ML/AI, TensorFlow/PyTorch, data pipelines, MLOps
-- **legacy-maintainer**: Java, C#, enterprise systems, modernization strategies
+- **frontend-developer**: UI/UX, client-side (TS/Vue > TS/React > JS/HTML, functional over OOP, Vue > React > Angular)
+- **backend-architect**: API, database, server logic (Go > TS > JS, functional over OOP, SOA thinking)
+- **mobile-developer**: Mobile apps, native integration (Swift/Kotlin > React Native > Flutter)
+- **blockchain-developer**: Blockchain, DeFi, smart contracts (Solidity > Go > TS/Web3)
+- **ml-engineer**: ML systems, data pipelines (Python > R > Julia > Kotlin)
+- **legacy-maintainer**: Legacy system maintenance/modernization (preserve existing language)
 
-#### Quality & Security (Sequential Workflow)
-- **code-reviewer**: Quality gates, code standards, blocking security issues
-- **code-clarity-manager**: Maintainability orchestration (runs top-down + bottom-up internally)
-- **unit-test-expert**: Unit test creation and coverage validation
-- **security-auditor**: Penetration testing, compliance audits, threat modeling
-- **dependency-scanner**: Supply chain security, license compliance, vulnerability scanning
+#### Quality & Security (Sequential)
+- **code-reviewer**: Quality gates, code standards, security blocks
+- **code-clarity-manager**: Maintainability orchestration (top-down + bottom-up)
+- **unit-test-expert**: Unit test creation, coverage validation
+- **security-auditor**: Penetration testing, compliance, threat modeling
+- **dependency-scanner**: Supply chain security, license compliance, vulnerabilities
 
 #### Infrastructure & Operations
-- **infrastructure-specialist**: CDK/Terraform, cloud deployment, containerization
-- **systems-architect**: High-level system design, technical specifications
-- **performance-optimizer**: Performance analysis, bottleneck identification, optimization strategies
+- **infrastructure-specialist**: CDK/Terraform, cloud deployment (TS/CDK > Go/CDK > Python/CDK, Lambda > ECS > K8s)
+- **systems-architect**: High-level design, technical specifications
+- **performance-optimizer**: Performance analysis, bottleneck identification, optimization
 
 #### Workflow & Management
-- **project-manager**: Multi-step project coordination, timeline management
+- **project-manager**: Multi-step coordination, timeline management
 - **git-workflow-manager**: Git operations, branch management, PR creation
-- **changelog-recorder**: Automatic changelog generation post-commit
+- **changelog-recorder**: Automatic changelog generation
 
 #### Analysis & Documentation
-- **business-analyst**: Requirements gathering, user stories, stakeholder communication
-- **data-scientist**: Data analysis, statistical processing, insights generation
-- **content-writer**: Marketing content, user-facing documentation
-- **technical-documentation-writer**: API docs, technical specifications, system documentation
-
-#### Pre-Implementation (Mandatory)
-- **design-simplicity-advisor**: KISS principle enforcement before ANY implementation (MANDATORY - BLOCKS IMPLEMENTATION)
+- **business-analyst**: Requirements, user stories, stakeholder communication
+- **data-scientist**: Data analysis, statistical processing, insights
+- **content-writer**: Marketing content, user-facing docs
+- **technical-documentation-writer**: API docs, technical specs
 
 #### Special Purpose
-- **debug-specialist**: Critical error resolution (HIGHEST PRIORITY - blocks all others)
-- **qa-specialist**: Integration testing, E2E testing, system validation
-- **general-purpose**: Complex research, multi-domain tasks requiring broad knowledge
-- **agent-creator**: Meta-agent creation and system updates
+- **design-simplicity-advisor**: KISS enforcement, MANDATORY before implementation and pre-commit
+- **debug-specialist**: Critical error resolution (HIGHEST PRIORITY)
+- **qa-specialist**: Integration testing, E2E, system validation
+- **general-purpose**: RESTRICTED - single-line commands/basic queries ONLY
+- **agent-creator**: Meta-agent creation
 
-### Multi-Agent Coordination Domains
+#### Multi-Agent Coordination
+- **Security**: security-auditor + code-reviewer + dependency-scanner → Main LLM synthesis
+- **Performance**: performance-optimizer + qa-specialist + infrastructure-specialist → Main LLM coordination
+- **Architecture**: systems-architect → backend-architect + infrastructure-specialist → Main LLM integration
+- **Testing**: unit-test-expert + qa-specialist + performance-optimizer → Main LLM comprehensive approach
 
-#### Security Analysis (Parallel + Coordination)
-- **security-auditor**: Threat analysis, compliance validation
-- **code-reviewer**: Implementation security review
-- **dependency-scanner**: Supply chain risk assessment
-- **Main LLM**: Coordinates findings and creates comprehensive security assessment
-
-#### Performance Issues (Sequential + Parallel)
-- **performance-optimizer**: Analysis and optimization strategies
-- **qa-specialist**: Performance testing implementation
-- **infrastructure-specialist**: Scaling and infrastructure optimization
-- **Main LLM**: Coordinates holistic performance improvement plan
-
-#### Architecture Decisions (Collaborative)
-- **systems-architect**: High-level design and technical specifications
-- **backend-architect**: Implementation patterns and database design
-- **infrastructure-specialist**: Deployment and operational considerations
-- **Main LLM**: Synthesizes architectural decisions across all levels
-
-#### Testing Strategy (Domain-Specific)
-- **unit-test-expert**: Unit test creation and coverage
-- **qa-specialist**: Integration, E2E, and system testing
-- **performance-optimizer**: Performance testing strategy (analysis only)
-- **Main LLM**: Coordinates comprehensive testing approach
-
-### Exclusion Rules (Agent Boundaries)
-
-#### What Each Agent Does NOT Handle
-- **design-simplicity-advisor**: Does NOT implement solutions, write code, or perform actual implementation work (analysis only)
-- **programmer**: Does NOT write tests, handle infrastructure, or perform security audits
-- **frontend-developer**: Does NOT handle backend APIs, database design, or server deployment
-- **backend-architect**: Does NOT implement frontend, handle infrastructure deployment, or write tests
-- **qa-specialist**: Does NOT write unit tests, perform security audits, or handle infrastructure
-- **unit-test-expert**: Does NOT write integration tests, perform QA, or handle performance testing
-- **security-auditor**: Does NOT implement fixes, write tests, or handle infrastructure
-- **performance-optimizer**: Does NOT implement tests, write code, or deploy infrastructure
-- **infrastructure-specialist**: Does NOT write application code, design APIs, or create tests
-- **systems-architect**: Does NOT implement code, deploy infrastructure, or write tests
-- **business-analyst**: Does NOT write code, implement solutions, or handle technical tasks
-- **content-writer**: Does NOT write technical documentation, code comments, or API docs
-- **technical-documentation-writer**: Does NOT write marketing content or user-facing docs
+#### Exclusion Rules (What agents DON'T handle)
+- **design-simplicity-advisor**: No implementation (analysis only)
+- **general-purpose**: No implementation/multi-line tasks/scripting (single-line commands only)
+- **Domain boundaries**: Frontend≠backend≠infrastructure≠mobile≠blockchain≠ML≠legacy
+- **Cross-domain**: Utility scripts→infrastructure-specialist (automation) OR backend-architect (data processing)
 </Rule>
 
-<Rule id="enhanced-trigger-routing">
-**ENHANCED TRIGGER-BASED ROUTING**: Multi-agent coordination and compound detection
+<Rule id="classification-precedence">
+**CLASSIFICATION PRECEDENCE**: Request type determines workflow
 
-### Compound Trigger Detection (Multi-Agent Invocation)
+### CLASSIFICATION ORDER (MANDATORY)
+1. **EMERGENCY**: debug-specialist ALWAYS highest priority (blocks all others)
+2. **CLASSIFICATION**: All requests must be classified before processing
+3. **DOMAIN IDENTIFICATION**: Implementation requires specific domain specialist
+4. **WORKFLOW SELECTION**: Based on classification and complexity
+5. **EXECUTION**: Follow plan without bypass options
 
-#### Security + Implementation
-- **Patterns**: "fix security bug", "implement secure authentication", "security code review"
-- **Route to**: design-simplicity-advisor (MANDATORY FIRST) → security-auditor (analysis) + programmer/specialist (implementation) + code-reviewer (validation)
-- **Coordination**: Main LLM coordinates security requirements with implementation using simplicity constraints
+### CLASSIFICATION ROUTING
+- **INFORMATION** (Simple): Direct Main LLM handling - file reads, basic questions, definitions
+- **INFORMATION** (Complex): business-analyst, data-scientist, or domain analyst
+- **IMPLEMENTATION**: MANDATORY design-simplicity-advisor → domain specialist → quality gates
+- **ANALYSIS**: Route to appropriate analyst (business-analyst, data-scientist, performance-optimizer, security-auditor)
+- **COORDINATION**: Multi-agent workflow with Main LLM orchestration
 
-#### Performance + Testing + Infrastructure
-- **Patterns**: "optimize performance", "fix slow queries", "scale application performance"
-- **Route to**: design-simplicity-advisor (MANDATORY FIRST) → performance-optimizer (analysis) + qa-specialist (testing) + infrastructure-specialist (scaling)
-- **Coordination**: Main LLM synthesizes optimization strategy across all domains with simplicity-first approach
+### MANDATORY CLASSIFICATION OUTPUT
+```
+CLASSIFICATION: [INFORMATION|IMPLEMENTATION|ANALYSIS|COORDINATION]
+DOMAINS: [Primary domains identified]
+AGENT PLAN: [Specific workflow sequence]
+COMPLEXITY: [Simple|Medium|Complex]
+```
 
-#### Architecture + Implementation + Infrastructure
-- **Patterns**: "design and implement new service", "build scalable system", "architect microservices"
-- **Route to**: design-simplicity-advisor (MANDATORY FIRST) → systems-architect (design) + backend-architect (implementation) + infrastructure-specialist (deployment)
-- **Coordination**: Main LLM ensures architectural consistency across all levels with simplicity constraints
+### ANTI-BYPASS ENFORCEMENT
+- **NO CLASSIFICATION SKIP**: Every request must be explicitly classified
+- **NO PLAN BYPASS**: Cannot execute without documented agent plan
+- **NO IMPLEMENTATION WITHOUT SIMPLICITY**: design-simplicity-advisor mandatory for all implementation
+- **ERROR CONTEXT**: Error messages/stack traces = IMPLEMENTATION classification automatically
+</Rule>
 
-#### Testing + Debugging + Quality
-- **Patterns**: "debug failing tests", "troubleshoot test issues", "fix test performance"
-- **Route to**: debug-specialist (resolution) + qa-specialist/unit-test-expert (testing) + code-reviewer (quality)
-- **Coordination**: Main LLM prioritizes debugging while maintaining test quality
+<Rule id="error-classification">
+**ERROR CLASSIFICATION**: Automatic IMPLEMENTATION classification for errors
 
-### Single-Agent Priority Routing
+### Error Detection as Implementation
+- **ALL ERROR MESSAGES** automatically classified as IMPLEMENTATION
+- **STACK TRACES/ERROR LOGS** = implicit implementation request
+- **"This is failing/broken"** = implementation classification
+- **NO INFORMATION CLASSIFICATION** for errors (always implementation)
 
-#### File-Path Context Detection
-- **Test files** (test/, tests/, __tests__, *.test.*, *.spec.*, cypress/, e2e/):
-  - Unit tests → unit-test-expert
-  - Integration/E2E → qa-specialist
-  - Performance tests → performance-optimizer + qa-specialist
+### Error Domain Detection
+- **CDK/CloudFormation/Deployment errors** → Infrastructure domain
+- **Frontend errors** (JavaScript, React, Vue) → Frontend domain
+- **Backend errors** (API, database, server) → Backend domain
+- **Mobile errors** (iOS, Android, React Native) → Mobile domain
+- **Blockchain errors** (Solidity, Web3) → Blockchain domain
+- **ML errors** (Training, inference, pipeline) → ML/AI domain
+- **Legacy errors** (COBOL, mainframe) → Legacy domain
 
-- **Infrastructure files** (cdk/, terraform/, docker/, k8s/, .github/workflows/):
-  - → infrastructure-specialist
+### Emergency Error Priority
+- **Production/Critical errors** → debug-specialist (HIGHEST PRIORITY)
+- **Non-critical errors** → appropriate domain specialist via normal workflow
 
-- **Frontend files** (src/components/, pages/, styles/, public/):
-  - → frontend-developer
+### Error Implementation Workflow
+```
+Error Detection → IMPLEMENTATION Classification → Domain Identification → debug-specialist (if critical) OR design-simplicity-advisor → domain specialist → quality gates
+```
 
-- **Backend files** (api/, services/, models/, database/):
-  - → backend-architect
+### No Error Explanation Without Fix
+- **NO INFORMATION RESPONSES** to error messages
+- **MANDATORY IMPLEMENTATION** workflow for all errors
+- **CONTEXT ANALYSIS** only for domain specialist routing
+</Rule>
 
-- **Documentation files** (docs/, README.md, API.md):
-  - Technical → technical-documentation-writer
-  - User-facing → content-writer
+<Rule id="domain-identification">
+**DOMAIN IDENTIFICATION**: Explicit matching or failure
 
-#### Domain-Specific Triggers
-- **Security**: audit, vulnerability, compliance, penetration → security-auditor
-- **Performance**: optimize, bottleneck, slow, latency, throughput → performance-optimizer
-- **Testing**: test, qa, spec, coverage, validation → qa-specialist (general) or unit-test-expert (unit)
-- **Infrastructure**: deploy, cloud, CDK, container, scaling → infrastructure-specialist
-- **Analysis**: requirements, user story, business logic → business-analyst
-- **Documentation**: docs, documentation, technical writing → technical-documentation-writer
-- **Content**: marketing, user guide, help content → content-writer
-- **Debug**: error, bug, issue, troubleshoot, debug → debug-specialist
+### Detection Process
+1. **ANALYZE**: Domain keywords, file paths, context
+2. **MATCH**: Map to specific specialist using trigger hierarchy
+3. **VERIFY**: Specialist handles work type
+4. **FAIL EXPLICITLY**: If no match, state failure
 
-### Project Context Routing
+### Routing Decision
+Implementation → Domain keywords? → Route to specialist
+            → File path? → Route by file type
+            → Technology? → Route by tech
+            → No domain? → FAIL: "Cannot identify specialist"
 
-#### Technology Stack Detection
-- **Frontend Projects** (React, Vue, Angular in package.json): → frontend-developer
-- **Backend Projects** (Express, FastAPI, Spring): → backend-architect
-- **ML/AI Projects** (TensorFlow, PyTorch, scikit-learn): → ml-engineer
-- **Blockchain Projects** (Solidity, Web3, Hardhat): → blockchain-developer
-- **Mobile Projects** (React Native, Flutter, Expo): → mobile-developer
-- **Legacy Projects** (Java EE, .NET Framework, COBOL): → legacy-maintainer
-- **Full-Stack Projects**: Coordinate multiple specialists based on specific request
+### Requirements
+- **Explicit names**: Use exact agent names (frontend-developer, backend-architect, etc.)
+- **No vague routing**: Cannot use "appropriate specialist"
+- **Cross-domain**: Coordinate multiple specialists when spanning domains
+- **Fail fast**: Better explicit failure than incorrect routing
+</Rule>
 
-### Coordination Patterns
+<Rule id="classification-routing">
+**CLASSIFICATION-BASED ROUTING**: Domain identification through classification
 
-#### Sequential Workflows
-1. **Quality Gate Sequence**: specialist-implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
-2. **Security Review Sequence**: implementation → security-auditor → code-reviewer → dependency-scanner
-3. **Architecture Sequence**: systems-architect → backend-architect → infrastructure-specialist
+### Classification-Domain Mapping
+- **IMPLEMENTATION + Frontend context** → frontend-developer
+- **IMPLEMENTATION + Backend context** → backend-architect
+- **IMPLEMENTATION + Infrastructure context** → infrastructure-specialist
+- **IMPLEMENTATION + Mobile context** → mobile-developer
+- **IMPLEMENTATION + Blockchain context** → blockchain-developer
+- **IMPLEMENTATION + ML/AI context** → ml-engineer
+- **IMPLEMENTATION + Legacy context** → legacy-maintainer
+- **ANALYSIS + Security context** → security-auditor
+- **ANALYSIS + Performance context** → performance-optimizer
+- **ANALYSIS + Business context** → business-analyst
+- **ANALYSIS + Data context** → data-scientist
 
-#### Parallel Workflows
-1. **Analysis Phase**: performance-optimizer + security-auditor + dependency-scanner
-2. **Planning Phase**: systems-architect + business-analyst + project-manager
-3. **Documentation Phase**: technical-documentation-writer + content-writer (independent sections)
+### Context Detection Hierarchy
+1. **File-Path Context**: File extensions and directories indicate domain
+2. **Technology Keywords**: Framework/language mentions indicate domain
+3. **Functional Keywords**: What the request aims to accomplish
+4. **Error Context**: Error messages indicate appropriate domain specialist
 
-#### Override Conditions
-- **debug-specialist**: ALWAYS highest priority, blocks all other agents
-- **Test context**: Test-related patterns override general programming triggers
-- **File path**: Specific file paths override general trigger patterns
-- **Multi-trigger**: Compound patterns invoke multiple agents with coordination
+### Multi-Domain Classification
+- **IMPLEMENTATION + Multiple domains** → Parallel/Sequential multi-agent workflow
+- **ANALYSIS + Multiple domains** → Parallel analysis with Main LLM synthesis
+- **COORDINATION + Any domains** → Multi-agent workflow management
+
+### Emergency Override
+- **debug-specialist**: ALWAYS highest priority regardless of classification
+- **Blocks all other classification** until critical issues resolved
+
+### Default Workflows
+- **IMPLEMENTATION**: design-simplicity-advisor → specialist → quality gates
+- **ANALYSIS**: analyst(s) → Main LLM synthesis
+- **COORDINATION**: workflow management with appropriate specialists
+- **INFORMATION**: Direct handling (simple) or analyst delegation (complex)
 </Rule>
 
 <Rule id="multi-agent-coordination">
 **MULTI-AGENT COORDINATION**: Workflow patterns for overlapping domains
 
-### Coordination Workflow Types
+### Coordination Types
+1. **Sequential Quality Gates** (MANDATORY): Implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
+2. **Parallel Analysis**: [security-auditor + performance-optimizer + dependency-scanner] → Main LLM synthesis
+3. **Collaborative Architecture**: systems-architect → [backend-architect + infrastructure-specialist] → Main LLM integration
+4. **Domain Collaboration**: [specialist-1 + specialist-2] → Main LLM reconciliation
 
-#### Type 1: Sequential Quality Gates (Mandatory)
-```
-Implementation Agent → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
-```
-- **Blocking**: Each stage must pass before proceeding
-- **Enforcement**: Main LLM enforces sequence
-- **Rollback**: Failure at any stage returns to implementation
-- **Pre-Commit Simplicity**: Mandatory complexity analysis before git operations
+### Coordination Patterns
+- **Security**: security-auditor + code-reviewer + dependency-scanner → comprehensive report
+- **Performance**: performance-optimizer + qa-specialist + infrastructure-specialist → improvement plan
+- **Architecture**: systems-architect → backend-architect + infrastructure-specialist → consistency
+- **Testing**: unit-test-expert + qa-specialist + performance-optimizer → comprehensive approach
+- **Documentation**: technical-documentation-writer + content-writer + business-analyst → complete docs
 
-#### Type 2: Parallel Analysis (Independent)
-```
-Main LLM → [security-auditor + performance-optimizer + dependency-scanner] → Synthesis
-```
-- **Execution**: Run simultaneously in single Task() call
-- **Coordination**: Main LLM synthesizes independent findings
-- **Use case**: Complex system analysis requiring multiple perspectives
+### When to Use Multi-Agent
+- **Compound triggers**: Multiple domain keywords
+- **Cross-domain issues**: Spans multiple specializations
+- **Comprehensive tasks**: "Full system X" or "Complete Y"
+- **Quality requirements**: "Secure and performant"
 
-#### Type 3: Collaborative Architecture (Coordinated)
-```
-systems-architect → [backend-architect + infrastructure-specialist] → Integration
-```
-- **Flow**: High-level design first, then parallel implementation planning
-- **Coordination**: Main LLM ensures consistency across architectural levels
-- **Handoff**: Systems architect output guides implementation architects
-
-#### Type 4: Domain Collaboration (Specialized)
-```
-Trigger Detection → [specialist-1 + specialist-2] → Main LLM Reconciliation
-```
-- **Example**: "optimize database performance" → performance-optimizer + backend-architect + infrastructure-specialist
-- **Reconciliation**: Main LLM creates unified optimization strategy
-- **Conflict Resolution**: Main LLM resolves conflicting recommendations
-
-### Specific Coordination Patterns
-
-#### Security Comprehensive Review
-```
-Trigger: "security audit", "vulnerability assessment", "compliance check"
-Workflow: security-auditor (analysis) + code-reviewer (implementation) + dependency-scanner (supply chain)
-Coordination: Main LLM creates comprehensive security report
-```
-
-#### Performance Optimization
-```
-Trigger: "performance issues", "optimize slow queries", "application scaling"
-Workflow: performance-optimizer (analysis) + qa-specialist (testing) + infrastructure-specialist (scaling)
-Coordination: Main LLM creates holistic performance improvement plan
-```
-
-#### Architecture Implementation
-```
-Trigger: "design new service", "microservices architecture", "system redesign"
-Workflow: systems-architect (design) → backend-architect (implementation) + infrastructure-specialist (deployment)
-Coordination: Main LLM ensures architectural consistency across levels
-```
-
-#### Testing Strategy
-```
-Trigger: "comprehensive testing", "test coverage", "testing strategy"
-Workflow: unit-test-expert (unit tests) + qa-specialist (integration/E2E) + performance-optimizer (performance strategy)
-Coordination: Main LLM creates comprehensive testing approach
-```
-
-#### Documentation Creation
-```
-Trigger: "create documentation", "document system", "API documentation"
-Workflow: technical-documentation-writer (technical) + content-writer (user-facing) + business-analyst (requirements)
-Coordination: Main LLM ensures documentation consistency and completeness
-```
-
-### Coordination Rules
-
-#### When to Use Multi-Agent Coordination
-1. **Compound triggers**: Request contains multiple domain keywords
-2. **Cross-domain issues**: Problem spans multiple specializations
-3. **Comprehensive tasks**: "Full system X" or "Complete Y implementation"
-4. **Quality requirements**: "Secure and performant" or "Tested and documented"
-
-#### Main LLM Coordination Responsibilities
-1. **Detect**: Identify when multiple agents are needed
-2. **Invoke**: Launch appropriate agents in parallel or sequence
-3. **Monitor**: Track agent completion and identify conflicts
-4. **Synthesize**: Combine agent outputs into coherent recommendations
-5. **Resolve**: Handle conflicts between agent recommendations
-6. **Execute**: Implement coordinated solution with proper sequencing
-
-#### Conflict Resolution Protocols
-1. **Domain Priority**: More specific domain takes precedence
-2. **Security First**: Security recommendations override performance/convenience
-3. **Architecture Consistency**: Higher-level architecture decisions guide implementation
-4. **User Requirements**: Business analyst requirements guide technical decisions
-5. **Quality Gates**: Code reviewer decisions are non-negotiable
-
-### Example Coordination Flows
-
-#### "Fix performance and security issues in authentication service"
-```
-1. Parallel Analysis: security-auditor + performance-optimizer
-2. Implementation: backend-architect (fixes based on analysis)
-3. Quality Gates: code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit)
-4. Testing: qa-specialist (integration testing)
-5. Documentation: technical-documentation-writer (security/performance notes)
-6. Deployment: infrastructure-specialist (if scaling changes needed)
-```
-
-#### "Debug and optimize failing tests"
-```
-1. Critical Priority: debug-specialist (blocks all other work)
-2. Test Analysis: qa-specialist (integration) + unit-test-expert (unit)
-3. Performance Review: performance-optimizer (if performance-related)
-4. Quality Review: code-reviewer (ensure fixes don't break other things)
-5. Pre-commit Simplicity: design-simplicity-advisor (complexity analysis before commit)
-5. Documentation: technical-documentation-writer (document issues and solutions)
-```
+### Main LLM Responsibilities
+- **Detect**: Multiple agents needed
+- **Invoke**: Parallel/sequential launch
+- **Synthesize**: Combine outputs
+- **Resolve**: Handle conflicts (domain priority, security first, architecture consistency)
 </Rule>
 
-<Rule id="direct-coordination">
-**DIRECT COORDINATION**: Main LLM manages multi-agent workflows with overlap resolution
-- DETECT: Compound triggers → Invoke multiple agents with coordination
-- DETECT: Single domain triggers → Route to appropriate specialist
-- DETECT: File modification operations → Use file-path context routing
-- DETECT: Cross-domain issues → Apply multi-agent coordination patterns
-- INVOKE: Single or multiple agents using Task() calls based on trigger analysis
-- COORDINATE: Sequential quality gates, parallel analysis, collaborative workflows
-- SYNTHESIZE: Combine multiple agent outputs into coherent recommendations
-- RESOLVE: Handle conflicts between agent recommendations using domain priority
-- ENFORCE: Mandatory quality sequence (code-reviewer → code-clarity-manager → testing)
-- REMOVED: No coordinator agent - main LLM handles direct coordination with overlap resolution
+<Rule id="coordination-workflow">
+**COORDINATION WORKFLOW**: Main LLM direct management
+- **DETECT**: Compound triggers → multi-agent, single domain → specialist, file ops → file-path routing
+- **INVOKE**: Task() calls (single/multiple based on analysis)
+- **COORDINATE**: Sequential quality gates, parallel analysis, collaborative workflows
+- **SYNTHESIZE**: Combine outputs into coherent recommendations
+- **RESOLVE**: Conflicts using domain priority (security > performance > convenience)
+- **SIMPLE TASKS**: File reads, searches, questions, communication → handle directly
+- **NO ORCHESTRATOR**: Main LLM handles coordination directly
 </Rule>
 
-<Rule id="simple-task-handling">
-**SIMPLE TASK DIRECT HANDLING**: Main LLM efficiency
-- Single file reads → Handle directly
-- Basic searches and questions → Handle directly
-- User communication and formatting → Handle directly
-- No workflow state management needed for simple tasks
-</Rule>
+<Rule id="overlap-resolution">
+**OVERLAP RESOLUTION**: Common coordination scenarios
 
-<Rule id="agent-coordination">
-**AGENT COORDINATION**: Direct workflow management with overlap resolution
-- Main LLM detects single vs multi-agent scenarios using responsibility matrix
-- Single domain → Task(subagent_type="specialist", prompt="...")
-- Multi-domain → Multiple Task() calls with coordination plan
-- Security issues → security-auditor + code-reviewer + dependency-scanner coordination
-- Performance issues → performance-optimizer + qa-specialist + infrastructure-specialist coordination
-- Architecture tasks → systems-architect + backend-architect + infrastructure-specialist coordination
-- Wait for each agent completion, then synthesize results for multi-agent scenarios
-- Enforce mandatory quality sequence: code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit)
-- Handle parallel execution by sending multiple Task() calls in single message
-- Resolve conflicts using domain priority rules (security > performance > convenience)
-- NO ORCHESTRATOR: Main LLM coordinates directly with overlap resolution capabilities
-</Rule>
+### Priority Rules
+1. **debug-specialist**: ALWAYS highest priority, blocks all others
+2. **design-simplicity-advisor**: MANDATORY before ANY implementation
+3. **Security-first**: Override performance/convenience
+4. **Architecture-consistency**: High-level guides implementation
+5. **Quality-gates**: Code reviewer decisions non-negotiable
+6. **Domain-expertise**: More specific takes precedence
 
-<Rule id="overlap-resolution-examples">
-**OVERLAP RESOLUTION EXAMPLES**: Common scenarios and coordination patterns
-
-### Example 1: "Fix the failing performance tests"
-**Trigger Analysis**: Contains "fix" (debug) + "performance" (analysis) + "tests" (testing)
-**Multi-Agent Invocation**:
-- debug-specialist (HIGHEST PRIORITY - blocks others until critical issues resolved)
-- performance-optimizer (analyze performance bottlenecks)
-- qa-specialist (test execution and framework issues)
-**Coordination**: Main LLM synthesizes debugging findings with performance analysis and testing strategy
-
-### Example 2: "Implement secure authentication with high performance"
-**Trigger Analysis**: Contains "implement" (programming) + "secure" (security) + "performance" (optimization)
-**Multi-Agent Invocation**:
-- security-auditor (security requirements and threat modeling)
-- backend-architect (authentication implementation)
-- performance-optimizer (performance requirements and optimization)
-**Coordination**: Main LLM ensures implementation meets both security and performance requirements
-
-### Example 3: "Debug the deployment pipeline"
-**Trigger Analysis**: Contains "debug" (debugging) + "deployment" (infrastructure)
-**Multi-Agent Invocation**:
-- debug-specialist (PRIORITY - identify critical deployment failures)
-- infrastructure-specialist (pipeline configuration and deployment issues)
-**Coordination**: Main LLM prioritizes debugging while applying infrastructure expertise
-
-### Example 4: "Create comprehensive API documentation"
-**Trigger Analysis**: Contains "create" (programming) + "documentation" (content)
-**Multi-Agent Invocation**:
-- technical-documentation-writer (API specifications and technical details)
-- content-writer (user-facing guides and examples)
-**Coordination**: Main LLM ensures documentation consistency between technical and user perspectives
-
-### Example 5: "Optimize database queries and add monitoring"
-**Trigger Analysis**: Contains "optimize" (performance) + "database" (backend) + "monitoring" (infrastructure)
-**Multi-Agent Invocation**:
-- performance-optimizer (query optimization strategies)
-- backend-architect (database design and query implementation)
-- infrastructure-specialist (monitoring setup and alerting)
-**Coordination**: Main LLM creates holistic database optimization plan
-
-### Resolution Priority Rules
-1. **debug-specialist**: ALWAYS highest priority, blocks all other work
-2. **design-simplicity-advisor**: MANDATORY before ANY implementation - no exceptions
-3. **Security-first**: Security requirements override performance/convenience concerns
-4. **Architecture-consistency**: High-level design guides implementation decisions
-5. **Quality-gates**: Code reviewer decisions are non-negotiable
-6. **Domain-expertise**: More specific domain knowledge takes precedence
-7. **User-requirements**: Business analyst findings guide technical decisions
+### Example Patterns
+- **"Fix failing performance tests"**: debug-specialist + performance-optimizer + qa-specialist
+- **"Implement secure auth"**: design-simplicity-advisor → security-auditor + backend-architect + performance-optimizer
+- **"Debug deployment"**: debug-specialist + infrastructure-specialist
+- **"Create API docs"**: technical-documentation-writer + content-writer
+- **"Optimize database"**: performance-optimizer + backend-architect + infrastructure-specialist
 </Rule>
 
 <Rule id="mandatory-simplicity-workflow">
-**MANDATORY SIMPLICITY WORKFLOW**: Pre-implementation AND pre-commit simplicity enforcement
+**MANDATORY SIMPLICITY WORKFLOW**: Pre-implementation AND pre-commit enforcement
 
-### Workflow Sequence (NON-NEGOTIABLE)
-```
-Task Detection → design-simplicity-advisor (MANDATORY pre-implementation) → Implementation Agent → Quality Gates → design-simplicity-advisor (MANDATORY pre-commit) → git-workflow-manager
-```
+### Workflow (NON-NEGOTIABLE)
+`Task Detection → design-simplicity-advisor (pre-implementation) → Implementation Agent → Quality Gates → design-simplicity-advisor (pre-commit) → git-workflow-manager`
 
-### Implementation Blocking Rules
-- **NO IMPLEMENTATION** can begin until design-simplicity-advisor completes analysis
-- **NO BYPASS ALLOWED** - Main LLM must invoke simplicity advisor for ANY implementation task
-- **TRIGGERS**: All implementation verbs (implement, create, build, develop, code, design, etc.)
-- **EXCEPTIONS**: Only debug-specialist can bypass (critical errors only)
+### Implementation Blocking
+- **NO IMPLEMENTATION** until design-simplicity-advisor completes analysis
+- **NO BYPASS** - Main LLM must invoke for ANY implementation task
+- **TRIGGERS**: implement, create, build, develop, code, design, etc.
+- **EXCEPTION**: debug-specialist only (critical errors)
 
-### Main LLM Enforcement
-```python
-def implementation_workflow_enforcement(task_context):
-    # STEP 1: Mandatory simplicity analysis
-    if is_implementation_task(task_context):
-        # CANNOT BE BYPASSED
-        simplicity_result = Task(
-            subagent_type="design-simplicity-advisor",
-            prompt=f"Analyze simplicity options for: {task_context.requirements}"
-        )
+### Enforcement
+- **Simple-first principle**: Start with simplest viable solution
+- **Complexity justification**: Complex solutions need explicit justification
+- **Deferred optimization**: Performance only when proven necessary
+- **Minimal dependencies**: Prefer built-in over external libraries
 
-        # BLOCKING: Wait for completion
-        if not simplicity_result.complete:
-            return "Blocking: Waiting for simplicity analysis"
+### Workflow Integration
+- **Security**: design-simplicity-advisor → security-auditor → implementation
+- **Performance**: design-simplicity-advisor → performance-optimizer → implementation
+- **Architecture**: design-simplicity-advisor → systems-architect → implementation
 
-    # STEP 2: Implementation with simplicity constraints
-    implementation_result = Task(
-        subagent_type=determine_implementation_agent(task_context),
-        prompt=f"Implement using simplicity constraints: {simplicity_result.recommendation}"
-    )
-
-    # STEP 3: Quality gates sequence (including pre-commit simplicity)
-    quality_sequence = [
-        "code-reviewer",
-        "code-clarity-manager",
-        "unit-test-expert",
-        "design-simplicity-advisor"  # Pre-commit complexity analysis
-    ]
-
-    return coordinate_quality_gates(implementation_result, quality_sequence)
-```
-
-### Trigger Integration
-- **Implementation triggers**: implement, create, build, fix, deploy, test, add, update, refactor, improve, design, setup, configure, develop, code
-- **Architecture triggers**: architect, structure, organize, system design
-- **Feature triggers**: add feature, new functionality, enhancement
-- **Problem-solving triggers**: solve problem, address requirement
-
-### Simplicity Enforcement
-- **Simple-first principle**: Always start with simplest viable solution
-- **Complexity justification**: Complex solutions require explicit justification
-- **Deferred optimization**: Performance optimization only when proven necessary
-- **Minimal dependencies**: Prefer built-in solutions over external libraries
-
-### Integration with Existing Workflows
-- **Security workflows**: design-simplicity-advisor → security-auditor → implementation
-- **Performance workflows**: design-simplicity-advisor → performance-optimizer → implementation
-- **Architecture workflows**: design-simplicity-advisor → systems-architect → implementation
-- **Debug exception**: debug-specialist bypasses simplicity advisor for critical errors only
-
-### Pre-Commit Simplicity Enforcement
-- **MANDATORY PRE-COMMIT REVIEW**: design-simplicity-advisor MUST review before any git operations
-- **GIT WORKFLOW BLOCKING**: git-workflow-manager cannot proceed until simplicity review complete
-- **COMPLEXITY ANALYSIS REQUIREMENTS**: Pre-commit review must analyze:
-  - Overall solution complexity vs. requirements
-  - Unnecessary abstractions or over-engineering
-  - Opportunities for simplification before commit
-  - Compliance with KISS principle across all changes
-- **INTEGRATION WITH QUALITY GATES**: Pre-commit simplicity is final quality gate before git operations
-- **NO BYPASS ALLOWED**: Even emergency fixes require post-commit simplicity review and potential refactoring
+### Pre-Commit Requirements
+- **MANDATORY**: design-simplicity-advisor MUST review before git operations
+- **BLOCKING**: git-workflow-manager waits for simplicity review
+- **ANALYSIS**: Overall complexity vs requirements, unnecessary abstractions, KISS compliance
+- **NO BYPASS**: Emergency fixes require post-commit review
 </Rule>
 
-<Rule id="pre-commit-simplicity-enforcement">
-**PRE-COMMIT SIMPLICITY ENFORCEMENT**: Mandatory complexity analysis before git operations
+<Rule id="pre-commit-simplicity">
+**PRE-COMMIT SIMPLICITY**: Final quality gate
 
-### Git Workflow Blocking Requirements
-- **MANDATORY SEQUENCE**: unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
-- **NO GIT OPERATIONS** can proceed until pre-commit simplicity review is complete
-- **BLOCKING ENFORCEMENT**: git-workflow-manager agent MUST wait for simplicity advisor completion
-- **QUALITY GATE INTEGRATION**: Pre-commit simplicity is the final mandatory quality gate
+### Blocking Requirements
+- **SEQUENCE**: unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
+- **NO GIT OPS** until simplicity review complete
+- **FINAL GATE**: Pre-commit simplicity is mandatory final quality gate
 
-### Pre-Commit Complexity Analysis
-- **HOLISTIC REVIEW**: Analyze entire changeset for unnecessary complexity
-- **KISS PRINCIPLE VALIDATION**: Ensure all changes follow Keep It Simple, Stupid principle
-- **ABSTRACTION ANALYSIS**: Identify and flag over-abstraction or premature optimization
-- **SIMPLIFICATION OPPORTUNITIES**: Recommend specific simplifications before commit
-- **TECHNICAL DEBT ASSESSMENT**: Flag complexity that creates future maintenance burden
+### Analysis Requirements
+- **HOLISTIC**: Analyze entire changeset for unnecessary complexity
+- **KISS VALIDATION**: Ensure Keep It Simple, Stupid principle compliance
+- **ABSTRACTION**: Flag over-abstraction or premature optimization
+- **OPPORTUNITIES**: Recommend simplifications before commit
+- **DEBT ASSESSMENT**: Flag complexity creating maintenance burden
 
-### Main LLM Pre-Commit Workflow
-```python
-def pre_commit_workflow_enforcement(implementation_complete):
-    # STEP 1: Complete standard quality gates
-    quality_gates_result = run_quality_gates(implementation_complete)
-
-    # STEP 2: MANDATORY pre-commit simplicity review
-    pre_commit_simplicity = Task(
-        subagent_type="design-simplicity-advisor",
-        prompt=f"Pre-commit complexity analysis for changeset: {implementation_complete.changes}"
-    )
-
-    # BLOCKING: Wait for pre-commit simplicity completion
-    if not pre_commit_simplicity.complete:
-        return "Blocking: Waiting for pre-commit simplicity analysis"
-
-    # STEP 3: Git operations only after simplicity approval
-    if pre_commit_simplicity.approved:
-        git_result = Task(
-            subagent_type="git-workflow-manager",
-            prompt=f"Proceed with git operations: {pre_commit_simplicity.recommendations}"
-        )
-    else:
-        return "Blocking: Simplicity review requires changes before commit"
-
-    return git_result
-```
-
-### Integration Rules
-- **EMERGENCY EXCEPTION HANDLING**: debug-specialist can bypass for critical production issues, but MUST schedule post-commit simplicity review
-- **REFACTORING REQUIREMENT**: If pre-commit review identifies complexity issues, implementation agent must address before git operations
-- **DOCUMENTATION REQUIREMENT**: All complexity decisions must be documented with explicit justification
-- **CONSISTENCY ENFORCEMENT**: Pre-commit simplicity review ensures consistency with project's established simplicity standards
+### Integration
+- **EMERGENCY**: debug-specialist can bypass (critical production only), MUST schedule post-commit review
+- **REFACTORING**: Implementation agent must address complexity issues before git ops
+- **DOCUMENTATION**: Complexity decisions need explicit justification
+- **CONSISTENCY**: Ensure project simplicity standards compliance
 </Rule>
 </AgentDelegationRules>
 
 <RuleInheritance>
-<Rule id="local-overrides">
-**LOCAL RULE OVERRIDES**: Project-specific rules can override global rules
+<Rule id="overrides">
+**RULE OVERRIDES**: Local overrides global
 - Local `./CLAUDE.md` overrides global `/Users/jamsa/.claude/CLAUDE.md`
 - Local agents `./claude/agents/agent-name.md` override global agents
-- Example: Local project can specify "Python > TypeScript" override
-</Rule>
-
-<Rule id="agent-overrides">
-**AGENT OVERRIDE RESOLUTION**:
-1. Check `./claude/agents/agent-name.md` (local project)
-2. Fall back to `/Users/jamsa/.claude/agents/agent-name.md` (global)
-3. Same agent name = complete override (not merge)
+- Same agent name = complete override (not merge)
 </Rule>
 </RuleInheritance>
 
 <CommunicationStyle>
-<Rule id="direct-concise">**DIRECT AND CONCISE**: Communication must be direct and to the point</Rule>
-<Rule id="no-apologies">**NO UNNECESSARY APOLOGIES**: Do not apologize or validate ideas unnecessarily</Rule>
-<Rule id="technical-focus">**TECHNICAL FOCUS**: Skip pleasantries and focus on technical details</Rule>
-<Rule id="completion-summary">**COMPLETION REPORTING**: Report completion with clear summary of work done</Rule>
+<Rule id="communication">
+**COMMUNICATION STYLE**: Direct, concise, technical focus, no unnecessary apologies, clear completion reporting
+</Rule>
 </CommunicationStyle>
 
 <ProjectStandards>
-<Rule id="required-files">
-**MANDATORY PROJECT FILES**: Every project MUST have:
-- README.md
-- SPEC.md
-- CLAUDE.md
-</Rule>
-
-<Rule id="non-interactive-commands">
-**NON-INTERACTIVE COMMANDS**: Always use --yes, --set-upstream flags when available
-</Rule>
-
-<Rule id="vscode-warnings">
-**DEVELOPMENT NOTES**: VSCode GitHub warnings can be ignored (plugin issue)
+<Rule id="standards">
+**PROJECT STANDARDS**:
+- **Required files**: README.md, SPEC.md, CLAUDE.md
+- **Commands**: Use --yes, --set-upstream flags
+- **Notes**: VSCode GitHub warnings ignorable (plugin issue)
 </Rule>
 </ProjectStandards>
 
 <ThinkingProcess>
-<Rule id="step-by-step">
-For complex tasks, think step by step within <thinking></thinking> tags before responding
-</Rule>
-
-<Rule id="rule-acknowledgment">
-ALWAYS acknowledge following CLAUDE.md rules at the start of responses
-</Rule>
-
-<Rule id="direct-coordination-phrases">
-**DIRECT COORDINATION PHRASES**: Exact phrases for direct orchestration
-- Complex task detected: "This requires coordinated agent workflow"
-- Implementation detected: "Mandatory simplicity analysis required before implementation"
-- Simplicity phase: "Invoking design-simplicity-advisor for KISS principle enforcement"
-- Programming work: "Invoking programmer agent for implementation with simplicity constraints"
-- Quality gates: "Now invoking code-reviewer for quality validation"
-- Pre-commit simplicity: "Invoking design-simplicity-advisor for pre-commit complexity analysis"
-- Git operations: "Pre-commit simplicity review complete, proceeding with git workflow"
-- Infrastructure: "Invoking infrastructure-specialist for deployment"
-- Simple task: "Handling this directly as a simple task"
-- Workflow completion: "All workflow steps completed successfully"
-</Rule>
-
-<Rule id="simplified-main-llm">
-**SIMPLIFIED MAIN LLM WORKFLOW**: Direct coordination with mandatory simplicity
-- DETECT implementation task → MANDATORY design-simplicity-advisor first
-- DETECT simple task → Process directly without agents
-- ENFORCE simplicity → No implementation without simplicity analysis
-- COORDINATE agents → Use Task() calls with proper sequencing
-- ENFORCE quality gates → Always invoke code-reviewer → code-clarity-manager → design-simplicity-advisor (pre-commit)
-- FORMAT final response → Communicate results to user
+<Rule id="thinking">
+**THINKING PROCESS**:
+- Complex tasks: Use <thinking></thinking> tags
+- Always acknowledge CLAUDE.md rules
+- **Classification phrases**: "Classifying request as [TYPE]", "Domain identification: [DOMAIN]", "Agent plan: [WORKFLOW]", "Executing classification-based workflow"
+- **Main LLM workflow**: CLASSIFY → IDENTIFY DOMAINS → CREATE PLAN → EXECUTE PLAN → FORMAT RESPONSE
 </Rule>
 </ThinkingProcess>

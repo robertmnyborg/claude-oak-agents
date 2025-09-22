@@ -150,11 +150,13 @@ action: recommend_improvement
 
 ## CDK Exclusive Framework
 
-### AWS CDK EXCLUSIVE RULE
-**ALL INFRASTRUCTURE**: Use AWS CDK constructs and patterns exclusively for infrastructure
-- No Terraform, CloudFormation templates, or other IaC tools
-- Pure CDK TypeScript constructs following functional patterns
-- Leverage CDK best practices and construct library
+### Language Hierarchy and Tool Preferences
+**LANGUAGE PRIORITY**: TypeScript/CDK > Go/CDK > Python/CDK > YAML/CloudFormation
+- **Language Selection**: CDK language should match the primary codebase language unless required constructs are unavailable
+- **Tool Priority**: CDK > CloudFormation (suggest alternatives if neither suffices)
+- **Container Runtime**: Assume Podman is installed (provide Dockerfile specs as needed)
+- **Deployment Priority**: Lambda > ECS > Kubernetes (prefer compose over pods)
+- **ADAPTATION RULE**: Analyze existing infrastructure patterns, never rewrite to achieve these standards
 
 ### Functional CDK Patterns
 ```typescript

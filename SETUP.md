@@ -61,11 +61,6 @@ Edit `~/.claude/settings.json`:
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "agents": {
     "enabled": true,
-    "coordinator": {
-      "enabled": true,
-      "autoInvoke": true,
-      "triggers": ["all_requests"]
-    },
     "defaultModel": "sonnet",
     "timeout": 60000
   },
@@ -94,9 +89,11 @@ Customize `~/.claude/CLAUDE.md` for your preferences:
 ```markdown
 # Rules for Development Process
 
-⚠️ MANDATORY WORKFLOW ⚠️
-EVERY user request must begin with:
-Task(subagent_type="agent-coordinator", prompt="Plan workflow for: [user's request]")
+## MAIN LLM COORDINATION
+Main LLM handles direct specialist delegation:
+- Task(subagent_type="programmer", prompt="[implementation task]")
+- Task(subagent_type="infrastructure-specialist", prompt="[deployment task]")
+- Task(subagent_type="security-auditor", prompt="[security analysis]")
 
 ## Technology Stack Constraints
 - **Languages**: [Your preferred languages]
@@ -185,13 +182,13 @@ Edit files in `~/.claude/templates/` to match your project standards.
 
 ## 🤖 Agent System Configuration
 
-### Coordinator Settings
+### Direct Coordination Model
 
-The agent-coordinator is configured to:
-- **Auto-invoke** on all requests
-- **Maximize parallelism** when possible
-- **Enforce quality gates** for code changes
-- **Auto-create agents** for capability gaps
+The main LLM coordinates directly:
+- **Direct delegation** to specialist agents
+- **Quality gate enforcement** through sequential workflows
+- **Parallel execution** when appropriate
+- **Result integration** and user communication
 
 ### Agent Priorities
 
@@ -302,7 +299,7 @@ The agent-creator can build new agents automatically, or you can create manually
 claude-config agents/my-custom-agent.md
 
 # Add agent capabilities and integration points
-# The coordinator will automatically detect and use it
+# The main LLM will detect and delegate to it based on trigger patterns
 ```
 
 ### Plugin Configuration

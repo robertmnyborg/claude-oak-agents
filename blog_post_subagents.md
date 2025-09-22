@@ -89,12 +89,12 @@ Download and place agent definitions in `~/.claude/agents/`:
 ```bash
 # Core agents you'll want to install:
 ~/.claude/agents/programmer.md           # Handles all coding tasks
-~/.claude/agents/infrastructure_specialist.md  # AWS CDK and cloud
-~/.claude/agents/security_auditor.md     # Security analysis
-~/.claude/agents/code_reviewer.md        # Quality gates
-~/.claude/agents/unit_test_expert.md     # Test coverage
-~/.claude/agents/debug_specialist.md     # Debugging (highest priority)
-~/.claude/agents/git_workflow.md         # Git operations
+~/.claude/agents/infrastructure-specialist.md  # AWS CDK and cloud
+~/.claude/agents/security-auditor.md     # Security analysis
+~/.claude/agents/code-reviewer.md        # Quality gates
+~/.claude/agents/unit-test-expert.md     # Test coverage
+~/.claude/agents/debug-specialist.md     # Debugging (highest priority)
+~/.claude/agents/git-workflow-manager.md         # Git operations
 ```
 
 Each agent file defines its specialization. For example, `programmer.md`:

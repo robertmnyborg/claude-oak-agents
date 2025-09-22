@@ -105,9 +105,9 @@ auto_creatable_agents:
    - Input/output formats specified
    - Coordination patterns documented
 
-2. **Main LLM Coordination Updates**: `agent_coordinator.md`
-   - Added to agent inventory
-   - Integrated into dispatch logic
+2. **Main LLM Coordination Updates**: Direct coordination integration
+   - Added to agent capability mappings
+   - Integrated into trigger detection logic
    - Added to priority hierarchy
    - Updated parallel execution patterns
 
@@ -117,9 +117,9 @@ auto_creatable_agents:
    - Enhanced parallel execution documentation
 
 ### Integration Validation
-#### Coordinator Integration
-- [x] Added to agent inventory
-- [x] Integrated into dispatch logic
+#### Main LLM Coordination Integration
+- [x] Added to capability mappings
+- [x] Integrated into trigger detection
 - [x] Priority level assigned
 - [x] Parallel execution rules defined
 
@@ -136,7 +136,7 @@ auto_creatable_agents:
 4. **Integration**: Confirm proper coordination with related agents
 
 ### Next Steps
-1. Test agent invocation through main LLM coordination
+1. Test agent invocation through direct main LLM delegation
 2. Validate parallel execution patterns
 3. Monitor agent performance and effectiveness
 4. Refine based on usage patterns
@@ -210,11 +210,11 @@ color: [agent-name]
 
 ## System Integration Strategies
 
-### Coordinator Integration
+### Main LLM Integration
 ```python
-# Add to dispatch logic
+# Add to trigger detection logic
 if is_[agent_function]_request(context):
-    return invoke_[agent_name]_workflow()
+    return Task(subagent_type="[agent_name]", prompt="[task_prompt]")
 
 # Add to parallel execution rules
 parallel_compatible = [
@@ -246,7 +246,7 @@ quality_gates:
 ## Validation and Testing
 
 ### Integration Validation
-- **Coordinator Syntax**: Verify JSON structure and agent references
+- **Trigger Detection**: Verify trigger patterns and agent references
 - **Priority Conflicts**: Ensure no priority level conflicts
 - **Parallel Execution**: Validate parallel execution rules
 - **Workflow Chains**: Test agent in complete workflows
