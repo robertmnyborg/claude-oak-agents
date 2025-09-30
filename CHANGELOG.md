@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation (README.md, SETUP.md)
 - Git ignore patterns for sensitive data protection
 
+### Changed
+- **BREAKING**: Removed orchestrator agent in favor of direct Main LLM coordination
+- Simplified coordination model with Main LLM directly managing all agent delegation
+- Enhanced delegation enforcement with automatic trigger-based routing
+- Updated agent responsibility matrix to reflect direct coordination patterns
+- Streamlined workflow patterns removing orchestrator dependencies
+
 ## [1.0.0] - 2024-09-15
 
 ### Added

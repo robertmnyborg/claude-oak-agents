@@ -195,4 +195,4 @@ graph LR
     GWM --> CL[changelog-recorder]
 ```
 
-This enhanced system ensures quality through mandatory gates, prevents main LLM bypass through delegation enforcement, and provides comprehensive specialist coverage across all development domains. The main LLM directly coordinates all agents with overlap resolution capabilities, eliminating the need for a separate orchestrator agent.
+This enhanced system ensures quality through mandatory gates, prevents main LLM bypass through delegation enforcement, and provides comprehensive specialist coverage across all development domains. The main LLM directly coordinates all agents with overlap resolution capabilities through direct delegation and workflow management.

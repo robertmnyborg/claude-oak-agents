@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Claude Code agent system features **21 specialized agents** with comprehensive overlap resolution, mandatory delegation enforcement, intelligent multi-agent coordination, and direct workflow management by the Main LLM. The system eliminates agent confusion through clear domain boundaries while enabling sophisticated multi-agent collaboration for complex cross-domain tasks.
+The Claude Code agent system features **24 specialized agents** with comprehensive overlap resolution, mandatory delegation enforcement, intelligent multi-agent coordination, and direct workflow management by the Main LLM. The system eliminates agent confusion through clear domain boundaries while enabling sophisticated multi-agent collaboration for complex cross-domain tasks.
 
 ## 🚨 Delegation Enforcement System
 
@@ -43,22 +43,20 @@ The Main LLM maximizes parallel execution wherever possible:
 - **Analysis Phase**: `performance-optimizer` + `dependency-scanner`
 - **Documentation Phase**: `content-writer` + `technical-documentation-writer`
 - **Security Phase**: `security-auditor` + `code-reviewer` (independent components)
-- **Configuration**: `statusline-setup` + `output-style-setup` (can run with any phase)
 
 #### Sequential Dependencies (Quality Gates)
 1. **Mandatory Pre-Implementation**: `design-simplicity-advisor` (blocks ALL implementation)
 2. **Implementation**: Appropriate specialist agent based on domain
 3. **Code Review**: `code-reviewer` (blocks progression until quality gates pass)
-4. **Clarity Analysis**: `code-clarity-manager` (orchestrates maintainability)
-5. **Testing**: `unit-test-expert` (validates implementation)
-6. **Pre-Commit Simplicity**: `design-simplicity-advisor` (mandatory complexity review)
-7. **Git Operations**: `git-workflow-manager` + `changelog-recorder`
+4. **Testing**: `unit-test-expert` (validates implementation)
+5. **Pre-Commit Simplicity**: `design-simplicity-advisor` (mandatory complexity review)
+6. **Git Operations**: `git-workflow-manager` + `changelog-recorder`
 
 #### Blocking Conditions
 - **HIGHEST**: `debug-specialist` (blocks ALL other agents - critical errors only)
 - **MANDATORY**: `design-simplicity-advisor` (blocks ALL implementation AND git operations)
 - **HIGH**: `code-reviewer` (must pass before other analysis)
-- **MEDIUM**: `code-clarity-manager`, `unit-test-expert`
+- **MEDIUM**: `unit-test-expert`
 - **STANDARD**: All other agents based on dependencies
 
 ### Workflow Examples
@@ -68,10 +66,9 @@ The Main LLM maximizes parallel execution wherever possible:
 1. design-simplicity-advisor (MANDATORY pre-implementation)
 2. programmer/specialist (implementation with simplicity constraints)
 3. code-reviewer (quality gate validation)
-4. code-clarity-manager (maintainability analysis)
-5. unit-test-expert (test creation and coverage)
-6. design-simplicity-advisor (MANDATORY pre-commit review)
-7. git-workflow-manager + changelog-recorder (parallel finalization)
+4. unit-test-expert (test creation and coverage)
+5. design-simplicity-advisor (MANDATORY pre-commit review)
+6. git-workflow-manager + changelog-recorder (parallel finalization)
 ```
 
 #### Complex Multi-Agent Coordination
@@ -103,10 +100,9 @@ Sequential dependencies are enforced through mandatory quality gates:
 
 1. **Pre-Implementation Simplicity Gate**: `design-simplicity-advisor` blocks ALL implementation (MANDATORY)
 2. **Security & Quality Gate**: `code-reviewer` blocks all downstream analysis
-3. **Maintainability Gate**: `code-clarity-manager` blocks testing and commits
-4. **Test Coverage Gate**: `unit-test-expert` blocks git operations
-5. **Pre-Commit Simplicity Gate**: `design-simplicity-advisor` blocks ALL git operations (MANDATORY)
-6. **Documentation Gate**: `technical-documentation-writer` (advisory, non-blocking)
+3. **Test Coverage Gate**: `unit-test-expert` blocks git operations
+4. **Pre-Commit Simplicity Gate**: `design-simplicity-advisor` blocks ALL git operations (MANDATORY)
+5. **Documentation Gate**: `technical-documentation-writer` (advisory, non-blocking)
 
 ### Multi-Agent Coordination Patterns
 
@@ -142,9 +138,9 @@ Sequential dependencies are enforced through mandatory quality gates:
 ### 🛡️ Security & Quality Agents
 - **security-auditor**: Penetration testing, compliance validation (SOC2, GDPR, PCI DSS), threat modeling
 - **code-reviewer**: Security analysis, code quality, vulnerability detection
-- **code-clarity-manager**: Orchestrates maintainability analysis (runs top-down + bottom-up analyzers)
-- **top-down-analyzer**: Architectural clarity analysis (invoked by code-clarity-manager)
-- **bottom-up-analyzer**: Implementation-level clarity analysis (invoked by code-clarity-manager)
+- **code-clarity-manager**: System-wide maintainability orchestration (coordinates top-down + bottom-up analysis)
+- **top-down-analyzer**: Architectural impact analysis across entire affected codebase
+- **bottom-up-analyzer**: Implementation ripple effect analysis through dependent code
 - **unit-test-expert**: Comprehensive unit test creation and coverage
 - **design-simplicity-advisor**: KISS principle enforcement (MANDATORY before implementation AND commits)
 
@@ -163,8 +159,6 @@ Sequential dependencies are enforced through mandatory quality gates:
 - **technical-documentation-writer**: API docs, system documentation, technical writing
 
 ### 🔧 Configuration & Meta Agents
-- **statusline-setup**: Claude Code status line configuration
-- **output-style-setup**: Claude Code output style customization
 - **agent-creator**: Design and implement new specialized agents
 - **general-purpose**: Complex research, multi-domain tasks requiring broad knowledge
 

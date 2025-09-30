@@ -1,254 +1,77 @@
-# DRAFT: Supercharging Claude Code with Specialized Subagents: A Developer's Guide to Coordinated AI
+# Stop Context-Switching: Let AI Agents Handle the Specialized Work
 
-## The Problem: When One AI Isn't Enough
+## The Real Problem: Your Brain Wasn't Designed for This
 
-As developers, we've all experienced the frustration of context-switching between different specialized tasks. One moment you're deep in functional programming patterns, the next you're configuring AWS CDK constructs, then suddenly you're debugging a performance bottleneck. Each task requires a different mindset, different expertise, and different best practices.
+You're deep in writing TypeScript business logic when suddenly you need to fix a CDK deployment. Switch mental gears. Now there's a security vulnerability to patch. Switch again. Database optimization needed. Switch again.
 
-What if your AI assistant could mirror this specialized expertise? What if instead of one generalist AI trying to handle everything, you had a team of specialized agents, each an expert in their domain, working together seamlessly?
+Each context switch costs you 23 minutes to regain focus. By the time you're back in the zone, another interruption hits.
 
-That's exactly what the Claude Code subagent system provides.
+What if you could hand off specialized work to experts who already have the right context? What if switching between domains took seconds, not minutes?
 
-## Enter the Direct Coordination: How Subagents Transform Your Workflow
+## The Solution: Specialized AI Agents That Actually Know Their Stuff
 
-The subagent architecture introduces a powerful concept: **the Main LLM as a direct coordinator**. Instead of trying to be an expert at everything, the main AI becomes a project manager, intelligently delegating tasks to specialized agents who excel in specific domains.
+Instead of one generalist AI trying to be mediocre at everything, you get a team of specialists:
 
-Here's how it works:
+- **Backend architect** who thinks in APIs and databases
+- **Infrastructure specialist** who lives in CDK and deployment patterns
+- **Security auditor** who catches vulnerabilities you'd miss
+- **Performance optimizer** who knows where bottlenecks hide
 
-```mermaid
-graph TD
-    User[Your Request] --> MainLLM[Claude Direct Coordinator]
-    MainLLM --> Programmer[👨‍💻 Programmer Agent]
-    MainLLM --> Infrastructure[🏗️ Infrastructure Specialist]
-    MainLLM --> Security[🔒 Security Auditor]
-    MainLLM --> Reviewer[✅ Code Reviewer]
-```
+Each agent maintains deep context in their domain. No more explaining CDK concepts to an AI that just learned them. No more walking through security basics every time.
 
-When you say "implement a REST API with authentication," the main LLM immediately recognizes this as a complex task and delegates:
-- **Programmer Agent**: Implements the API endpoints using your preferred language hierarchy
-- **Security Auditor**: Reviews authentication patterns for vulnerabilities
-- **Code Reviewer**: Ensures code quality and best practices
-- **Infrastructure Specialist**: Sets up CDK constructs for deployment
+## Why This Changes Everything
 
-## Why This Matters: Real Benefits for Real Developers
+### Ship Features 3x Faster
+While you focus on core business logic, specialists handle the supporting work in parallel. Database optimization happens while you're building the UI. Security review runs while infrastructure deploys.
 
-### 1. **Specialized Expertise at Scale**
-Each agent is fine-tuned with domain-specific knowledge. The `programmer` agent enforces functional programming patterns and knows to avoid classes (except for CDK). The `security-auditor` catches vulnerabilities that a generalist might miss. The `infrastructure-specialist` thinks in cloud-native patterns.
+### Stop Second-Guessing Yourself
+The security auditor catches auth flaws before they hit production. The performance optimizer spots N+1 queries before users complain. Quality gates that actually understand their domains.
 
-### 2. **Parallel Execution for Speed**
-Multiple agents can work simultaneously on independent tasks. While the `programmer` implements your feature, the `infrastructure-specialist` can be setting up your deployment pipeline in parallel.
+### Never Lose Context Again
+Each specialist stays in their lane. The infrastructure agent knows your CDK patterns. The backend architect understands your API design. No more re-explaining project context every conversation.
 
-### 3. **Quality Gates That Actually Work**
-The `code-reviewer` agent acts as a blocking gate - no code gets committed until it passes review. The `debug-specialist` has the highest priority and blocks all other work when critical issues are detected.
+## How It Works: One Simple Example
 
-### 4. **Customizable Per Project**
-Different projects have different needs. A Python FastAPI project has different requirements than a Go microservice. The inheritance system lets you override global rules locally:
+You say: "Add user authentication with rate limiting"
 
-```
-Global Config: Go > TypeScript > Bash > Ruby
-Local Override: Python > TypeScript > Go
-Result: Your project uses Python first
-```
+**Traditional approach:** Explain auth patterns, then rate limiting, then security considerations, then deployment... 30 minutes of context-setting before any code gets written.
 
-## Installation: Getting Your Agent Team Up and Running
+**Specialist approach:**
+- Backend architect designs the auth flow (2 minutes)
+- Security auditor reviews for vulnerabilities (parallel)
+- Infrastructure specialist adds rate limiting middleware (parallel)
+- All deliver results simultaneously
 
-### Step 1: Set Up the Global Agent Directory
+Total time: 5 minutes to working, reviewed, deployable code.
 
-Create your global Claude configuration directory:
+## Getting Started: 3 Simple Steps
 
+### Step 1: Install the Agent System
 ```bash
 mkdir -p ~/.claude/agents
-cd ~/.claude
 ```
 
-### Step 2: Install the Core Configuration
+### Step 2: Download Core Specialists
+Get the essential agents from the repository:
+- backend-architect.md (API and database logic)
+- infrastructure-specialist.md (CDK and deployment)
+- security-auditor.md (vulnerability detection)
 
-Create the main orchestration rules in `~/.claude/CLAUDE.md`:
-
-```markdown
-# 🚨 CRITICAL: DIRECT COORDINATION WORKFLOW 🚨
-
-**STEP 1: DETECT COMPLEX TASKS**
-Trigger direct agent coordination for:
-- **Action verbs**: implement, create, build, fix, deploy, test
-- **Multi-component work**: numbered lists, bullet points
-- **Complex patterns**: architecture, infrastructure, monitoring
-
-**STEP 2: DIRECT AGENT DELEGATION**
-Main LLM coordinates directly and invokes appropriate agents:
-
-**Programming Work**: ALL coding tasks → `programmer` agent
-**Infrastructure Work**: CDK, deployment → `infrastructure-specialist` agent
-**Security Work**: Security analysis → `security-auditor` agent
-**Quality Gates**: Code review → `code-reviewer` agent
+### Step 3: Start Delegating
+```
+"Implement JWT authentication with refresh tokens"
 ```
 
-### Step 3: Install Specialized Agents
+The main AI detects this needs backend work, automatically delegates to the backend-architect, who already knows your tech stack and security requirements.
 
-Download and place agent definitions in `~/.claude/agents/`:
+## The Bottom Line
 
-```bash
-# Core agents you'll want to install:
-~/.claude/agents/programmer.md           # Handles all coding tasks
-~/.claude/agents/infrastructure-specialist.md  # AWS CDK and cloud
-~/.claude/agents/security-auditor.md     # Security analysis
-~/.claude/agents/code-reviewer.md        # Quality gates
-~/.claude/agents/unit-test-expert.md     # Test coverage
-~/.claude/agents/debug-specialist.md     # Debugging (highest priority)
-~/.claude/agents/git-workflow-manager.md         # Git operations
-```
+Context-switching kills productivity. Specialists eliminate context-switching.
 
-Each agent file defines its specialization. For example, `programmer.md`:
+You get back to building features. Specialists handle the specialized work they're actually good at. Your code ships faster and breaks less.
 
-```markdown
----
-name: programmer
-description: Programming specialist for ALL coding tasks
----
-
-## Technology Constraints
-### Language Hierarchy
-1. Go (distributed systems, performance-critical)
-2. TypeScript (type safety, modern syntax)
-3. Bash (system operations, automation)
-4. Ruby (scripting, Rails applications)
-
-### Functional Programming Rules
-- NO CLASSES (exception: CDK constructs only)
-- Use pure functions and immutable data
-- Composition over inheritance
-```
-
-### Step 4: Project-Specific Overrides (Optional)
-
-For project-specific needs, create local overrides:
-
-```bash
-# In your project directory:
-mkdir -p .claude/agents
-
-# Override the programmer agent for a Python project:
-cat > .claude/agents/programmer.md << 'EOF'
----
-name: programmer
-description: Python-focused programmer for FastAPI
----
-
-## Technology Constraints
-### Language Hierarchy (Project Override)
-1. Python (FastAPI backend)
-2. TypeScript (React frontend)
-3. Bash (deployment)
-EOF
-```
-
-## Usage: Putting Your Agent Team to Work
-
-### Basic Usage: Let the Main LLM Handle It
-
-Simply describe what you need, and the main LLM will automatically detect complexity and delegate:
-
-```
-"Implement user authentication with JWT tokens and role-based access control"
-```
-
-The main LLM will:
-1. Detect this as a complex, multi-component task
-2. Invoke the `programmer` agent for implementation
-3. Trigger `security-auditor` for vulnerability review
-4. Run `code-reviewer` for quality gates
-5. Execute `unit-test-expert` for test coverage
-
-### Advanced Usage: Parallel Execution
-
-When you need maximum efficiency, request parallel execution:
-
-```
-"Run these agents in parallel: analyze the codebase architecture,
-scan for security vulnerabilities, and check dependency versions"
-```
-
-This triggers:
-- `systems-architect` (architecture analysis)
-- `security-auditor` (vulnerability scanning)
-- `dependency-scanner` (dependency audit)
-
-All three run simultaneously, dramatically reducing wait time.
-
-### Quality-First Workflow
-
-The system enforces quality through blocking gates:
-
-```
-Code Implementation → Code Review → Unit Tests → Git Commit → Changelog
-         ↓                ↓            ↓           ↓          ↓
-    [programmer]    [code-reviewer] [unit-test] [git-workflow] [changelog]
-                         BLOCKS      BLOCKS       BLOCKED      AUTO
-```
-
-If the code reviewer finds issues, it blocks the workflow and sends it back to the programmer. No commits happen until quality gates pass.
-
-## Real-World Example: Building a Microservice
-
-Let's say you request: "Create a Go microservice with health checks, metrics, and Kubernetes deployment"
-
-Here's what happens behind the scenes:
-
-1. **Main LLM Detection**: Recognizes "create," "microservice," and multiple components
-2. **Parallel Delegation**:
-   - `programmer`: Implements Go service with health endpoints
-   - `infrastructure-specialist`: Creates K8s manifests and CDK setup
-   - `systems-architect`: Designs service architecture
-
-3. **Sequential Quality Gates**:
-   - `code-reviewer`: Reviews Go code for best practices
-   - `security-auditor`: Scans for vulnerabilities
-   - `unit-test-expert`: Ensures test coverage
-
-4. **Completion**:
-   - `git-workflow`: Creates feature branch and commits
-   - `changelog`: Documents changes
-
-Total time: Significantly reduced through parallel execution and specialized expertise.
-
-## Advanced Features: The Power of Inheritance
-
-### Global Defaults
-Set organization-wide standards in `~/.claude/CLAUDE.md`:
-- Language preferences
-- Security requirements
-- Code style rules
-- Git workflow standards
-
-### Project Overrides
-Override for specific projects in `./CLAUDE.md`:
-- Different language hierarchy
-- Project-specific frameworks
-- Custom quality gates
-- Local compliance rules
-
-### Agent Customization
-Create custom agents for your needs:
-- Domain-specific validators
-- Company-specific deployment agents
-- Custom testing frameworks
-- Proprietary tool integrations
-
-## Performance Benefits: Why This Architecture Wins
-
-1. **Reduced Context Overhead**: Each agent maintains focused context on its specialty
-2. **Parallel Processing**: Multiple agents work simultaneously on independent tasks
-3. **Fewer Iterations**: Specialized agents get it right the first time more often
-4. **Clear Accountability**: Each agent owns its domain completely
-5. **Scalable Complexity**: Add more agents as your needs grow
-
-## Conclusion: Your New Development Superpower
-
-The subagent system transforms Claude Code from a single AI assistant into an entire development team. Each agent brings specialized expertise, working in concert under direct main LLM coordination.
-
-Whether you're building microservices, deploying infrastructure, or hunting bugs, you now have a specialized expert for each task. The system adapts to your project needs through inheritance, enforces quality through blocking gates, and accelerates delivery through parallel execution.
-
-Stop context-switching. Start coordinating. Let specialized agents handle what they do best while you focus on what matters: shipping great software.
+Stop being a generalist AI's teacher. Start being a team lead with specialist agents.
 
 ---
 
-*Ready to supercharge your development workflow? Install the subagent system today and experience the power of coordinated AI development. Your code quality will thank you.*
+*Ready to stop context-switching? Get the agent system running in 5 minutes and experience focused development.*

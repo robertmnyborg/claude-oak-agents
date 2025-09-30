@@ -1,4 +1,4 @@
-# Rules for Development Process
+# SQUAD.md - System Orchestration Rules
 
 # 🚨 CRITICAL: MANDATORY DELEGATION ENFORCEMENT 🚨
 
@@ -93,8 +93,6 @@ COMPLEXITY: [Simple/Medium/Complex]
 #### Quality & Security (Sequential)
 - **code-reviewer**: Quality gates, code standards, security blocks
 - **code-clarity-manager**: Maintainability orchestration (top-down + bottom-up)
-- **top-down-analyzer**: System-wide architectural impact analysis
-- **bottom-up-analyzer**: Implementation ripple effect analysis
 - **unit-test-expert**: Unit test creation, coverage validation
 - **security-auditor**: Penetration testing, compliance, threat modeling
 - **dependency-scanner**: Supply chain security, license compliance, vulnerabilities
@@ -148,7 +146,7 @@ COMPLEXITY: [Simple/Medium/Complex]
 ### CLASSIFICATION ROUTING
 - **INFORMATION** (Simple): Direct Main LLM handling - file reads, basic questions, definitions
 - **INFORMATION** (Complex): business-analyst, data-scientist, or domain analyst
-- **IMPLEMENTATION**: domain specialist → quality gate (combined) → git operations
+- **IMPLEMENTATION**: MANDATORY design-simplicity-advisor → domain specialist → quality gates
 - **ANALYSIS**: Route to appropriate analyst (business-analyst, data-scientist, performance-optimizer, security-auditor)
 - **COORDINATION**: Multi-agent workflow with Main LLM orchestration
 
@@ -254,67 +252,20 @@ Implementation → Domain keywords? → Route to specialist
 - **Blocks all other classification** until critical issues resolved
 
 ### Default Workflows
-- **IMPLEMENTATION**: specialist → quality gate (combined) → git operations
-- **IMPLEMENTATION** (complex): design-simplicity-advisor → specialist → sequential quality gates (when COMPLEX_WORKFLOW=true)
+- **IMPLEMENTATION**: design-simplicity-advisor → specialist → quality gates
 - **ANALYSIS**: analyst(s) → Main LLM synthesis
 - **COORDINATION**: workflow management with appropriate specialists
 - **INFORMATION**: Direct handling (simple) or analyst delegation (complex)
-</Rule>
-
-<Rule id="simplified-workflow-enforcement">
-**SIMPLIFIED WORKFLOW ENFORCEMENT**: KISS-based 3-step workflow replacing complex agent chains
-
-### Primary Workflow (RECOMMENDED)
-**3-Step Simplified Workflow**: Implementation → Quality Gate → Git Operations
-
-1. **Implementation Phase**: Domain specialist executes the work
-2. **Quality Gate Phase**: Combined review (code review + tests + simplicity check)
-3. **Git Operations Phase**: Commit creation + changelog update
-
-### Quality Gate Integration
-**Quality Gate** combines multiple checks into single coordinated review:
-- Code review and standards validation
-- Unit test creation and execution
-- Simplicity and KISS compliance check
-- Security and performance basic validation
-
-### Technical Enforcement
-**Workflow State Tracking**:
-- `.workflow_state` file tracks current phase and validation status
-- Hash validation ensures code hasn't changed between phases
-- Git hooks provide bulletproof enforcement of workflow completion
-
-**Enforcement Mechanisms**:
-```bash
-# Pre-commit hook validates workflow completion
-if [ ! -f ".workflow_state" ] || ! grep -q "QUALITY_GATE_PASSED" .workflow_state; then
-  echo "❌ Workflow not completed. Run quality gate validation."
-  exit 1
-fi
-```
-
-### Failure Recovery
-**State Recovery Procedures**:
-- Incomplete workflow: Resume from last completed phase
-- Failed quality gate: Address issues and re-run validation
-- State corruption: Reset workflow and restart from implementation
-
-### Backward Compatibility
-**Complex Agent Chain** (optional for teams requiring granular control):
-- Legacy 7-agent workflow remains available via explicit flag
-- Use `COMPLEX_WORKFLOW=true` environment variable to enable
-- Default behavior uses simplified 3-step workflow
 </Rule>
 
 <Rule id="multi-agent-coordination">
 **MULTI-AGENT COORDINATION**: Workflow patterns for overlapping domains
 
 ### Coordination Types
-1. **Simplified Quality Gates** (RECOMMENDED): Implementation → Quality Gate (combined) → Git Operations
-2. **Legacy Sequential Gates** (optional): Implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
-3. **Parallel Analysis**: [security-auditor + performance-optimizer + dependency-scanner] → Main LLM synthesis
-4. **Collaborative Architecture**: systems-architect → [backend-architect + infrastructure-specialist] → Main LLM integration
-5. **Domain Collaboration**: [specialist-1 + specialist-2] → Main LLM reconciliation
+1. **Sequential Quality Gates** (MANDATORY): Implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
+2. **Parallel Analysis**: [security-auditor + performance-optimizer + dependency-scanner] → Main LLM synthesis
+3. **Collaborative Architecture**: systems-architect → [backend-architect + infrastructure-specialist] → Main LLM integration
+4. **Domain Collaboration**: [specialist-1 + specialist-2] → Main LLM reconciliation
 
 ### Coordination Patterns
 - **Security**: security-auditor + code-reviewer + dependency-scanner → comprehensive report
@@ -367,141 +318,65 @@ fi
 </Rule>
 
 <Rule id="mandatory-simplicity-workflow">
-**MANDATORY SIMPLICITY WORKFLOW**: Simplified enforcement with technical backing
+**MANDATORY SIMPLICITY WORKFLOW**: Pre-implementation AND pre-commit enforcement
 
-### Simplified Workflow (DEFAULT)
-`Task Detection → Implementation Agent → Quality Gate (combined) → Git Operations`
-
-**Quality Gate includes**:
-- Simplicity analysis (KISS compliance)
-- Code review and standards
-- Basic testing validation
-- Security and performance checks
-
-### Legacy Complex Workflow (OPTIONAL)
-`Task Detection → design-simplicity-advisor (pre-implementation) → Implementation Agent → Sequential Quality Gates → design-simplicity-advisor (pre-commit) → git-workflow-manager`
-
-**Enable with**: `COMPLEX_WORKFLOW=true`
+### Workflow (NON-NEGOTIABLE)
+`Task Detection → design-simplicity-advisor (pre-implementation) → Implementation Agent → Quality Gates → design-simplicity-advisor (pre-commit) → git-workflow-manager`
 
 ### Implementation Blocking
-- **NO IMPLEMENTATION** until quality gate design analysis completes
+- **NO IMPLEMENTATION** until design-simplicity-advisor completes analysis
 - **NO BYPASS** - Main LLM must invoke for ANY implementation task
 - **TRIGGERS**: implement, create, build, develop, code, design, etc.
 - **EXCEPTION**: debug-specialist only (critical errors)
 
-### Technical Enforcement
-**Workflow State File** (`.workflow_state`):
-```
-PHASE=IMPLEMENTATION|QUALITY_GATE|GIT_OPERATIONS
-STATUS=IN_PROGRESS|COMPLETED|FAILED
-HASH=<code_hash_for_validation>
-TIMESTAMP=<iso_timestamp>
-```
-
-**Git Hook Integration**:
-- Pre-commit: Validates workflow completion
-- Post-commit: Cleans up workflow state
-- Pre-push: Ensures quality gate passed
-
-### Enforcement Principles
+### Enforcement
 - **Simple-first principle**: Start with simplest viable solution
 - **Complexity justification**: Complex solutions need explicit justification
 - **Deferred optimization**: Performance only when proven necessary
 - **Minimal dependencies**: Prefer built-in over external libraries
 
 ### Workflow Integration
-- **Simplified**: implementation → quality gate (includes simplicity) → git ops
-- **Complex**: design-simplicity-advisor → security-auditor → implementation → sequential gates
-- **Emergency**: debug-specialist (bypass with post-commit review requirement)
+- **Security**: design-simplicity-advisor → security-auditor → implementation
+- **Performance**: design-simplicity-advisor → performance-optimizer → implementation
+- **Architecture**: design-simplicity-advisor → systems-architect → implementation
+
+### Pre-Commit Requirements
+- **MANDATORY**: design-simplicity-advisor MUST review before git operations
+- **BLOCKING**: git-workflow-manager waits for simplicity review
+- **ANALYSIS**: Overall complexity vs requirements, unnecessary abstractions, KISS compliance
+- **NO BYPASS**: Emergency fixes require post-commit review
 </Rule>
 
-<Rule id="quality-gate-enforcement">
-**QUALITY GATE ENFORCEMENT**: Unified simplicity and quality validation
+<Rule id="pre-commit-simplicity">
+**PRE-COMMIT SIMPLICITY**: Final quality gate
 
-### Simplified Quality Gate (DEFAULT)
-**Combined Validation Process**:
-- Code review and standards compliance
-- Unit test creation and execution
-- KISS principle validation
-- Basic security and performance checks
-- Documentation completeness
+### Blocking Requirements
+- **SEQUENCE**: unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
+- **NO GIT OPS** until simplicity review complete
+- **FINAL GATE**: Pre-commit simplicity is mandatory final quality gate
 
-**Single Quality Gate Agent** handles all validations with coordinated output.
-
-### Legacy Sequential Gates (OPTIONAL)
-**Traditional Sequence**: unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
-
-**Enable with**: `COMPLEX_WORKFLOW=true`
-
-### Technical Enforcement
-**Workflow State Validation**:
-```bash
-# Pre-commit hook example
-if ! quality_gate_validator.sh --validate-all; then
-  echo "❌ Quality gate failed. Address issues before commit."
-  exit 1
-fi
-```
-
-**Quality Gate Requirements**:
+### Analysis Requirements
 - **HOLISTIC**: Analyze entire changeset for unnecessary complexity
 - **KISS VALIDATION**: Ensure Keep It Simple, Stupid principle compliance
 - **ABSTRACTION**: Flag over-abstraction or premature optimization
 - **OPPORTUNITIES**: Recommend simplifications before commit
 - **DEBT ASSESSMENT**: Flag complexity creating maintenance burden
-- **TEST COVERAGE**: Ensure adequate unit test coverage
-- **SECURITY BASICS**: Check for common security issues
 
-### Integration Options
-**Simplified Path**:
-- **NO GIT OPS** until quality gate complete
-- **FINAL GATE**: Quality gate is mandatory before git operations
+### Integration
 - **EMERGENCY**: debug-specialist can bypass (critical production only), MUST schedule post-commit review
-
-**Complex Path** (when `COMPLEX_WORKFLOW=true`):
-- **SEQUENCE**: unit-test-expert → design-simplicity-advisor → git-workflow-manager
-- **GRANULAR CONTROL**: Each agent provides specific validation
-- **DETAILED FEEDBACK**: Separate reports from each quality agent
-
-### State Recovery
-**Failed Quality Gate**:
-1. Review failure report
-2. Address identified issues
-3. Re-run quality gate validation
-4. Proceed to git operations on success
+- **REFACTORING**: Implementation agent must address complexity issues before git ops
+- **DOCUMENTATION**: Complexity decisions need explicit justification
+- **CONSISTENCY**: Ensure project simplicity standards compliance
 </Rule>
 </AgentDelegationRules>
-
-<RuleInheritance>
-<Rule id="overrides">
-**RULE OVERRIDES**: Local overrides global
-- Local `./CLAUDE.md` overrides global `/Users/jamsa/.claude/CLAUDE.md`
-- Local agents `./claude/agents/agent-name.md` override global agents
-- Same agent name = complete override (not merge)
-</Rule>
-</RuleInheritance>
-
-<CommunicationStyle>
-<Rule id="communication">
-**COMMUNICATION STYLE**: Direct, concise, technical focus, no unnecessary apologies, clear completion reporting
-</Rule>
-</CommunicationStyle>
-
-<ProjectStandards>
-<Rule id="standards">
-**PROJECT STANDARDS**:
-- **Required files**: README.md, SPEC.md, CLAUDE.md
-- **Commands**: Use --yes, --set-upstream flags
-- **Notes**: VSCode GitHub warnings ignorable (plugin issue)
-</Rule>
-</ProjectStandards>
 
 <ThinkingProcess>
 <Rule id="thinking">
 **THINKING PROCESS**:
 - Complex tasks: Use <thinking></thinking> tags
-- Always acknowledge CLAUDE.md rules
+- Always acknowledge SQUAD.md orchestration rules
 - **Classification phrases**: "Classifying request as [TYPE]", "Domain identification: [DOMAIN]", "Agent plan: [WORKFLOW]", "Executing classification-based workflow"
 - **Main LLM workflow**: CLASSIFY → IDENTIFY DOMAINS → CREATE PLAN → EXECUTE PLAN → FORMAT RESPONSE
 </Rule>
 </ThinkingProcess>
+</PersistentRules>

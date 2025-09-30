@@ -195,7 +195,7 @@ The main LLM coordinates directly:
 ```
 1. HIGHEST: debug-specialist (blocks all others)
 2. HIGH: code-reviewer (quality gate)
-3. MEDIUM: code-clarity-manager, unit-test-expert
+3. MEDIUM: unit-test-expert
 4. LOW: workflow and documentation agents
 5. UTILITY: configuration agents (non-blocking)
 ```
@@ -204,9 +204,8 @@ The main LLM coordinates directly:
 
 Sequential dependencies enforced:
 1. **Security Gate**: code-reviewer must pass
-2. **Maintainability Gate**: code-clarity-manager must pass
-3. **Test Gate**: unit-test-expert must pass
-4. **Documentation**: technical-documentation-writer (advisory)
+2. **Test Gate**: unit-test-expert must pass
+3. **Documentation**: technical-documentation-writer (advisory)
 
 ## 💾 Backup and Recovery
 

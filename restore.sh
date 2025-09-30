@@ -5,6 +5,34 @@
 
 set -e
 
+# Function to merge JSON files using jq
+merge_json_files() {
+    local existing_file="$1"
+    local backup_file="$2"
+    local target_file="$3"
+
+    # Check if jq is available
+    if ! command -v jq &> /dev/null; then
+        echo "⚠️  Warning: jq not found, copying without merging"
+        cp "$backup_file" "$target_file"
+        return 1
+    fi
+
+    # If existing file doesn't exist, just copy the backup
+    if [ ! -f "$existing_file" ]; then
+        echo "📄 Restoring configuration file from backup..."
+        cp "$backup_file" "$target_file"
+        return 0
+    fi
+
+    # Merge files using jq (existing takes precedence for restore)
+    echo "📄 Merging existing configuration with backup..."
+    jq -s '.[0] * .[1]' "$existing_file" "$backup_file" > "${target_file}.tmp"
+    mv "${target_file}.tmp" "$target_file"
+    echo "✅ Configuration merged successfully"
+    return 0
+}
+
 CLAUDE_DIR="${HOME}/.claude"
 BACKUP_PATH="$1"
 
@@ -72,7 +100,11 @@ echo "🔄 Restoring configuration..."
 
 # Restore core files
 echo "⚙️  Restoring core configuration..."
-cp "$BACKUP_PATH/settings.json" "$CLAUDE_DIR/" 2>/dev/null || echo "⚠️  settings.json not in backup"
+if [ -f "$BACKUP_PATH/settings.json" ]; then
+    merge_json_files "$CLAUDE_DIR/settings.json" "$BACKUP_PATH/settings.json" "$CLAUDE_DIR/settings.json"
+else
+    echo "⚠️  settings.json not in backup"
+fi
 cp "$BACKUP_PATH/CLAUDE.md" "$CLAUDE_DIR/" 2>/dev/null || echo "⚠️  CLAUDE.md not in backup"
 cp "$BACKUP_PATH/AGENTS.md" "$CLAUDE_DIR/" 2>/dev/null || echo "⚠️  AGENTS.md not in backup"
 cp "$BACKUP_PATH/.clauderc" "$CLAUDE_DIR/" 2>/dev/null || echo "⚠️  .clauderc not in backup"
