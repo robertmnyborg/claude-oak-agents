@@ -2,8 +2,9 @@
   "name": "claude-squad-marketplace",
   "description": "Local marketplace for Claude Squad Plugin development and testing",
   "version": "1.0.0",
-  "plugins": {
-    "claude-squad": {
+  "owner": "jamsajones",
+  "plugins": [
+    {
       "name": "claude-squad",
       "description": "A comprehensive suite of specialized agents with mandatory delegation enforcement for software development",
       "version": "1.0.0",
@@ -25,5 +26,5 @@
         "Session-based squad management"
       ]
     }
-  }
+  ]
 }
