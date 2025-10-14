@@ -1,211 +1,215 @@
-# Claude Code Bootstrap Configuration
+# Claude Squad Plugin
 
-A comprehensive Claude Code setup with specialized agents, mandatory delegation enforcement, and direct main LLM coordination.
+A comprehensive Claude Code plugin with 29+ specialized agents, mandatory delegation enforcement, and intelligent workflow coordination for software development teams.
 
-## 🚀 Quick Start
+## 🚀 Quick Installation
 
+### Step 1: Add Local Marketplace
 ```bash
-# Source the environment (add to your shell profile)
-source ~/.claude/.clauderc
+# Add this repository as a local marketplace
+/plugin marketplace add /path/to/claude-squad-plugin
 
-# Check status
-claude-status
+# Or clone and add:
+git clone https://github.com/your-org/claude-squad-plugin.git
+/plugin marketplace add ./claude-squad-plugin
+```
+
+### Step 2: Install Plugin
+```bash
+# Install the Claude Squad plugin
+/plugin install claude-squad@local
+
+# Restart Claude Code to activate
+```
+
+### Step 3: Activate Squad System
+```bash
+# Enable agent delegation
+/squad-on
+
+# Check squad status
+/squad-status
 
 # View available agents
-claude-agents
-
-# Create a new project with templates
-claude-new-project my-awesome-project
-
-# Create configuration backup
-claude-backup
+/help
 ```
 
 ## 🤖 Agent System
 
-This configuration includes specialized agents with mandatory delegation enforcement that prevents main LLM bypass:
+This plugin provides 29 specialized agents with mandatory delegation enforcement:
 
 ### 🏗️ Core Development Agents
 - **frontend-developer** - UI/UX implementation, React/Vue/Angular, browser compatibility
 - **backend-architect** - Database design, API architecture, microservices patterns
-- **programmer** - Core programming with language hierarchy (Go > TypeScript > Bash > Ruby)
-- **qa-specialist** - End-to-end testing, integration testing, performance validation
-- **business-analyst** - Requirements analysis, user stories, stakeholder communication
-- **content-writer** - Technical documentation, marketing content, API documentation
-
-### 🔬 Specialist Programming Agents
-- **ml-engineer** - Python/TensorFlow, data pipelines, MLOps practices
-- **blockchain-developer** - Solidity smart contracts, Web3 integration, DeFi protocols
+- **infrastructure-specialist** - CDK constructs, cloud architecture, deployment strategies
 - **mobile-developer** - React Native, iOS, Android development
+- **blockchain-developer** - Solidity smart contracts, Web3 integration, DeFi protocols
+- **ml-engineer** - Python/TensorFlow, data pipelines, MLOps practices
 - **legacy-maintainer** - Java, C#, enterprise systems maintenance and modernization
 
 ### 🛡️ Security & Quality Agents
-- **security-auditor** - Enhanced penetration testing, compliance validation (SOC2, GDPR, PCI DSS)
+- **security-auditor** - Penetration testing, compliance validation (SOC2, GDPR, PCI DSS)
 - **code-reviewer** - Security analysis, code quality, vulnerability detection
 - **code-clarity-manager** - Orchestrates maintainability analysis
-- **top-down-analyzer** - Architectural clarity analysis (invoked by code-clarity-manager)
-- **bottom-up-analyzer** - Implementation-level clarity analysis (invoked by code-clarity-manager)
 - **unit-test-expert** - Comprehensive unit test creation and coverage
-
-### ⚙️ Infrastructure & Operations Agents
-- **infrastructure-specialist** - CDK constructs, cloud architecture, deployment strategies
-- **systems-architect** - System design, infrastructure planning, technical specifications
-- **performance-optimizer** - Performance analysis, bottleneck identification, optimization
 - **dependency-scanner** - Third-party dependency analysis, vulnerability scanning
-- **debug-specialist** - Critical error resolution (highest priority, blocks all other agents)
+- **qa-specialist** - End-to-end testing, integration testing, performance validation
 
-### 📋 Workflow & Management Agents
+### ⚙️ Operations & Analysis Agents
+- **performance-optimizer** - Performance analysis, bottleneck identification
+- **systems-architect** - System design, infrastructure planning, technical specifications
+- **debug-specialist** - Critical error resolution (highest priority)
 - **git-workflow-manager** - Git operations, branch management, PR creation
-- **changelog-recorder** - Automatic changelog generation
 - **project-manager** - Multi-step project coordination
+
+### 📝 Content & Documentation Agents
+- **technical-documentation-writer** - API docs, technical specifications
+- **content-writer** - Marketing content, user-facing documentation
+- **business-analyst** - Requirements analysis, user stories, stakeholder communication
 - **data-scientist** - Data analysis, insights, statistical processing
 
-### 🔧 Configuration Agents
-- **statusline-setup** - Claude Code status line configuration
-- **output-style-setup** - Claude Code output style customization
+### 🎯 Specialty Agents
+- **design-simplicity-advisor** - KISS principle enforcement (mandatory before implementation)
+- **prompt-engineer** - AI prompt optimization and engineering
+- **agent-creator** - Design and implement new specialized agents
+- **general-purpose** - Basic queries and single-line commands only
 
-### 🤖 Meta Agents
-- **agent-creator** - Design and implement new specialized agents, update coordination patterns
+## 📋 Available Commands
 
-## 📁 Directory Structure
+The plugin includes squad management commands:
 
-```
-~/.claude/
-├── 📄 Core Configuration
-│   ├── CLAUDE.md              # Personal development rules
-│   ├── AGENTS.md              # Agent system documentation
-│   ├── settings.json          # Main Claude configuration
-│   └── .clauderc              # Shell environment setup
-├── 🤖 Agent System
-│   └── agents/                # Specialized agents with delegation enforcement
-├── 📋 Project Templates
-│   └── templates/             # CLAUDE.md, SPEC.md, README.md templates
-├── 🔧 Utilities
-│   ├── install.sh             # Bootstrap installer
-│   ├── backup.sh              # Configuration backup
-│   └── restore.sh             # Configuration restore
-├── 🔌 Extensions
-│   ├── plugins/               # Plugin configurations
-│   ├── workflows/             # Predefined workflows
-│   └── integrations/          # Third-party integrations
-└── 📊 Runtime Data
-    ├── projects/              # Project-specific data
-    ├── todos/                 # Task tracking
-    └── memory/                # Agent persistent memory
-```
+- `/squad-deploy` - Deploy and activate the agent system
+- `/squad-on` - Enable agent delegation
+- `/squad-off` - Disable agent delegation
+- `/squad-status` - View current squad status
+- `/squad-furlough` - Temporarily disable specific agents
+- `/squad-assemble` - Reactivate all agents
+- `/squad-dismiss` - Remove specific agents
+- `/squad-standdown` - Emergency disable all agents
+- `/squad-override` - Bypass delegation for single tasks
 
 ## ⚙️ Key Features
 
-### Delegation Enforcement System
-- **Mandatory delegation** - Main LLM prohibited from programming work
-- **Enhanced contextual routing** - Priority-based agent selection with test-specific pattern recognition
-- **Bypass prevention** - 5-layer enforcement prevents main LLM technical work
-- **Intelligent routing** - Project context and compound phrases determine specialist agent selection
+### Mandatory Delegation System
+- **Zero-bypass enforcement** - Main LLM prohibited from implementation work
+- **Domain routing** - Automatic specialist assignment based on context
+- **Quality gates** - Code review → testing → simplicity analysis
+- **Emergency handling** - Critical errors bypass normal workflow
 
-### Direct Coordination Architecture
-- **Direct main LLM coordination** - Main LLM coordinates all agent workflows directly
-- **Solved re-entrant state problem** - Main LLM maintains consistent workflow state
-- **Efficient delegation** - Direct coordination with specialized agents
-- **Quality gates** - Sequential validation (code-reviewer → code-clarity-manager → testing)
+### Workflow Automation
+- **Classification-based routing** - INFORMATION/IMPLEMENTATION/ANALYSIS/COORDINATION
+- **Multi-agent coordination** - Parallel and sequential agent workflows
+- **Quality enforcement** - Mandatory simplicity advisor before commits
+- **Git integration** - Automated workflow state tracking
 
-### Development Standards
-- **Technology constraints** - Go > TypeScript > Bash > Ruby preference
-- **Functional programming** - avoid classes except for CDK constructs
-- **CDK-first architecture** - distributed functions and static assets
-- **Project standards** - required README.md, SPEC.md, CLAUDE.md files
+### Intelligence Features
+- **Context detection** - File types, technologies, domain keywords
+- **Pattern matching** - Trigger-based agent activation
+- **State management** - Workflow progress tracking
+- **Error prioritization** - Debug specialist always takes precedence
 
-### Configuration Management
-- **Backup/restore** system for configuration safety
-- **Template system** for consistent project setup
-- **Environment integration** with shell aliases and functions
-- **Version tracking** and change management
+## 🔧 Plugin Structure
 
-## 🔧 Available Commands
-
-### Core Commands
-```bash
-claude-status          # Show Claude configuration status
-claude-agents          # List all available agents
-claude-config [file]   # Edit configuration files
+```
+claude-squad-plugin/
+├── .claude-plugin/
+│   └── plugin.json          # Plugin metadata
+├── agents/                  # 29 specialized agent definitions
+│   ├── backend-architect.md
+│   ├── frontend-developer.md
+│   └── ... (27 more)
+├── commands/                # Squad management commands
+│   ├── squad-deploy.md
+│   ├── squad-on.md
+│   └── ... (7 more)
+├── hooks/                   # Session automation
+│   ├── hooks.json
+│   └── sessionStart.sh     # Auto-loads squad rules
+├── CLAUDE.md               # Delegation enforcement rules
+├── marketplace.json        # Distribution configuration
+└── README.md              # This file
 ```
 
-### Project Management
+## 🎯 Usage Examples
+
+### Development Workflow
 ```bash
-claude-new-project <name>  # Create project with templates
+# User asks to "fix the login API bug"
+# System automatically:
+# 1. Classifies as IMPLEMENTATION
+# 2. Routes to backend-architect (API domain)
+# 3. Enforces quality gates
+# 4. Creates git commit with proper workflow
 ```
 
-### Backup & Restore
+### Multi-Domain Tasks
 ```bash
-claude-backup          # Create timestamped backup
-claude-restore <path>  # Restore from backup
+# User asks to "build a secure mobile app with analytics"
+# System coordinates:
+# 1. security-auditor (security requirements)
+# 2. mobile-developer (app implementation)
+# 3. data-scientist (analytics design)
+# 4. Main LLM synthesizes results
 ```
 
-## 📝 Configuration Files
+## 🚨 Enforcement Rules
 
-### CLAUDE.md
-Personal development rules and delegation enforcement. Defines:
-- Mandatory delegation triggers and enforcement mechanisms
-- Technology stack preferences and language hierarchy
-- Agent routing rules and specialist selection
-- Communication style and workflow coordination
+### What's Prohibited
+- ❌ Main LLM direct programming/coding
+- ❌ File modifications without specialist approval
+- ❌ Bypassing quality gates
+- ❌ Skipping simplicity analysis
 
-### AGENTS.md
-Complete agent system architecture documentation including:
-- Specialized agents with delegation enforcement
-- Trigger-based routing and direct main LLM coordination
-- Quality gates and sequential validation
-- Specialist selection and project-specific routing
+### What's Automatic
+- ✅ Domain detection and routing
+- ✅ Specialist task delegation
+- ✅ Quality gate enforcement
+- ✅ Workflow state tracking
+- ✅ Git integration
 
-### settings.json
-Main Claude Code configuration with:
-- Agent system enablement
-- Permission settings
-- Environment variables
-- Model preferences
+## 🔄 Plugin Management
 
-## 🛡️ Security Features
+### Update Plugin
+```bash
+# Update to latest version
+/plugin update claude-squad@local
+```
 
-- **Dependency scanning** for third-party vulnerabilities
-- **Security auditing** throughout development workflow
-- **Credential protection** via .gitignore patterns
-- **Code quality gates** prevent vulnerable code commits
+### Disable Plugin
+```bash
+# Temporarily disable
+/plugin disable claude-squad
 
-## 📚 Documentation
+# Re-enable
+/plugin enable claude-squad
+```
 
-- **README.md** - This overview and quick start guide
-- **SETUP.md** - Detailed installation and configuration
-- **AGENTS.md** - Complete agent system documentation
-- **CHANGELOG.md** - Configuration version history
+### Uninstall Plugin
+```bash
+# Remove plugin completely
+/plugin uninstall claude-squad
+```
 
-## 🔄 Workflow Examples
+## 📖 Documentation
 
-### Code Change Workflow
-1. **Security Review** - code-reviewer analyzes for vulnerabilities
-2. **Maintainability** - code-clarity-manager ensures readable code
-3. **Testing** - unit-test-expert creates comprehensive tests
-4. **Documentation** - technical-documentation-writer updates docs
-5. **Git Operations** - git-workflow-manager handles commits and PRs
+- **Agent Specifications** - See individual `.md` files in `agents/` directory
+- **Command Documentation** - See `.md` files in `commands/` directory
+- **Workflow Rules** - See `CLAUDE.md` for complete delegation system
+- **Plugin API** - See `.claude-plugin/plugin.json` for metadata
 
-### New Feature Workflow
-1. **Planning** - project-manager + systems-architect coordinate
-2. **Implementation** - follows code change workflow
-3. **Infrastructure** - infrastructure-specialist handles deployment
-4. **Monitoring** - performance-optimizer ensures efficiency
+## 🤝 Contributing
 
-## 🚨 Important Notes
+1. Fork the repository
+2. Create feature branch
+3. Add/modify agents in `agents/` directory
+4. Update plugin metadata if needed
+5. Test with local marketplace
+6. Submit pull request
 
-- **Delegation enforcement active** - Main LLM cannot perform programming tasks
-- **Enhanced contextual routing** - Test-specific patterns route to appropriate testing specialists
-- **Quality gates mandatory** - Sequential validation prevents low-quality commits
-- **Specialist routing** - Project context and compound phrases determine optimal agent selection
-- **Test routing fixed** - "Fix tests" now correctly routes to qa-specialist instead of programmer
-- **Automatic backups recommended** before major changes
+## 📄 License
 
-## 🆘 Support
+MIT License - See LICENSE file for details
 
-For Claude Code issues: https://github.com/anthropics/claude-code/issues
+---
 
-For configuration help:
-1. Run `claude-status` to diagnose issues
-2. Check `~/.claude/SETUP.md` for detailed instructions
-3. Use `claude-backup` before making changes
+**🎯 Ready to supercharge your development workflow with intelligent agent delegation? Install Claude Squad today!**

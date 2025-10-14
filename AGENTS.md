@@ -1,8 +1,16 @@
-# Agent System Architecture
+# Claude Squad Plugin - Agent System Architecture
 
 ## Overview
 
-The Claude Code agent system features **24 specialized agents** with comprehensive overlap resolution, mandatory delegation enforcement, intelligent multi-agent coordination, and direct workflow management by the Main LLM. The system eliminates agent confusion through clear domain boundaries while enabling sophisticated multi-agent collaboration for complex cross-domain tasks.
+The Claude Squad Plugin provides **29 specialized agents** with comprehensive overlap resolution, mandatory delegation enforcement, intelligent multi-agent coordination, and direct workflow management by the Main LLM. The system eliminates agent confusion through clear domain boundaries while enabling sophisticated multi-agent collaboration for complex cross-domain tasks.
+
+## Plugin Architecture
+
+This system is delivered as a Claude Code plugin with the following structure:
+- **29 Specialist Agents** - Domain experts in `agents/` directory
+- **9 Squad Commands** - Management commands in `commands/` directory
+- **Session Hooks** - Automatic rule loading in `hooks/` directory
+- **Delegation Rules** - Core enforcement logic in `CLAUDE.md`
 
 ## 🚨 Delegation Enforcement System
 

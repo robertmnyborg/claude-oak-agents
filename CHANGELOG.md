@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-10-13
+
+### Added - Plugin Architecture
+- **Claude Code Plugin Structure** - Complete restructure as installable plugin
+- **Plugin Manifest** - `.claude-plugin/plugin.json` with metadata and configuration
+- **Marketplace Configuration** - `marketplace.json` for plugin distribution
+- **Session Hooks** - Automatic rule loading via `hooks/sessionStart.sh`
+- **Plugin Commands** - 9 squad management commands (`/squad-deploy`, `/squad-on`, etc.)
+- **29 Specialist Agents** - Expanded from 24 to 29 agents with new specializations:
+  - `prompt-engineer` - AI prompt optimization and engineering
+  - `top-down-analyzer` - System-wide architectural analysis
+  - `bottom-up-analyzer` - Implementation-level analysis
+  - `unit-test-expert` - Comprehensive test creation
+  - `changelog-recorder` - Automatic changelog generation
+
+### Changed - Plugin Distribution Model
+- **BREAKING**: Complete restructure from installation scripts to plugin system
+- **Installation Method**: Now uses `/plugin install claude-squad@local` instead of setup scripts
+- **Activation Method**: Plugin commands (`/squad-deploy`, `/squad-on`) replace manual configuration
+- **File Structure**: Agents in `agents/`, commands in `commands/`, hooks in `hooks/`
+- **Documentation**: Updated README.md with plugin installation instructions
+- **Agent Count**: Updated from "24 specialized agents" to "29 specialized agents"
+
+### Removed - Legacy Installation System
+- Bootstrap installation scripts (install.sh, backup.sh, restore.sh)
+- .clauderc shell integration (replaced by plugin system)
+- Manual file copying workflows (replaced by plugin installation)
+- Legacy .claude/disabled_agents/ structure
+
+### Migration Guide
+**From 1.x to 2.0.0 (Plugin Architecture):**
+1. Uninstall existing configuration if present
+2. Clone the plugin repository
+3. Add as local marketplace: `/plugin marketplace add ./claude-squad-plugin`
+4. Install plugin: `/plugin install claude-squad@local`
+5. Deploy system: `/squad-deploy`
+
+## [1.0.0] - 2024-09-15 - Legacy Installation System
+
 ### Added
 - Bootstrap installation system with comprehensive setup scripts
 - Shell environment integration with .clauderc
@@ -22,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated agent responsibility matrix to reflect direct coordination patterns
 - Streamlined workflow patterns removing orchestrator dependencies
 
-## [1.0.0] - 2024-09-15
+## [1.0.0] - 2024-09-15 - Original Agent System
 
 ### Added
 - Complete agent system with 21 specialized agents

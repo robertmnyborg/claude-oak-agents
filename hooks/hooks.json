@@ -1,0 +1,7 @@
+{
+  "sessionStart": {
+    "description": "Load squad orchestration rules and agent delegation system",
+    "script": "./sessionStart.sh",
+    "enabled": true
+  }
+}
