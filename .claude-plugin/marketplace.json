@@ -2,14 +2,20 @@
   "name": "claude-squad-marketplace",
   "description": "Local marketplace for Claude Squad Plugin development and testing",
   "version": "1.0.0",
-  "owner": "jamsajones",
+  "owner": {
+    "name": "jamsajones",
+    "url": "https://github.com/jamsajones"
+  },
   "plugins": [
     {
       "name": "claude-squad",
       "description": "A comprehensive suite of specialized agents with mandatory delegation enforcement for software development",
       "version": "1.0.0",
-      "author": "Claude Squad Team",
-      "source": ".",
+      "author": {
+        "name": "Claude Squad Team",
+        "url": "https://github.com/jamsajones/claude-squad"
+      },
+      "source": "./",
       "keywords": ["agents", "delegation", "development", "automation", "workflow"],
       "components": {
         "agents": 29,
