@@ -2,9 +2,9 @@
   "name": "claude-squad",
   "description": "A comprehensive suite of specialized agents with mandatory delegation enforcement for software development, featuring 30+ domain experts including frontend, backend, infrastructure, security, and quality assurance specialists.",
   "version": "1.0.0",
+  "owner":["jamsajoens"],
   "author": {
-    "name": "Claude Squad Team",
-    "email": "team@claude-squad.dev"
+    "name": "James Straub"
   },
   "keywords": ["agents", "delegation", "development", "automation", "workflow"],
   "repository": {
