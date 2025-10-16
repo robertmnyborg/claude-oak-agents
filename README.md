@@ -1,93 +1,282 @@
 # Claude OaK Agents
 
-**Options and Knowledge (OaK) Architecture for Claude Code Agents**
+**Self-Improving Agent System for Claude Code**
 
-A comprehensive agent system with 29+ specialized agents, OaK-inspired hierarchical reinforcement learning, telemetry infrastructure, and data-driven agent optimization.
+A comprehensive agent ecosystem with **29+ specialized agents** that **learns from experience**, **fills capability gaps automatically**, and **optimizes itself with 80-95% automation**.
 
-Based on [claude-subagents](https://github.com/jamsajones/claude-subagents) with OaK architecture enhancements for systematic agent improvement through offline learning.
-
----
-
-## 🎯 What's New: OaK Architecture
-
-This project extends the original Claude Squad plugin with:
-
-- **📊 Telemetry System**: Log every agent invocation with state features and outcomes
-- **🧠 State Analysis**: Extract and rank features before task decomposition
-- **📈 Performance Tracking**: Measure agent success rates, quality scores, and durations
-- **🔄 Offline Learning**: Data-driven agent improvements (future ML pipeline)
-- **🎯 Feature-Based Decomposition**: Systematic task breakdown using ranked features
-- **📋 Transition Models**: Document expected agent behavior for planning
-- **🔧 Adaptive Curation**: Continuous agent improvement based on telemetry data
-
-### OaK Principles Applied
-
-| OaK Component | Implementation |
-|---------------|----------------|
-| **Options** | 29+ specialist agents as temporally-extended actions |
-| **State Features** | Codebase, task, context, and historical features |
-| **Policy** | Heuristic rules + learned recommendations (future) |
-| **Value Function** | Utility scores from telemetry and human feedback |
-| **Subgoal Decomposition** | Feature-ranked task breakdown |
-| **Learning** | Offline RL on logged data (Phase 6) |
-| **Meta-data** | Persistent telemetry logs for all invocations |
-| **Curation** | Data-driven agent improvements |
+Built on [claude-squad](https://github.com/jamsajones/claude-squad) with **OaK Architecture** (Options and Knowledge) for data-driven continuous improvement.
 
 ---
 
-## 🚀 Quick Start
+## 🎯 What Makes This Different?
+
+| Feature | Basic Agents | Claude OaK Agents |
+|---------|--------------|-------------------|
+| Specialized agents | ✅ 29 agents | ✅ 29+ agents (grows automatically) |
+| Performance tracking | ❌ None | ✅ Comprehensive telemetry |
+| Learning from experience | ❌ Static | ✅ Continuous improvement |
+| Capability gap detection | ❌ Manual | ✅ Automatic creation |
+| Agent optimization | ❌ Manual refactoring | ✅ A/B testing + ML |
+| Portfolio management | ❌ None | ✅ Strategic HR (agent-auditor) |
+| Maintenance | ❌ Continuous manual | ✅ 15 min/week automated |
+
+**TL;DR**: Agents that get smarter the more you use them, automatically adapt to your needs, and manage themselves.
+
+---
+
+## 🚀 Quick Install (5 Minutes)
+
+### Prerequisites
+
+- **Claude Code** installed and working
+- **macOS** (automation scripts use macOS features)
+- **Python 3.8+** (usually pre-installed on macOS)
+- **Git** for cloning repository
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone <your-repo-url> ~/Projects/claude-oak-agents
+# 1. Clone to your Projects directory
+git clone https://github.com/your-org/claude-oak-agents.git ~/Projects/claude-oak-agents
 cd ~/Projects/claude-oak-agents
 
-# Install Python dependencies
-pip install -r requirements.txt  # TODO: Create this file
-
-# Test telemetry system
-python telemetry/logger.py
-
-# Test state analysis
-python state-analysis/feature_extractor.py
-
-# Install agents (optional - if not using plugin system)
-cp -r agents/ ~/.claude/agents/
-# Or create symlinks
+# 2. Install agents (creates symlinks - won't overwrite existing)
+mkdir -p ~/.claude/agents
 ln -s ~/Projects/claude-oak-agents/agents/* ~/.claude/agents/
+
+# 3. Install automation (optional but recommended)
+./automation/install_automation.sh
+# This adds shell prompts and scheduled reviews
+
+# 4. You're done! Start using agents normally in Claude Code
 ```
 
-### Basic Usage
+**That's it!** The system is now:
+- ✅ Logging every agent invocation automatically
+- ✅ Tracking performance metrics
+- ✅ Detecting capability gaps
+- ✅ Prompting you when reviews are due
 
+---
+
+## 💡 How It Works
+
+### For You (Simple)
+
+```
+1. Use Claude Code normally → Agents handle tasks
+2. System learns automatically → Telemetry captures performance
+3. Get prompts when reviews are due → "15 new invocations, 5 min review"
+4. Review insights → See what's working, what's not
+5. System improves automatically → Agents get better over time
+```
+
+### Under the Hood (Smart)
+
+```
+Your Request
+    ↓
+Agent Delegation (with gap detection)
+    ↓
+Telemetry Capture (automatic)
+    ↓
+Performance Analysis (scheduled: weekly/monthly)
+    ↓
+Gap Detection & Agent Creation (automatic with your approval)
+    ↓
+A/B Testing & Improvement (Phase 5)
+    ↓
+ML-Driven Optimization (Phase 6)
+    ↓
+Improved Delegation (smarter over time)
+```
+
+---
+
+## 🤖 29+ Specialized Agents
+
+### Core Development (7 agents)
+- **frontend-developer** - React/Vue/Angular, UI/UX, browser compatibility
+- **backend-architect** - APIs, databases, microservices, system design
+- **infrastructure-specialist** - AWS CDK, Terraform, cloud deployment
+- **mobile-developer** - React Native, iOS, Android
+- **blockchain-developer** - Solidity, Web3, DeFi protocols
+- **ml-engineer** - TensorFlow/PyTorch, ML pipelines, MLOps
+- **legacy-maintainer** - Java, C#, enterprise systems
+
+### Quality & Security (5 agents)
+- **security-auditor** - Penetration testing, compliance, threat modeling
+- **code-reviewer** - Quality gates, standards enforcement
+- **unit-test-expert** - Comprehensive testing, edge cases
+- **dependency-scanner** - Supply chain security, vulnerabilities
+- **qa-specialist** - Integration testing, E2E validation
+
+### Infrastructure & Operations (4 agents)
+- **systems-architect** - High-level design, technical specs
+- **performance-optimizer** - Bottleneck identification, optimization
+- **debug-specialist** - Critical error resolution (HIGHEST PRIORITY)
+- **git-workflow-manager** - Git operations, PRs, branch management
+
+### Analysis & Planning (5 agents)
+- **state-analyzer** - State feature extraction and ranking
+- **business-analyst** - Requirements analysis, stakeholder communication
+- **data-scientist** - Data analysis, statistical processing
+- **project-manager** - Multi-step coordination, timeline management
+- **agent-auditor** - **NEW**: Strategic HR for agent portfolio
+
+### Documentation & Content (3 agents)
+- **technical-documentation-writer** - API docs, technical specifications
+- **content-writer** - Marketing content, user-facing docs
+- **changelog-recorder** - Automatic changelog generation
+
+### Special Purpose (3+ agents)
+- **design-simplicity-advisor** - KISS enforcement (mandatory)
+- **agent-creator** - Meta-agent for creating new specialists
+- **general-purpose** - Fallback for basic tasks
+
+**Plus**: System automatically creates new agents when gaps are detected!
+
+---
+
+## 📊 Key Features
+
+### 1. **Automatic Telemetry** (Phase 1-3) ✅
+Every agent invocation is logged automatically with:
+- Agent used and task type
+- Duration and outcome
+- Quality ratings
+- State features (languages, frameworks, etc.)
+
+**Zero effort required** - happens in background via hooks.
+
+### 2. **Capability Gap Detection** (Phase 1-3) ✅
+When you need an agent that doesn't exist:
+```
+You: "Analyze the ROI of this investment"
+System: No financial-analyst exists
+System: Creates financial-analyst automatically
+System: Notifies you to review before deployment
+You: Approve specification
+System: Agent deployed and ready to use!
+```
+
+**Adapts to YOUR needs** - not just predefined agents.
+
+### 3. **Agent-Auditor (Agentic HR)** (Phase 5) ✅
+Strategic portfolio manager that:
+- Evaluates all agent performance monthly
+- Identifies capability gaps from patterns
+- Detects redundancy and overlap
+- Recommends creation/refactoring/consolidation/deprecation
+
+**Like having HR for your agents** - maintains portfolio health.
+
+### 4. **Intelligent Prompting** (Phase 1-5) ✅
+System prompts you when action needed:
+- **Weekly**: "15 new invocations - 5 min review due"
+- **Monthly**: "Agent audit complete - 30 min curation"
+- **Agent Reviews**: "2 new agents awaiting approval"
+
+**Shell prompts on terminal open** + **macOS notifications** + **daily checks**.
+
+### 5. **Human-in-the-Loop Quality Control** (Phase 5) ✅
+New agents require your review before first deployment:
 ```bash
-# In Claude Code, use agents as usual:
-User: "Implement OAuth2 authentication"
-
-# Main LLM will now:
-# 1. Classify request (IMPLEMENTATION)
-# 2. Analyze state with state-analyzer agent
-# 3. Delegate to security-auditor + backend-architect
-# 4. Log telemetry data automatically (future)
-# 5. Collect feedback for learning
+oak-list-pending-agents    # See what's pending
+oak-review-agent <name>    # Read specification
+oak-approve-agent <name>   # Deploy immediately
+oak-modify-agent <name>    # Edit before approving
 ```
 
-### Viewing Analytics
+**After first approval**, system can auto-update based on learning.
 
+### 6. **A/B Testing & Continuous Improvement** (Phase 5) ✅
+Improved agent versions tested scientifically:
+- Original vs improved comparison
+- Statistical significance testing
+- Performance metrics tracked
+- Best version deployed automatically
+
+**Evidence-based evolution** - not guesswork.
+
+### 7. **ML Pipeline (Coming Soon)** (Phase 6) 🚧
+Machine learning will:
+- Learn optimal agent selection patterns
+- Predict agent performance before delegation
+- Recommend best agents for each task type
+- Continuously improve recommendations
+
+**The longer you use it, the smarter it gets.**
+
+---
+
+## 🎮 Daily Usage
+
+### Using Agents (Exactly Like Before)
+
+```
+# In Claude Code, just ask normally:
+You: "Implement OAuth2 authentication"
+You: "Fix this deployment error"
+You: "Create a financial dashboard"
+
+# System handles everything automatically:
+# - Classifies request
+# - Selects best agent(s)
+# - Logs telemetry
+# - Detects gaps if needed
+# - Creates new agents when helpful
+```
+
+### Weekly Rhythm (15 Minutes)
+
+**Monday 9am**: Weekly review runs automatically → Notification sent
+
+**You run:**
 ```bash
-# Generate performance statistics
-python telemetry/analyzer.py
-
-# View agent rankings
-python -c "
-from telemetry.analyzer import TelemetryAnalyzer
-analyzer = TelemetryAnalyzer()
-rankings = analyzer.get_agent_ranking()
-for agent, score, stats in rankings[:5]:
-    print(f'{agent}: {score:.3f}')
-"
+oak-weekly-review
 ```
+
+**You see**:
+- Performance summary (5 min read)
+- Top performing agents
+- Areas for improvement
+- New invocations summary
+
+**System tracks** you reviewed → Stops nagging until next week.
+
+### Monthly Rhythm (1 Hour)
+
+**1st of month 10am**: Monthly analysis runs → Curation agenda ready
+
+**You run:**
+```bash
+oak-monthly-review
+```
+
+**You see**:
+- Agent portfolio audit report
+- Capability gaps detected
+- Recommended new agents
+- Refactoring suggestions
+- Redundancy analysis
+
+**You review** recommendations (~30 min) → Approve actions → System executes.
+
+### Agent Review (As Needed)
+
+When system creates a new agent:
+
+**You get notified**: "New agent ready for review"
+
+**You run:**
+```bash
+oak-list-pending-agents    # See pending
+oak-review-agent financial-analyst  # Read spec
+oak-approve-agent financial-analyst  # Deploy
+```
+
+**Takes 5-10 minutes** per agent. First-time only; future updates are automatic.
 
 ---
 
@@ -95,324 +284,269 @@ for agent, score, stats in rankings[:5]:
 
 ```
 claude-oak-agents/
-├── agents/                     # 29+ specialist agent definitions
-│   ├── state-analyzer.md       # NEW: State feature extraction agent
-│   ├── frontend-developer.md
-│   ├── backend-architect.md
+├── agents/                         # All agent definitions
+│   ├── pending_review/             # New agents awaiting approval
+│   ├── rejected/                   # Rejected agents archive
+│   ├── frontend-developer.md       # Core 29 agents
+│   ├── agent-auditor.md            # NEW: Strategic HR
 │   └── ...
-├── telemetry/                  # NEW: Telemetry infrastructure
-│   ├── schemas.json            # Data schemas
-│   ├── logger.py               # Logging utilities
-│   ├── analyzer.py             # Analysis utilities
-│   ├── agent_invocations.jsonl # Logged invocations
-│   ├── success_metrics.jsonl   # Feedback data
-│   └── performance_stats.json  # Aggregated statistics
-├── state-analysis/             # NEW: State feature extraction
-│   └── feature_extractor.py    # Feature extraction utilities
-├── models/                     # NEW: Transition models (Phase 4)
-│   ├── transition_expectations.yaml
-│   └── agent_utility_scores.yaml
-├── ml-pipeline/                # NEW: ML pipeline (Phase 6)
-│   ├── data_preprocessing.py
-│   ├── policy_learning.py
-│   └── export_policies.py
-├── docs/oak-design/            # NEW: OaK documentation
-│   ├── OAK_ARCHITECTURE.md     # Architecture overview
-│   └── IMPLEMENTATION_GUIDE.md # Step-by-step guide
-├── commands/                   # Squad management commands
-│   ├── squad-on.md
-│   ├── squad-off.md
-│   └── squad-status.md
-├── hooks/                      # Session automation
-├── scripts/                    # NEW: Utility scripts
-├── CLAUDE.md                   # Delegation enforcement rules
-└── README.md                   # This file
+├── telemetry/                      # Performance data (local only)
+│   ├── agent_invocations.jsonl     # All invocations logged
+│   ├── success_metrics.jsonl       # Quality ratings
+│   ├── routing_failures.jsonl      # Capability gaps detected
+│   └── agent_reviews.jsonl         # Review decisions
+├── automation/                     # Automation system
+│   ├── install_automation.sh       # One-command setup
+│   ├── oak_prompts.sh              # Shell integration
+│   ├── oak_notify.sh               # Notification system
+│   └── launchd/                    # Scheduled tasks
+├── scripts/                        # Analysis & review scripts
+│   ├── automation/                 # Weekly/monthly analysis
+│   ├── phase4/                     # Dashboards & feedback
+│   ├── phase5/                     # Agent audit & A/B testing
+│   ├── phase6/                     # ML pipeline (future)
+│   └── agent_review.py             # Review workflow
+├── hooks/                          # Automatic telemetry hooks
+│   ├── pre_agent_hook.py           # Logs before agent runs
+│   └── post_agent_hook.py          # Logs after completion
+├── docs/oak-design/                # Architecture docs
+│   ├── OAK_ARCHITECTURE.md         # Complete design
+│   ├── IMPLEMENTATION_GUIDE.md     # Technical details
+│   └── 6_MONTH_DEPLOYMENT_PLAN.md  # Rollout roadmap
+├── configs/                        # Configuration files
+│   ├── curation_config.yaml        # Agent curation settings
+│   ├── rl_config.yaml              # ML pipeline config
+│   └── ab_test_template.yaml       # A/B test template
+├── reports/                        # Generated reports
+├── CLAUDE.md                       # Agent delegation rules
+├── QUICK_START.md                  # 5-minute guide
+├── EXECUTIVE_OVERVIEW.md           # vs claude-squad comparison
+└── README.md                       # This file
 ```
 
 ---
 
-## 🤖 Agent System (29+ Specialists)
+## 🔧 Available Commands
 
-### 🏗️ Core Development Agents
-- **frontend-developer** - UI/UX, React/Vue/Angular, browser compatibility
-- **backend-architect** - Database design, API architecture, microservices
-- **infrastructure-specialist** - CDK constructs, cloud deployment, DevOps
-- **mobile-developer** - React Native, iOS, Android development
-- **blockchain-developer** - Solidity, Web3 integration, DeFi protocols
-- **ml-engineer** - Python ML systems, TensorFlow/PyTorch, MLOps
-- **legacy-maintainer** - Java, C#, enterprise system maintenance
-
-### 🛡️ Security & Quality Agents
-- **security-auditor** - Penetration testing, compliance, threat modeling
-- **code-reviewer** - Code quality gates, standards enforcement
-- **unit-test-expert** - Comprehensive unit testing, edge case identification
-- **dependency-scanner** - Supply chain security, license compliance
-- **qa-specialist** - Integration testing, E2E validation
-
-### 🔧 Infrastructure & Operations
-- **systems-architect** - High-level system design, technical specifications
-- **performance-optimizer** - Performance analysis, bottleneck identification
-- **debug-specialist** - Critical error resolution (HIGHEST PRIORITY)
-- **git-workflow-manager** - Git operations, branch management
-
-### 📊 Analysis & Planning
-- **state-analyzer** - **NEW**: State feature extraction and ranking
-- **business-analyst** - Requirements analysis, stakeholder communication
-- **data-scientist** - Data analysis, statistical processing
-- **project-manager** - Multi-step coordination, timeline management
-
-### 📝 Documentation & Content
-- **technical-documentation-writer** - API docs, technical specifications
-- **content-writer** - Marketing content, user-facing documentation
-- **changelog-recorder** - Automatic changelog generation
-
-### 🎯 Special Purpose
-- **design-simplicity-advisor** - KISS enforcement (mandatory pre-commit)
-- **agent-creator** - Meta-agent for creating new specialists
-
----
-
-## 📊 Telemetry & Analytics
-
-### Logging Agent Invocations
-
-```python
-from telemetry.logger import TelemetryLogger
-
-logger = TelemetryLogger()
-
-# Log invocation start
-invocation_id = logger.log_invocation(
-    agent_name="frontend-developer",
-    agent_type="development",
-    task_description="Add dark mode toggle",
-    state_features={
-        "codebase": {"languages": ["TypeScript"]},
-        "task": {"type": "feature_development", "scope": "small"}
-    }
-)
-
-# Log completion
-logger.update_invocation(
-    invocation_id=invocation_id,
-    duration_seconds=120,
-    outcome_status="success",
-    files_modified=["src/Settings.tsx"]
-)
-
-# Log feedback
-logger.log_success_metric(
-    invocation_id=invocation_id,
-    success=True,
-    quality_rating=4,
-    feedback_notes="Works well!"
-)
-```
-
-### Analyzing Performance
+### Daily Use
 
 ```bash
-# Generate statistics
-python telemetry/analyzer.py
-
-# View JSON output
-cat telemetry/performance_stats.json | jq
+oak-status              # System status and pending items
+oak-check-pending       # Quick check for pending agents
 ```
 
-### Agent Rankings
-
-```python
-from telemetry.analyzer import TelemetryAnalyzer
-
-analyzer = TelemetryAnalyzer()
-
-# Get overall rankings
-rankings = analyzer.get_agent_ranking()
-
-# Get rankings for specific task type
-frontend_rankings = analyzer.get_agent_ranking(task_type="feature_development")
-
-for agent_name, score, stats in rankings[:10]:
-    print(f"{agent_name}: {score:.3f} ({stats['invocation_count']} uses)")
-```
-
----
-
-## 🧠 State Analysis
-
-The **state-analyzer** agent extracts structured features before task execution:
-
-### Features Extracted
-
-1. **Codebase Features**: Languages, frameworks, LOC, complexity, architecture
-2. **Task Features**: Type, scope, risk level, domain, estimated effort
-3. **Context Features**: Tests, docs, git state, dependencies, build status
-4. **Historical Features**: Similar tasks, success patterns, agent performance
-
-### Example Usage
-
-```python
-from state_analysis.feature_extractor import FeatureExtractor
-
-extractor = FeatureExtractor(workspace_dir="/path/to/project")
-features = extractor.extract_all_features()
-
-print(features["codebase"]["languages"])  # ["Python", "JavaScript"]
-print(features["context"]["tests_exist"])  # True
-```
-
-### In Claude Code
-
-```
-User: Implement OAuth2 authentication with JWT tokens
-
-Main LLM: I'll analyze the state first...
-[Invokes state-analyzer agent]
-
-state-analyzer: {
-  "ranked_features": [
-    {"feature": "risk_level", "value": "critical", "importance": 0.95},
-    {"feature": "scope", "value": "large", "importance": 0.90}
-  ],
-  "recommended_strategy": {
-    "primary_agents": ["security-auditor", "backend-architect"],
-    "decomposition_needed": true
-  }
-}
-
-Main LLM: This is high-risk. I'll delegate to security-auditor and backend-architect...
-```
-
----
-
-## 🎓 Implementation Phases
-
-### ✅ Phase 1: Telemetry Infrastructure (COMPLETE)
-- Telemetry logging utilities
-- JSON schemas for data
-- Analyzer for statistics generation
-- Manual integration ready
-
-### 🚧 Phase 2: State Analysis (IN PROGRESS)
-- State analyzer agent definition
-- Feature extraction utilities
-- Integration with main workflow
-
-### 📋 Phase 3: Feature-Based Decomposition (TODO)
-- Enhanced project-manager with feature ranking
-- Systematic subproblem creation
-- Agent mapping based on ranked features
-
-### 📋 Phase 4: Transition Models (TODO)
-- Document expected agent behavior
-- Utility tracking and feedback collection
-- Performance dashboards
-
-### 📋 Phase 5: Adaptive Curation (TODO)
-- Weekly/monthly agent analysis
-- Data-driven improvements
-- A/B testing framework
-
-### 📋 Phase 6: ML Pipeline (FUTURE)
-- Offline reinforcement learning
-- Policy optimization from logged data
-- Automatic agent selection recommendations
-
----
-
-## 📖 Documentation
-
-- **[OaK Architecture](./docs/oak-design/OAK_ARCHITECTURE.md)** - Complete architectural overview
-- **[Implementation Guide](./docs/oak-design/IMPLEMENTATION_GUIDE.md)** - Step-by-step setup
-- **[Telemetry README](./telemetry/README.md)** - Telemetry system documentation
-- **[State Analyzer Agent](./agents/state-analyzer.md)** - State analysis agent definition
-- **[CLAUDE.md](./CLAUDE.md)** - Delegation enforcement rules
-
----
-
-## 🔧 Configuration
-
-### Enabling OaK Features
-
-1. **Telemetry**: Currently manual - see [Implementation Guide](./docs/oak-design/IMPLEMENTATION_GUIDE.md)
-2. **State Analysis**: Invoke `state-analyzer` agent explicitly or integrate with project-manager
-3. **Automated Hooks**: Coming in Phase 1.5 - auto-log all invocations
-
-### Environment Variables
+### Weekly/Monthly
 
 ```bash
-# Optional: Configure telemetry directory
-export TELEMETRY_DIR=~/Projects/claude-oak-agents/telemetry
-
-# Optional: Enable complex workflow (legacy)
-export COMPLEX_WORKFLOW=true
-
-# Optional: Python path for imports
-export PYTHONPATH=~/Projects/claude-oak-agents:$PYTHONPATH
+oak-weekly-review       # Run weekly analysis (15 min)
+oak-monthly-review      # Run monthly curation (1 hr)
+oak-health-check        # System health validation
+oak-dashboard           # Performance dashboard
 ```
+
+### Agent Review
+
+```bash
+oak-list-pending-agents         # List agents awaiting approval
+oak-review-agent <name>         # Review agent specification
+oak-approve-agent <name>        # Approve and deploy
+oak-modify-agent <name>         # Edit before approving
+oak-reject-agent <name> "..."   # Reject with reason
+```
+
+---
+
+## 📈 The Learning Flywheel
+
+```
+Use Agents
+    ↓
+Telemetry Captures Performance
+    ↓
+Weekly/Monthly Analysis
+    ↓
+Insights & Recommendations
+    ↓
+A/B Testing (Phase 5)
+    ↓
+Improvements Deployed
+    ↓
+ML Learning (Phase 6)
+    ↓
+Better Agent Selection
+    ↓
+(Back to Use Agents - but smarter)
+```
+
+**Each iteration makes the system better at serving YOUR needs.**
+
+---
+
+## 🗓️ Deployment Timeline
+
+| Phase | Status | Timeline | What You Get |
+|-------|--------|----------|--------------|
+| **1-3** | ✅ Complete | Day 1 | Telemetry, hooks, gap detection, agent-auditor |
+| **4** | ✅ Complete | Month 1-2 | Dashboards, feedback collection, transition models |
+| **5** | ✅ Complete | Month 3-4 | A/B testing, curation automation, review workflow |
+| **6** | 🚧 In Progress | Month 5-6 | ML pipeline, policy learning, autonomous optimization |
+
+**You get value immediately** and it compounds over time.
+
+---
+
+## ⚙️ Configuration
+
+### Environment Variables (Optional)
+
+Add to `~/.zshrc`:
+```bash
+export OAK_TELEMETRY_ENABLED=true
+export OAK_TELEMETRY_DIR="$HOME/Projects/claude-oak-agents/telemetry"
+export OAK_PROMPT_FEEDBACK=false  # Enable interactive feedback prompts
+export PYTHONPATH="$HOME/Projects/claude-oak-agents:$PYTHONPATH"
+```
+
+Reload:
+```bash
+source ~/.zshrc
+```
+
+### Disabling Features
+
+**Disable telemetry** (not recommended):
+```bash
+export OAK_TELEMETRY_ENABLED=false
+```
+
+**Uninstall automation**:
+```bash
+./automation/uninstall_automation.sh
+```
+
+**Remove agents**:
+```bash
+rm ~/.claude/agents/*
+```
+
+---
+
+## 🛠️ Troubleshooting
+
+### Hooks Not Working
+
+**Check installation:**
+```bash
+ls -la ~/.claude/hooks/
+# Should show: pre_agent.sh, post_agent.sh
+```
+
+**Fix permissions:**
+```bash
+chmod +x hooks/*.py
+```
+
+**Test telemetry:**
+```bash
+python3 scripts/test_telemetry_e2e.py
+```
+
+### Shell Prompts Not Showing
+
+**Check ~/.zshrc:**
+```bash
+grep "oak_prompts.sh" ~/.zshrc
+```
+
+**If missing, add:**
+```bash
+echo 'source "$HOME/Projects/claude-oak-agents/automation/oak_prompts.sh"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### Scheduled Tasks Not Running
+
+**Check launchd jobs:**
+```bash
+launchctl list | grep com.oak
+```
+
+**Reload if needed:**
+```bash
+launchctl load ~/Library/LaunchAgents/com.oak.weekly-review.plist
+```
+
+### More Help
+
+- **[QUICK_START.md](QUICK_START.md)** - 5-minute setup guide
+- **[automation/README.md](automation/README.md)** - Automation system details
+- **[hooks/README.md](hooks/README.md)** - Telemetry hooks guide
+- **GitHub Issues** - Report problems or ask questions
+
+---
+
+## 🎯 Next Steps
+
+1. ✅ **Install** (5 minutes) - Follow Quick Install above
+2. ✅ **Use normally** - Start using agents in Claude Code
+3. ✅ **First week** - Let telemetry collect data
+4. ✅ **Week 2** - First weekly review (oak-weekly-review)
+5. ✅ **Month 1** - First monthly audit (oak-monthly-review)
+6. ✅ **Month 2** - First capability gap filled automatically
+7. ✅ **Month 3** - First A/B test running
+8. ✅ **Month 6** - ML pipeline active, full autonomous optimization
+
+**The sooner you start, the sooner the learning begins.**
+
+---
+
+## 📚 Documentation
+
+- **[EXECUTIVE_OVERVIEW.md](EXECUTIVE_OVERVIEW.md)** - Comparison vs claude-squad
+- **[QUICK_START.md](QUICK_START.md)** - 5-minute getting started
+- **[docs/oak-design/OAK_ARCHITECTURE.md](docs/oak-design/OAK_ARCHITECTURE.md)** - Complete architecture
+- **[docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md](docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md)** - Detailed roadmap
+- **[automation/README.md](automation/README.md)** - Automation system
+- **[agents/pending_review/README.md](agents/pending_review/README.md)** - Review workflow
 
 ---
 
 ## 🤝 Contributing
 
-Contributions welcome! Areas of interest:
+Contributions welcome! Priority areas:
 
-- **Phase 3+**: Feature-based decomposition, transition models, ML pipeline
-- **Automated Hooks**: Pre/post agent execution logging
-- **Dashboard**: Web UI for telemetry visualization
-- **ML Models**: Offline RL implementations for policy learning
-- **Agent Improvements**: Based on telemetry data analysis
+- **Phase 6 ML Pipeline**: Offline RL implementation
+- **Agent Improvements**: Based on telemetry analysis
+- **Dashboard UI**: Web interface for analytics
+- **Integration**: Additional tool integrations
+- **Documentation**: Examples, tutorials, use cases
 
----
-
-## 📊 Example Telemetry Output
-
-```json
-{
-  "generated_at": "2025-10-16T14:30:00Z",
-  "total_invocations": 47,
-  "agents": {
-    "frontend-developer": {
-      "invocation_count": 15,
-      "success_rate": 0.933,
-      "average_quality": 4.2,
-      "average_duration_seconds": 125.3,
-      "common_task_types": ["feature_development", "bug_fix"],
-      "recommended_for": ["High success rate - reliable choice"]
-    },
-    "backend-architect": {
-      "invocation_count": 12,
-      "success_rate": 0.833,
-      "average_quality": 3.9,
-      "average_duration_seconds": 210.5,
-      "common_task_types": ["architecture", "feature_development"]
-    }
-  }
-}
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
 ## 🙏 Credits
 
-- **Original Claude Squad**: [jamsajones/claude-subagents](https://github.com/jamsajones/claude-subagents)
-- **OaK Architecture**: Inspired by hierarchical reinforcement learning research
-- **Contributors**: See [CONTRIBUTORS.md](./CONTRIBUTORS.md) (TODO)
+- **Original System**: [claude-squad](https://github.com/jamsajones/claude-squad) by jamsajones
+- **OaK Architecture**: Inspired by hierarchical RL research
+- **Contributors**: See [CONTRIBUTORS.md](CONTRIBUTORS.md)
 
 ---
 
 ## 📝 License
 
-MIT License - see [LICENSE](./LICENSE) for details
+MIT License - See [LICENSE](LICENSE) for details
 
 ---
 
 ## 🔗 Links
 
-- **Original Repo**: https://github.com/jamsajones/claude-subagents
-- **Documentation**: [./docs/oak-design/](./docs/oak-design/)
+- **Original Repo**: https://github.com/jamsajones/claude-squad
+- **Documentation**: [docs/oak-design/](docs/oak-design/)
 - **Issues**: [GitHub Issues](https://github.com/your-org/claude-oak-agents/issues)
 
 ---
 
-**Status**: Phase 2 In Progress | 29+ Agents | Telemetry Active | State Analysis Ready
+**Status**: ✅ Phases 1-5 Complete | 🚧 Phase 6 In Progress | 29+ Agents | Self-Learning Active | Automation Ready
+
+**Get Started**: [Quick Install](#-quick-install-5-minutes) ⬆️
