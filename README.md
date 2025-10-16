@@ -37,7 +37,7 @@ Built on [claude-squad](https://github.com/jamsajones/claude-squad) with **OaK A
 
 ```bash
 # 1. Clone to your Projects directory
-git clone https://github.com/your-org/claude-oak-agents.git ~/Projects/claude-oak-agents
+git clone https://github.com/robertmnyborg/claude-oak-agents.git ~/Projects/claude-oak-agents
 cd ~/Projects/claude-oak-agents
 
 # 2. Install agents (creates symlinks - won't overwrite existing)
@@ -543,7 +543,7 @@ MIT License - See [LICENSE](LICENSE) for details
 
 - **Original Repo**: https://github.com/jamsajones/claude-squad
 - **Documentation**: [docs/oak-design/](docs/oak-design/)
-- **Issues**: [GitHub Issues](https://github.com/your-org/claude-oak-agents/issues)
+- **Issues**: [GitHub Issues](https://github.com/robertmnyborg/claude-oak-agents/issues)
 
 ---
 
