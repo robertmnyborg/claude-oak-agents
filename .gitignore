@@ -63,10 +63,29 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
-# Temporary telemetry or debug data
-telemetry/
+# Telemetry data files (but keep infrastructure code)
+telemetry/*.jsonl
+telemetry/*.json
+!telemetry/schemas.json
+!telemetry/*.py
+!telemetry/README.md
+
+# Debug and crash data
 debug/
 crash-reports/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
 
 # Personal workspace settings
 workspace/

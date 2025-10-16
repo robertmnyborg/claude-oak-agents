@@ -1,0 +1,247 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "AgentInvocation": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "session_id",
+        "agent_name",
+        "agent_type",
+        "task_description",
+        "state_features",
+        "invocation_id"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of invocation"
+        },
+        "session_id": {
+          "type": "string",
+          "description": "Unique identifier for the conversation session"
+        },
+        "invocation_id": {
+          "type": "string",
+          "description": "Unique identifier for this specific invocation"
+        },
+        "agent_name": {
+          "type": "string",
+          "description": "Name of the agent (e.g., 'frontend-developer')"
+        },
+        "agent_type": {
+          "type": "string",
+          "enum": [
+            "development",
+            "quality",
+            "security",
+            "architecture",
+            "workflow",
+            "analysis",
+            "documentation",
+            "utility",
+            "meta"
+          ],
+          "description": "Category of the agent"
+        },
+        "task_description": {
+          "type": "string",
+          "description": "Human-readable description of the task"
+        },
+        "state_features": {
+          "type": "object",
+          "description": "Extracted state features at invocation time",
+          "properties": {
+            "codebase": {
+              "type": "object",
+              "properties": {
+                "languages": {
+                  "type": "array",
+                  "items": {"type": "string"}
+                },
+                "frameworks": {
+                  "type": "array",
+                  "items": {"type": "string"}
+                },
+                "loc": {"type": "integer"},
+                "file_count": {"type": "integer"}
+              }
+            },
+            "task": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "feature_development",
+                    "bug_fix",
+                    "refactoring",
+                    "documentation",
+                    "testing",
+                    "optimization",
+                    "analysis",
+                    "architecture"
+                  ]
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": ["trivial", "small", "medium", "large", "epic"]
+                },
+                "risk_level": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high", "critical"]
+                }
+              }
+            },
+            "context": {
+              "type": "object",
+              "properties": {
+                "tests_exist": {"type": "boolean"},
+                "docs_exist": {"type": "boolean"},
+                "git_clean": {"type": "boolean"},
+                "dependencies_outdated": {"type": "boolean"}
+              }
+            },
+            "historical": {
+              "type": "object",
+              "properties": {
+                "similar_tasks_count": {"type": "integer"},
+                "similar_tasks_success_rate": {"type": "number"},
+                "agent_previous_uses": {"type": "integer"}
+              }
+            }
+          }
+        },
+        "parent_invocation_id": {
+          "type": ["string", "null"],
+          "description": "ID of parent agent if this was delegated"
+        },
+        "tools_used": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of tools the agent used"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "description": "How long the agent ran"
+        },
+        "outcome": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["success", "failure", "partial", "unknown"]
+            },
+            "error_message": {"type": ["string", "null"]},
+            "files_modified": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "files_created": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "tests_passed": {"type": ["boolean", "null"]},
+            "build_succeeded": {"type": ["boolean", "null"]}
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional custom metadata",
+          "additionalProperties": true
+        }
+      }
+    },
+    "SuccessMetric": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "invocation_id",
+        "success",
+        "quality_rating"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "invocation_id": {
+          "type": "string",
+          "description": "References AgentInvocation.invocation_id"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "Did the agent accomplish the task?"
+        },
+        "quality_rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Quality score (1=poor, 5=excellent)"
+        },
+        "feedback_source": {
+          "type": "string",
+          "enum": ["human", "automated_tests", "build_system", "linter"],
+          "description": "Who/what provided this feedback"
+        },
+        "feedback_notes": {
+          "type": "string",
+          "description": "Free-form feedback text"
+        },
+        "would_use_again": {
+          "type": "boolean",
+          "description": "Would you use this agent for similar tasks?"
+        },
+        "alternative_agent_suggested": {
+          "type": ["string", "null"],
+          "description": "If this agent wasn't ideal, which would be better?"
+        }
+      }
+    },
+    "PerformanceStats": {
+      "type": "object",
+      "required": ["generated_at", "agents"],
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "total_invocations": {
+          "type": "integer"
+        },
+        "date_range": {
+          "type": "object",
+          "properties": {
+            "start": {"type": "string", "format": "date-time"},
+            "end": {"type": "string", "format": "date-time"}
+          }
+        },
+        "agents": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "invocation_count": {"type": "integer"},
+              "success_rate": {"type": "number"},
+              "average_quality": {"type": "number"},
+              "average_duration_seconds": {"type": "number"},
+              "common_task_types": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "common_failures": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "recommended_for": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
