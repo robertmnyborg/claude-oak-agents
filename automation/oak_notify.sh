@@ -122,6 +122,13 @@ check_actionable_data() {
     local has_actionable=false
     local message=""
 
+    # Check for pending agent reviews
+    local pending_count=$(ls -1 "$OAK_PROJECT_DIR/agents/pending_review"/*.md 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$pending_count" -gt 0 ]; then
+        has_actionable=true
+        message="$pending_count new agent(s) awaiting approval"
+    fi
+
     # Check weekly review status
     if oak_is_weekly_due; then
         local last_weekly=$(oak_get_last_date "LAST_WEEKLY_REVIEW")
@@ -129,7 +136,11 @@ check_actionable_data() {
 
         if [ $new_invocations -gt 0 ]; then
             has_actionable=true
-            message="Weekly review due: $new_invocations new invocations"
+            if [ -n "$message" ]; then
+                message="$message. Weekly review due: $new_invocations invocations"
+            else
+                message="Weekly review due: $new_invocations new invocations"
+            fi
         fi
     fi
 
@@ -160,6 +171,18 @@ check_actionable_data() {
     fi
 }
 
+# Notify about new agent for review
+notify_new_agent() {
+    local agent_name="$1"
+
+    log_message "INFO" "Notifying about new agent: $agent_name"
+
+    send_notification \
+        "OaK - New Agent Created" \
+        "Agent '$agent_name' ready for review. Run: oak-review-agent $agent_name" \
+        "Glass"
+}
+
 # Main command dispatcher
 case "${1:-help}" in
     weekly)
@@ -174,6 +197,13 @@ case "${1:-help}" in
     check)
         check_actionable_data
         ;;
+    agent)
+        if [ -z "$2" ]; then
+            echo "Usage: $0 agent <agent-name>"
+            exit 1
+        fi
+        notify_new_agent "$2"
+        ;;
     test)
         send_notification "OaK Test Notification" "If you see this, notifications are working!" "Glass"
         log_message "INFO" "Test notification sent"
@@ -181,13 +211,14 @@ case "${1:-help}" in
     help|*)
         echo "OaK Notification System"
         echo ""
-        echo "Usage: $0 {weekly|monthly|health|check|test}"
+        echo "Usage: $0 {weekly|monthly|health|check|agent|test}"
         echo ""
         echo "Commands:"
         echo "  weekly  - Run weekly review and notify"
         echo "  monthly - Run monthly analysis and notify"
         echo "  health  - Run health check and notify"
         echo "  check   - Check for actionable data and notify"
+        echo "  agent <name> - Notify about new agent for review"
         echo "  test    - Send test notification"
         ;;
 esac

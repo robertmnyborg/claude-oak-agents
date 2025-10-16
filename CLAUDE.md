@@ -277,9 +277,17 @@ deferred_triggers:
    - 3+ failures same domain? → Create immediately
    - Otherwise → Log for monthly agent-auditor review
 4. **Invoke agent-creator**: Pass domain, context, and requirements
-5. **Create Agent**: agent-creator designs and implements new agent
-6. **Validate**: Test agent with original request
-7. **Register**: Add to agent-auditor monitoring
+5. **Create Agent**: agent-creator designs and implements new agent following template
+6. **Save for Review**: Agent saved to `agents/pending_review/` directory
+7. **Notify User**: Notification sent - "New agent ready for review"
+8. **Wait for Approval**: User reviews agent specification
+9. **User Decision**:
+   - **Approve**: Move to `agents/` directory, deploy immediately
+   - **Modify**: User edits, then approves
+   - **Reject**: Archive to `agents/rejected/`, log reasoning
+10. **Deploy**: Agent becomes active and available for delegation
+11. **Register**: Add to agent-auditor monitoring
+12. **Future Updates**: After first approval, system can auto-update based on learning
 
 ### Agent Creation Examples
 
@@ -330,6 +338,43 @@ Specification:
   - capabilities: Roadmapping, feature prioritization, stakeholder management
 Created: product-manager-strategist agent
 Retry: Delegate to new product-manager-strategist
+```
+
+### Agent Template Requirements
+All auto-created agents must follow standard template:
+
+**Required Sections**:
+1. **Agent Overview** (name, description, color in frontmatter)
+2. **Core Identity** (Purpose statement, primary responsibilities)
+3. **Operating Instructions** (How agent analyzes and responds)
+4. **Context Awareness** (What agent should consider)
+5. **Input/Output Examples** (Concrete usage examples)
+6. **Tools and Integrations** (Which tools agent uses)
+7. **Safety and Boundaries** (What agent should NOT do)
+8. **Metrics for Evaluation** (Success criteria)
+9. **Coordination Patterns** (Integration with other agents)
+
+**Template Location**: See existing agents for format
+
+### Review and Approval Commands
+```bash
+# List pending agents
+oak-list-pending-agents
+
+# Review specific agent
+oak-review-agent <agent-name>
+
+# Approve agent (deploys immediately)
+oak-approve-agent <agent-name>
+
+# Modify agent (opens in editor)
+oak-modify-agent <agent-name>
+
+# Reject agent (archives with reasoning)
+oak-reject-agent <agent-name> "<reason>"
+
+# Check for pending reviews
+oak-check-pending
 ```
 
 ### Fallback Behavior (Before Agent Created)

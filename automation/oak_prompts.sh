@@ -146,6 +146,15 @@ oak_show_prompt() {
         messages="${messages}\n   ${BLUE}Run:${NC} oak-health-check"
     fi
 
+    # Check for pending agent reviews
+    local pending_count=$(ls -1 ~/Projects/claude-oak-agents/agents/pending_review/*.md 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$pending_count" -gt 0 ]; then
+        show_prompt=true
+        messages="${messages}\n${YELLOW}🤖 ${pending_count} New Agent(s) Awaiting Approval${NC}"
+        messages="${messages}\n   Auto-created agents need your review before deployment"
+        messages="${messages}\n   ${BLUE}Run:${NC} oak-list-pending-agents"
+    fi
+
     # Show consolidated prompt
     if [ "$show_prompt" = true ]; then
         echo -e "\n${BOLD}╔════════════════════════════════════════════════════════════╗${NC}"
@@ -237,12 +246,73 @@ oak-status() {
     echo -e "  Since weekly:  $new_weekly"
     echo -e "  Since monthly: $new_monthly\n"
 
+    # Check for pending agent reviews
+    local pending_count=$(ls -1 ~/Projects/claude-oak-agents/agents/pending_review/*.md 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$pending_count" -gt 0 ]; then
+        echo -e "${YELLOW}Pending Agent Reviews:${NC}"
+        echo -e "  ${pending_count} agent(s) awaiting approval\n"
+    fi
+
     echo -e "${BLUE}Available Commands:${NC}"
     echo -e "  ${GREEN}oak-weekly-review${NC}  - Run weekly analysis"
     echo -e "  ${GREEN}oak-monthly-review${NC} - Run monthly curation"
     echo -e "  ${GREEN}oak-health-check${NC}   - Check system health"
     echo -e "  ${GREEN}oak-dashboard${NC}      - View performance dashboard"
-    echo -e "  ${GREEN}oak-status${NC}         - Show this status"
+    echo -e "  ${GREEN}oak-status${NC}         - Show this status\n"
+
+    if [ "$pending_count" -gt 0 ]; then
+        echo -e "${BLUE}Agent Review Commands:${NC}"
+        echo -e "  ${GREEN}oak-list-pending-agents${NC} - List agents pending review"
+        echo -e "  ${GREEN}oak-review-agent <name>${NC} - Review agent specification"
+        echo -e "  ${GREEN}oak-approve-agent <name>${NC} - Approve and deploy agent"
+    fi
+}
+
+# Agent Review Commands
+oak-list-pending-agents() {
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/agent_review.py list
+}
+
+oak-review-agent() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-review-agent <agent-name>"
+        return 1
+    fi
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/agent_review.py review "$1"
+}
+
+oak-approve-agent() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-approve-agent <agent-name>"
+        return 1
+    fi
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/agent_review.py approve "$1"
+}
+
+oak-modify-agent() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-modify-agent <agent-name>"
+        return 1
+    fi
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/agent_review.py modify "$1"
+}
+
+oak-reject-agent() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Usage: oak-reject-agent <agent-name> \"<reason>\""
+        return 1
+    fi
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/agent_review.py reject "$1" "$2"
+}
+
+oak-check-pending() {
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/agent_review.py check
 }
 
 # Show prompt on shell startup (only once per session)
