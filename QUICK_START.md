@@ -35,9 +35,28 @@ python scripts/test_telemetry_e2e.py
 
 Expected: All green checkmarks ✅
 
-### 3. Start Using It
+### 3. Install Automation (Recommended)
 
-That's it! Hooks are now logging automatically. Use agents normally in Claude Code.
+Set up automated prompts and scheduled reviews:
+
+```bash
+cd ~/Projects/claude-oak-agents
+./automation/install_automation.sh
+```
+
+This installs:
+- ✅ Shell prompts (reminds you when reviews are due)
+- ✅ Scheduled execution (runs reviews automatically)
+- ✅ Notifications (alerts when results are ready)
+
+**Alternative:** Skip automation and run reviews manually (see sections below)
+
+### 4. Start Using It
+
+That's it! The system is ready:
+- Hooks log automatically when agents run
+- Automation prompts you when reviews are due
+- Just use agents normally in Claude Code
 
 ---
 
@@ -53,12 +72,15 @@ Full details in: [`docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md`](docs/oak-design/
 
 ## 📊 Weekly Routine (15 minutes)
 
-Every Monday:
+**Automated:** System runs every Monday at 9am and notifies you
+
+**Manual alternative:**
 ```bash
 # Generate weekly report
-python scripts/automation/weekly_review.py
+oak-weekly-review
 
-# View report
+# Or directly:
+python3 scripts/automation/weekly_review.py
 open reports/weekly_report_$(date +%Y-%m-%d).html
 ```
 
@@ -66,16 +88,19 @@ open reports/weekly_report_$(date +%Y-%m-%d).html
 
 ## 🔧 Monthly Routine (1 hour)
 
-First Monday of month:
+**Automated:** System runs 1st of month at 10am and notifies you
+
+**Manual alternative:**
 ```bash
 # Generate monthly analysis
-python scripts/automation/monthly_analysis.py
+oak-monthly-review
 
-# Review curation agenda
+# Or directly:
+python3 scripts/automation/monthly_analysis.py
 cat reports/curation/agenda_$(date +%Y-%m).md
 
 # Make decisions (interactive)
-python scripts/phase5/record_curation_decisions.py
+python3 scripts/phase5/record_curation_decisions.py
 ```
 
 ---
@@ -83,25 +108,31 @@ python scripts/phase5/record_curation_decisions.py
 ## 📈 Check Progress
 
 ```bash
-# View telemetry
+# System status (shows last reviews, new invocations)
+oak-status
+
+# View performance dashboard
+oak-dashboard
+
+# Check system health
+oak-health-check
+
+# View raw telemetry
 cat telemetry/agent_invocations.jsonl | jq | tail -20
 
 # Analyze performance
-python telemetry/analyzer.py
-
-# View dashboard
-python scripts/phase4/generate_dashboard.py
-open reports/dashboard_$(date +%Y-%m-%d).html
+python3 telemetry/analyzer.py
 ```
 
 ---
 
 ## 🆘 Need Help?
 
-1. **[6-Month Deployment Plan](docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md)** - Complete automated roadmap
-2. **[Implementation Guide](docs/oak-design/IMPLEMENTATION_GUIDE.md)** - Technical details
-3. **[OaK Architecture](docs/oak-design/OAK_ARCHITECTURE.md)** - System design
-4. **[Hooks README](hooks/README.md)** - Telemetry hooks documentation
+1. **[Automation README](automation/README.md)** - Shell prompts, notifications, scheduling
+2. **[6-Month Deployment Plan](docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md)** - Complete automated roadmap
+3. **[Implementation Guide](docs/oak-design/IMPLEMENTATION_GUIDE.md)** - Technical details
+4. **[OaK Architecture](docs/oak-design/OAK_ARCHITECTURE.md)** - System design
+5. **[Hooks README](hooks/README.md)** - Telemetry hooks documentation
 
 ---
 

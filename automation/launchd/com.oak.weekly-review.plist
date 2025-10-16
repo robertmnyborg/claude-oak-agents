@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.oak.weekly-review</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/robertnyborg/Projects/claude-oak-agents/automation/oak_notify.sh</string>
+        <string>weekly</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>  <!-- Monday -->
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/robertnyborg/Projects/claude-oak-agents/logs/weekly-review.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/robertnyborg/Projects/claude-oak-agents/logs/weekly-review.error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>OAK_TELEMETRY_ENABLED</key>
+        <string>true</string>
+        <key>OAK_TELEMETRY_DIR</key>
+        <string>/Users/robertnyborg/Projects/claude-oak-agents/telemetry</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/robertnyborg/Projects/claude-oak-agents</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>LaunchOnlyOnce</key>
+    <false/>
+</dict>
+</plist>
