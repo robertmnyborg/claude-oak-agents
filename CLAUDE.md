@@ -121,6 +121,7 @@ COMPLEXITY: [Simple/Medium/Complex]
 - **qa-specialist**: Integration testing, E2E, system validation
 - **general-purpose**: RESTRICTED - single-line commands/basic queries ONLY
 - **agent-creator**: Meta-agent creation
+- **agent-auditor**: Agent portfolio management, capability gap detection, redundancy elimination (Agentic HR)
 
 #### Multi-Agent Coordination
 - **Security**: security-auditor + code-reviewer + dependency-scanner → Main LLM synthesis
@@ -220,6 +221,158 @@ Implementation → Domain keywords? → Route to specialist
 - **No vague routing**: Cannot use "appropriate specialist"
 - **Cross-domain**: Coordinate multiple specialists when spanning domains
 - **Fail fast**: Better explicit failure than incorrect routing
+</Rule>
+
+<Rule id="capability-gap-detection">
+**CAPABILITY GAP DETECTION**: Automatic agent creation when no suitable agent exists
+
+### Gap Detection Workflow
+```
+Request → Classification → Domain Identification → Agent Matching
+                                                          ↓
+                                                    NO MATCH FOUND
+                                                          ↓
+                                               Log Routing Failure
+                                                          ↓
+                                            Invoke agent-creator
+                                                          ↓
+                                            Create New Agent
+                                                          ↓
+                                                   Retry Request
+```
+
+### When to Create New Agent (Automatic)
+**IMMEDIATE CREATION** (Real-Time):
+- User explicitly requests new capability: "I need an agent for financial analysis"
+- Classification succeeds BUT no agent matches domain
+- Domain is well-defined and distinct from existing agents
+
+**DEFERRED CREATION** (Monthly via agent-auditor):
+- 10+ routing failures for same domain in 30 days
+- Pattern of suboptimal routing (using wrong agent repeatedly)
+- User feedback indicates missing capability
+
+### Gap Detection Triggers
+```yaml
+immediate_triggers:
+  explicit_request: "create agent for [domain]" OR "I need [domain] capability"
+  routing_failure: Classification→Domain→NO AGENT FOUND
+
+  conditions:
+    domain_is_distinct: true
+    no_existing_overlap: true
+    user_confirmed: true OR routing_failures >= 3
+
+deferred_triggers:
+  routing_failure_pattern: failures_for_domain >= 10 in 30_days
+  suboptimal_routing: wrong_agent_used >= 5 in 30_days
+  agent_auditor_recommendation: gap detected in monthly audit
+```
+
+### Automatic Agent Creation Process
+1. **Detect Gap**: Main LLM cannot match request to suitable agent
+2. **Log Failure**: Record routing failure with domain and context
+3. **Check Threshold**:
+   - Explicit request? → Create immediately
+   - 3+ failures same domain? → Create immediately
+   - Otherwise → Log for monthly agent-auditor review
+4. **Invoke agent-creator**: Pass domain, context, and requirements
+5. **Create Agent**: agent-creator designs and implements new agent
+6. **Validate**: Test agent with original request
+7. **Register**: Add to agent-auditor monitoring
+
+### Agent Creation Examples
+
+**Example 1: Financial Analysis**
+```
+User: "Analyze the ROI of this investment portfolio"
+Main LLM Classification: ANALYSIS | Financial
+Domain Identification: financial-analysis
+Agent Matching: NO MATCH (no financial-analyst exists)
+Gap Detection: Domain distinct, well-defined
+Action: Invoke agent-creator
+Specification:
+  - name: financial-analyst
+  - domain: financial-analysis
+  - capabilities: ROI analysis, portfolio evaluation, financial modeling
+  - context: User needs investment analysis
+Created: financial-analyst agent
+Retry: Delegate to new financial-analyst
+```
+
+**Example 2: Research Tasks**
+```
+User: "Research best practices for OAuth2 implementation"
+Main LLM Classification: ANALYSIS | Research
+Domain Identification: research
+Agent Matching: NO CLEAR MATCH (general-purpose too generic)
+Gap Detection: Research is distinct capability
+Action: Invoke agent-creator
+Specification:
+  - name: research-specialist
+  - domain: research
+  - capabilities: Information synthesis, best practices research, technical investigation
+Created: research-specialist agent
+Retry: Delegate to new research-specialist
+```
+
+**Example 3: Product Management**
+```
+User: "Create product roadmap for Q1 2026"
+Main LLM Classification: COORDINATION | Product Management
+Domain Identification: product-management
+Agent Matching: NO MATCH (project-manager is execution, not strategy)
+Gap Detection: Product management distinct from project management
+Action: Invoke agent-creator
+Specification:
+  - name: product-manager-strategist
+  - domain: product-management
+  - capabilities: Roadmapping, feature prioritization, stakeholder management
+Created: product-manager-strategist agent
+Retry: Delegate to new product-manager-strategist
+```
+
+### Fallback Behavior (Before Agent Created)
+If agent cannot be created immediately:
+1. **Route to general-purpose** with explicit note: "No specialized agent available for [domain]. Using general-purpose. Consider creating dedicated agent."
+2. **Log routing failure** for agent-auditor monthly review
+3. **Inform user** that capability is missing and will be addressed
+
+### Integration with agent-auditor
+**Monthly Review**:
+- agent-auditor analyzes all routing failures
+- Identifies patterns suggesting missing agents
+- Proposes batch creation of needed agents
+- Human reviews and approves
+- agent-creator creates approved agents
+
+**Prevents Over-Creation**:
+- Don't create agent for one-off requests
+- Don't create if existing agent can be expanded
+- Don't create if overlap with existing is >50%
+
+### Gap Detection State Tracking
+**Location**: `telemetry/routing_failures.jsonl`
+
+**Format**:
+```json
+{
+  "timestamp": "2025-10-16T10:30:00Z",
+  "user_request": "Analyze financial statements",
+  "classification": "ANALYSIS",
+  "domain": "financial-analysis",
+  "matched_agent": null,
+  "fallback_used": "general-purpose",
+  "gap_score": 0.95,
+  "recommendation": "create financial-analyst"
+}
+```
+
+### Success Metrics
+- **Routing Accuracy**: % of requests successfully matched to agents
+- **Gap Closure Rate**: % of identified gaps closed within 30 days
+- **Creation Precision**: % of created agents that get used regularly
+- **User Satisfaction**: Feedback on agent coverage
 </Rule>
 
 <Rule id="classification-routing">
