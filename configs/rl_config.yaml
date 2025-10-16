@@ -1,0 +1,166 @@
+# Phase 6: Reinforcement Learning Configuration
+# Controls offline RL training and policy learning
+
+version: "1.0"
+
+# Training Data Preparation
+data_preparation:
+  min_episodes: 100  # Minimum telemetry episodes for training
+  train_test_split: 0.8  # 80% train, 20% test
+  validation_split: 0.1  # 10% of train for validation
+
+  # Feature engineering
+  state_features:
+    - codebase_languages
+    - codebase_frameworks
+    - file_count
+    - test_status
+    - task_type
+    - task_complexity
+    - historical_success_rate
+    - time_of_day
+    - workspace_size
+
+  # Normalization
+  normalize_features: true
+  scaling_method: "standard"  # standard, minmax, robust
+
+  # Handling missing data
+  missing_data_strategy: "mean"  # mean, median, drop
+
+# Model Architecture
+model:
+  algorithm: "CQL"  # Conservative Q-Learning
+  policy_type: "discrete"  # discrete (agent selection)
+
+  # Hyperparameters
+  hyperparameters:
+    learning_rate: 0.0003
+    batch_size: 64
+    gamma: 0.99  # Discount factor
+    tau: 0.005  # Soft update coefficient
+    alpha: 0.2  # CQL alpha parameter
+    hidden_layers: [256, 256]  # Neural network architecture
+    activation: "relu"
+
+  # Training configuration
+  training:
+    max_epochs: 1000
+    early_stopping_patience: 50
+    min_delta: 0.001  # Minimum improvement for early stopping
+    checkpoint_freq: 100  # Save checkpoint every N epochs
+
+# Reward Function
+reward:
+  # Outcome-based rewards
+  success: 10.0
+  failure: -5.0
+
+  # Quality-based rewards (if available)
+  quality_weight: 2.0  # Multiply quality rating by this
+
+  # Duration penalty (encourage efficiency)
+  duration_penalty_factor: -0.01  # Small penalty per second
+
+  # Composite reward formula:
+  # reward = outcome_reward + (quality * quality_weight) + (duration * duration_penalty)
+
+# Baseline Models
+baseline:
+  # Simple baselines for comparison
+  models:
+    - name: "random"
+      description: "Random agent selection"
+
+    - name: "most_frequent"
+      description: "Always select most frequently used agent"
+
+    - name: "highest_success_rate"
+      description: "Select agent with highest historical success rate"
+
+  # Baseline must be beaten by this margin
+  min_improvement_threshold: 0.1  # 10% better than best baseline
+
+# Evaluation Metrics
+evaluation:
+  metrics:
+    - accuracy  # Correct agent selection
+    - success_rate  # Selected agent succeeds
+    - avg_reward  # Average reward achieved
+    - regret  # How much worse than optimal
+
+  # Cross-validation
+  k_folds: 5
+
+# Policy Export
+policy_export:
+  format: "json"  # Export format: json, pickle, onnx
+  output_path: "models/policies/trained_policy.json"
+
+  # Deployment configuration
+  deployment:
+    enabled: false  # Manual activation required
+    integration_type: "advisor"  # advisor, primary, hybrid
+
+    # Policy advisor agent configuration
+    advisor:
+      confidence_threshold: 0.7  # Min confidence to recommend
+      top_k_recommendations: 3  # Number of agent recommendations
+      include_reasoning: true  # Explain recommendations
+
+# Continuous Learning
+continuous_learning:
+  enabled: false  # Requires manual activation
+  retrain_frequency_days: 30  # Retrain every N days
+  min_new_episodes: 50  # Minimum new data before retrain
+  auto_deploy: false  # Manual approval required for deployment
+
+# Monitoring and Alerting
+monitoring:
+  track_policy_performance: true
+  alert_on_degradation: true
+  degradation_threshold: 0.15  # Alert if performance drops >15%
+
+  # Policy health checks
+  health_check_frequency_days: 7
+  metrics_to_track:
+    - prediction_accuracy
+    - recommendation_acceptance_rate
+    - actual_success_rate
+
+# Safety and Rollback
+safety:
+  # Conservative deployment
+  gradual_rollout: true
+  rollout_percentage_stages: [10, 25, 50, 100]  # Gradual increase
+  stage_duration_days: 7  # Days at each stage
+
+  # Automatic rollback triggers
+  auto_rollback:
+    enabled: true
+    failure_rate_threshold: 0.4  # Rollback if >40% failures
+    min_episodes_before_rollback: 10
+
+# Experimental Features
+experimental:
+  # Advanced RL algorithms (future)
+  enable_advanced_algorithms: false
+  algorithms:
+    - "SAC"  # Soft Actor-Critic
+    - "TD3"  # Twin Delayed DDPG
+    - "PPO"  # Proximal Policy Optimization
+
+  # Multi-agent RL (coordination learning)
+  multi_agent_rl: false
+
+  # Transfer learning
+  transfer_learning:
+    enabled: false
+    pretrained_model_path: null
+
+# Logging and Debugging
+logging:
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_training_progress: true
+  log_predictions: true
+  tensorboard_enabled: false  # Optional TensorBoard integration
