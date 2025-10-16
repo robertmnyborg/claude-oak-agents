@@ -207,6 +207,6 @@ See [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md) for step-by-step instru
 
 ## References
 
-- [OaK Paper: Options and Knowledge for Hierarchical RL](https://arxiv.org/abs/your-reference)
+- [OaK Architecture Explanation Video](https://www.youtube.com/watch?v=gEbbGyNkR2U)
 - [Claude Squad Original Repo](https://github.com/jamsajones/claude-subagents)
-- [Hierarchical RL Survey](https://arxiv.org/abs/your-reference)
+- [Hierarchical RL Resources](https://www.youtube.com/watch?v=gEbbGyNkR2U)
