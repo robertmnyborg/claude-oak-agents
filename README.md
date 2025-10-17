@@ -323,6 +323,7 @@ claude-oak-agents/
 │   ├── rejected/                   # Rejected agents archive
 │   ├── frontend-developer.md       # Core 29 agents
 │   ├── agent-auditor.md            # NEW: Strategic HR
+│   ├── security-auditor-multifile/ # Example multi-file agent package
 │   └── ...
 ├── telemetry/                      # Performance data (local only)
 │   ├── agent_invocations.jsonl     # All invocations logged
@@ -339,7 +340,13 @@ claude-oak-agents/
 │   ├── phase4/                     # Dashboards & feedback
 │   ├── phase5/                     # Agent audit & A/B testing
 │   ├── phase6/                     # ML pipeline (future)
+│   ├── shared/                     # NEW: Shared utilities (KISS approach)
+│   ├── measure_token_costs.py      # NEW: Token cost analysis
+│   ├── enable_metadata_prompts.sh  # NEW: Enable metadata-only prompts
 │   └── agent_review.py             # Review workflow
+├── core/                           # Core infrastructure
+│   ├── agent_loader.py             # Agent loading with progressive disclosure
+│   └── generate_agent_metadata.py  # Metadata generation for discovery
 ├── hooks/                          # Automatic telemetry hooks
 │   ├── pre_agent_hook.py           # Logs before agent runs
 │   └── post_agent_hook.py          # Logs after completion
@@ -386,6 +393,22 @@ oak-review-agent <name>         # Review agent specification
 oak-approve-agent <name>        # Approve and deploy
 oak-modify-agent <name>         # Edit before approving
 oak-reject-agent <name> "..."   # Reject with reason
+```
+
+### Optimization & Measurement
+
+```bash
+# Measure token costs before optimizing
+python3 scripts/measure_token_costs.py              # Analyze last 30 days
+python3 scripts/measure_token_costs.py --period=7   # Last 7 days
+python3 scripts/measure_token_costs.py --show-agents # Cost breakdown by agent
+
+# Enable metadata-only prompts (93% smaller prompts)
+./scripts/enable_metadata_prompts.sh                # One-command enablement
+
+# Learn more about optimizations
+cat docs/ENABLE_METADATA_PROMPTS.md                # Metadata-only prompts guide
+cat scripts/shared/README.md                        # Shared utilities guide
 ```
 
 ---
