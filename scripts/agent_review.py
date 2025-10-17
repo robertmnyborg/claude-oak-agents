@@ -44,7 +44,7 @@ def log_review_decision(agent_name: str, action: str, reasoning: str = ""):
 
 def list_pending_agents():
     """List all agents pending review."""
-    pending_agents = list(PENDING_DIR.glob("*.md"))
+    pending_agents = [f for f in PENDING_DIR.glob("*.md") if f.name != "README.md"]
 
     if not pending_agents:
         print("✓ No agents pending review")
@@ -213,7 +213,7 @@ def reject_agent(agent_name: str, reason: str):
 
 def check_pending():
     """Quick check if any agents are pending review."""
-    pending_agents = list(PENDING_DIR.glob("*.md"))
+    pending_agents = [f for f in PENDING_DIR.glob("*.md") if f.name != "README.md"]
 
     if not pending_agents:
         print("✓ No agents pending review")
