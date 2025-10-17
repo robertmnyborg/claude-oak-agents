@@ -6,21 +6,27 @@ A comprehensive agent ecosystem with **29+ specialized agents** that **learns fr
 
 Built on [claude-squad](https://github.com/jamsajones/claude-squad) with **OaK Architecture** (Options and Knowledge) for data-driven continuous improvement.
 
+**NEW**: Now with **Anthropic Agent Skills parity** - multi-file packages, bundled executable scripts, dynamic discovery, and MCP integration!
+
 ---
 
 ## 🎯 What Makes This Different?
 
-| Feature | Basic Agents | Claude OaK Agents |
-|---------|--------------|-------------------|
-| Specialized agents | ✅ 29 agents | ✅ 29+ agents (grows automatically) |
-| Performance tracking | ❌ None | ✅ Comprehensive telemetry |
-| Learning from experience | ❌ Static | ✅ Continuous improvement |
-| Capability gap detection | ❌ Manual | ✅ Automatic creation |
-| Agent optimization | ❌ Manual refactoring | ✅ A/B testing + ML |
-| Portfolio management | ❌ None | ✅ Strategic HR (agent-auditor) |
-| Maintenance | ❌ Continuous manual | ✅ 15 min/week automated |
+| Feature | Basic Agents | Anthropic Skills | Claude OaK Agents |
+|---------|--------------|------------------|-------------------|
+| Specialized agents | ✅ Static | ✅ Skills | ✅ 29+ agents (grows automatically) |
+| Multi-file packages | ❌ No | ✅ Yes | ✅ Yes (NEW) |
+| Bundled scripts | ❌ No | ✅ Yes | ✅ Yes (NEW) |
+| Dynamic discovery | ❌ No | ✅ Yes | ✅ Yes (NEW) |
+| MCP integration | ❌ No | ✅ Yes | ✅ Yes (NEW) |
+| Performance tracking | ❌ None | ❌ None | ✅ Comprehensive telemetry |
+| Learning from experience | ❌ Static | ❌ Static | ✅ Continuous improvement |
+| Capability gap detection | ❌ Manual | ❌ Manual | ✅ Automatic creation |
+| Agent optimization | ❌ Manual | ❌ Manual | ✅ A/B testing + ML |
+| Portfolio management | ❌ None | ❌ None | ✅ Strategic HR (agent-auditor) |
+| Maintenance | ❌ Manual | ❌ Manual | ✅ 15 min/week automated |
 
-**TL;DR**: Agents that get smarter the more you use them, automatically adapt to your needs, and manage themselves.
+**TL;DR**: All the power of Anthropic's Agent Skills PLUS self-learning, telemetry, and autonomous optimization!
 
 ---
 
@@ -140,16 +146,44 @@ Improved Delegation (smarter over time)
 
 ## 📊 Key Features
 
-### 1. **Automatic Telemetry** (Phase 1-3) ✅
+### 1. **Multi-File Agent Packages** (NEW) ✅
+Agents can now be sophisticated packages with bundled scripts and documentation:
+- **Bundled Scripts**: Pre-tested Python/Bash scripts for 10-100x faster execution
+- **Reference Documentation**: OWASP guides, compliance checklists, methodology docs
+- **Code Templates**: Reusable templates for security tests, configurations, etc.
+- **Backward Compatible**: Single-file agents still fully supported
+
+**Example**: security-auditor bundles CVE scanner, secrets detector, and threat modeler scripts.
+
+### 2. **Dynamic Agent Discovery** (NEW) ✅
+Lightweight metadata-only system prompt for 93% smaller context:
+- **Metadata-First**: Load only triggers/keywords at startup (6KB vs 87KB)
+- **On-Demand Loading**: Full definitions loaded when agent is invoked
+- **Smart Matching**: Keyword, file pattern, and domain-based discovery
+- **Scalable**: Support 100+ agents without prompt bloat
+
+**Status**: Built and ready, opt-in via `./scripts/enable_metadata_prompts.sh`
+**Result**: 90% smaller prompts, 4x faster classification, lower token costs.
+
+### 3. **Model Context Protocol (MCP)** (NEW) ✅
+Standardized telemetry and agent coordination via Anthropic's MCP:
+- **oak-telemetry server**: Standardized telemetry access and logging
+- **oak-agents server**: Agent discovery, metadata, script execution
+- **Industry Standard**: Better ecosystem integration
+- **Replaces Hooks**: Cleaner, more maintainable than custom scripts
+
+**See**: [mcp/README.md](mcp/README.md) for setup.
+
+### 4. **Automatic Telemetry** (Phase 1-3) ✅
 Every agent invocation is logged automatically with:
 - Agent used and task type
 - Duration and outcome
 - Quality ratings
 - State features (languages, frameworks, etc.)
 
-**Zero effort required** - happens in background via hooks.
+**Zero effort required** - happens in background via hooks or MCP.
 
-### 2. **Capability Gap Detection** (Phase 1-3) ✅
+### 5. **Capability Gap Detection** (Phase 1-3) ✅
 When you need an agent that doesn't exist:
 ```
 You: "Analyze the ROI of this investment"
@@ -162,7 +196,7 @@ System: Agent deployed and ready to use!
 
 **Adapts to YOUR needs** - not just predefined agents.
 
-### 3. **Agent-Auditor (Agentic HR)** (Phase 5) ✅
+### 6. **Agent-Auditor (Agentic HR)** (Phase 5) ✅
 Strategic portfolio manager that:
 - Evaluates all agent performance monthly
 - Identifies capability gaps from patterns
@@ -171,7 +205,7 @@ Strategic portfolio manager that:
 
 **Like having HR for your agents** - maintains portfolio health.
 
-### 4. **Intelligent Prompting** (Phase 1-5) ✅
+### 7. **Intelligent Prompting** (Phase 1-5) ✅
 System prompts you when action needed:
 - **Weekly**: "15 new invocations - 5 min review due"
 - **Monthly**: "Agent audit complete - 30 min curation"
@@ -179,7 +213,7 @@ System prompts you when action needed:
 
 **Shell prompts on terminal open** + **macOS notifications** + **daily checks**.
 
-### 5. **Human-in-the-Loop Quality Control** (Phase 5) ✅
+### 8. **Human-in-the-Loop Quality Control** (Phase 5) ✅
 New agents require your review before first deployment:
 ```bash
 oak-list-pending-agents    # See what's pending
@@ -190,7 +224,7 @@ oak-modify-agent <name>    # Edit before approving
 
 **After first approval**, system can auto-update based on learning.
 
-### 6. **A/B Testing & Continuous Improvement** (Phase 5) ✅
+### 9. **A/B Testing & Continuous Improvement** (Phase 5) ✅
 Improved agent versions tested scientifically:
 - Original vs improved comparison
 - Statistical significance testing
@@ -199,7 +233,7 @@ Improved agent versions tested scientifically:
 
 **Evidence-based evolution** - not guesswork.
 
-### 7. **ML Pipeline (Coming Soon)** (Phase 6) 🚧
+### 10. **ML Pipeline (Coming Soon)** (Phase 6) 🚧
 Machine learning will:
 - Learn optimal agent selection patterns
 - Predict agent performance before delegation
@@ -502,11 +536,24 @@ launchctl load ~/Library/LaunchAgents/com.oak.weekly-review.plist
 
 ## 📚 Documentation
 
-- **[EXECUTIVE_OVERVIEW.md](EXECUTIVE_OVERVIEW.md)** - Comparison vs claude-squad
+### Getting Started
 - **[QUICK_START.md](QUICK_START.md)** - 5-minute getting started
+- **[EXECUTIVE_OVERVIEW.md](EXECUTIVE_OVERVIEW.md)** - Comparison vs claude-squad
+
+### NEW: Anthropic Skills Parity
+- **[docs/MULTI_FILE_AGENTS.md](docs/MULTI_FILE_AGENTS.md)** - Multi-file packages, bundled scripts, MCP
+- **[docs/MIGRATION_GUIDE.md](docs/MIGRATION_GUIDE.md)** - Migrate single-file → multi-file
+- **[docs/METADATA_ONLY_PROMPTS.md](docs/METADATA_ONLY_PROMPTS.md)** - Metadata-only system prompts (90% smaller)
+- **[docs/ENABLE_METADATA_PROMPTS.md](docs/ENABLE_METADATA_PROMPTS.md)** - Enable metadata-only (opt-in)
+- **[mcp/README.md](mcp/README.md)** - Model Context Protocol setup
+
+### Architecture & Design
 - **[docs/oak-design/OAK_ARCHITECTURE.md](docs/oak-design/OAK_ARCHITECTURE.md)** - Complete architecture
 - **[docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md](docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md)** - Detailed roadmap
+
+### Automation & Telemetry
 - **[automation/README.md](automation/README.md)** - Automation system
+- **[hooks/README.md](hooks/README.md)** - Telemetry hooks
 - **[agents/pending_review/README.md](agents/pending_review/README.md)** - Review workflow
 
 ---

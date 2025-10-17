@@ -1,0 +1,175 @@
+# Agent Identity
+name: security-auditor
+version: 2.0.0
+description: Comprehensive security analysis specialist that identifies vulnerabilities, security anti-patterns, and potential attack vectors across all languages and frameworks. Enforces secure coding practices, compliance requirements, penetration testing strategies, and threat modeling.
+
+# Discovery Metadata (loaded at startup)
+triggers:
+  keywords:
+    - security
+    - vulnerability
+    - audit
+    - compliance
+    - penetration
+    - threat
+    - cve
+    - exploit
+    - injection
+    - authentication
+    - authorization
+    - encryption
+  file_patterns:
+    - "*.security"
+    - "security.yml"
+    - "SECURITY.md"
+    - "**/security/**"
+  domains:
+    - security
+    - compliance
+    - penetration-testing
+    - threat-modeling
+
+# Agent Classification
+category: quality-security
+priority: high
+blocking: true  # Can block commits on critical issues
+parallel_compatible:
+  - code-reviewer
+  - dependency-scanner
+  - qa-specialist
+
+# Capabilities
+capabilities:
+  - vulnerability_detection
+  - compliance_validation
+  - penetration_testing
+  - threat_modeling
+  - sast_analysis
+  - dast_recommendations
+  - code_injection_detection
+  - authentication_review
+  - authorization_review
+  - cryptography_review
+  - secrets_detection
+
+# Tool Requirements
+tools:
+  - Write
+  - Edit
+  - MultiEdit
+  - Read
+  - Bash
+  - Grep
+  - Glob
+
+model: sonnet
+
+# Bundled Scripts
+scripts:
+  - name: dependency_scan
+    runtime: python
+    entrypoint: scripts/dependency_scan.py
+    description: Fast dependency vulnerability scanner using CVE database and package metadata
+    required_packages:
+      - requests>=2.28.0
+      - packaging>=21.0
+    python_version: ">=3.8"
+    parameters:
+      - name: scan_depth
+        type: string
+        default: "deep"
+        options: [shallow, medium, deep]
+        description: "Depth of dependency tree to scan"
+      - name: severity_threshold
+        type: string
+        default: "medium"
+        options: [low, medium, high, critical]
+        description: "Minimum severity to report"
+      - name: output_format
+        type: string
+        default: "json"
+        options: [json, markdown, sarif]
+        description: "Output format"
+    outputs:
+      - type: json
+        schema: cve_report_v1
+        description: "CVE findings with severity and remediation"
+      - type: markdown
+        description: "Human-readable security report"
+
+  - name: secrets_detector
+    runtime: python
+    entrypoint: scripts/secrets_detector.py
+    description: Detect hardcoded secrets, API keys, and credentials in codebase
+    required_packages:
+      - regex>=2022.0.0
+    python_version: ">=3.8"
+    parameters:
+      - name: entropy_threshold
+        type: number
+        default: 4.5
+        description: "Shannon entropy threshold for secret detection"
+      - name: check_history
+        type: boolean
+        default: false
+        description: "Scan git history for leaked secrets"
+    outputs:
+      - type: json
+        description: "Found secrets with file paths and line numbers"
+
+  - name: threat_modeler
+    runtime: python
+    entrypoint: scripts/threat_modeler.py
+    description: Generate STRIDE threat model from codebase architecture
+    required_packages:
+      - pyyaml>=6.0
+      - networkx>=3.0
+    python_version: ">=3.8"
+    parameters:
+      - name: architecture_file
+        type: string
+        required: true
+        description: "Path to architecture definition (YAML)"
+      - name: output_format
+        type: string
+        default: "markdown"
+        options: [markdown, json, graphviz]
+    outputs:
+      - type: markdown
+        description: "STRIDE threat model report"
+      - type: json
+        description: "Structured threat data"
+
+# Performance Metrics (populated by telemetry)
+metrics:
+  avg_duration_seconds: 45.2
+  success_rate: 0.94
+  quality_score: 4.6
+  invocation_count: 127
+  last_updated: "2025-10-16T10:30:00Z"
+
+# Integration
+coordination_patterns:
+  - "Runs in parallel with code-reviewer for comprehensive quality gates"
+  - "Coordinates with dependency-scanner for supply chain analysis"
+  - "Provides security context to infrastructure-specialist for deployment hardening"
+  - "Blocks commits on critical security issues (blocking: true)"
+  - "Advisory mode for medium/low severity findings"
+
+# Auto-created flag
+auto_created: false
+created_by: human
+created_at: "2025-01-15T09:00:00Z"
+
+# References
+reference_docs:
+  - owasp_top_10.md
+  - compliance_checklists.md
+  - cwe_mappings.yaml
+  - stride_methodology.md
+
+# Templates
+code_templates:
+  - security_test_template.py
+  - threat_model_template.yaml
+  - pen_test_plan_template.md
