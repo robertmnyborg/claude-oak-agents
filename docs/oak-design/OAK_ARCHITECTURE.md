@@ -122,10 +122,12 @@ This project implements an **Options and Knowledge (OaK)** inspired architecture
 
 **Objective:** Offline RL for policy learning
 
+**Status:** Future implementation - Phase 6 experimental
+
 **Components:**
-- `ml-pipeline/data_preprocessing.py` - Clean telemetry data
-- `ml-pipeline/policy_learning.py` - Train agent selection policies
-- `ml-pipeline/export_policies.py` - Generate YAML rules
+- `docs/experimental/phase6/ml-pipeline/data_preprocessing.py` - Clean telemetry data (future)
+- `docs/experimental/phase6/ml-pipeline/policy_learning.py` - Train agent selection policies (future)
+- `docs/experimental/phase6/ml-pipeline/export_policies.py` - Generate YAML rules (future)
 
 **Deliverables:**
 - RL training pipeline

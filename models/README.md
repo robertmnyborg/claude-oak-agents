@@ -85,7 +85,7 @@ python scripts/phase6/train_rl_policy.py
 # Also: models/checkpoints/epoch_*/
 ```
 
-**Training configuration:** See `configs/rl_config.yaml`
+**Training configuration:** See `docs/experimental/phase6/rl_config.yaml`
 
 ### Step 5: Evaluate Policy
 
@@ -396,7 +396,7 @@ continuous_learning:
 
 ## See Also
 
-- [RL Configuration](../configs/rl_config.yaml)
+- [RL Configuration](../docs/experimental/phase6/rl_config.yaml)
 - [6-Month Deployment Plan](../docs/oak-design/6_MONTH_DEPLOYMENT_PLAN.md)
 - [Phase 6 Scripts](../scripts/phase6/)
 - [OaK Architecture](../docs/oak-design/OAK_ARCHITECTURE.md)

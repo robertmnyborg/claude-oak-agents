@@ -25,7 +25,7 @@ You should see:
 - `telemetry/` - Telemetry infrastructure
 - `state-analysis/` - State feature extraction
 - `models/` - Transition models (Phase 4)
-- `ml-pipeline/` - ML pipeline (Phase 6)
+- `docs/experimental/phase6/` - ML pipeline (Phase 6 - future)
 
 ### 2. Test Telemetry System
 

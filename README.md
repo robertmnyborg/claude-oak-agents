@@ -370,7 +370,6 @@ claude-oak-agents/
 ├── reports/                        # Generated reports
 ├── CLAUDE.md                       # Agent delegation rules
 ├── QUICK_START.md                  # 5-minute guide
-├── EXECUTIVE_OVERVIEW.md           # vs claude-squad comparison
 └── README.md                       # This file
 ```
 
@@ -570,7 +569,7 @@ launchctl load ~/Library/LaunchAgents/com.oak.weekly-review.plist
 
 ### Getting Started
 - **[QUICK_START.md](QUICK_START.md)** - 5-minute getting started
-- **[EXECUTIVE_OVERVIEW.md](EXECUTIVE_OVERVIEW.md)** - Comparison vs claude-squad
+- **[EXECUTIVE_OVERVIEW.md](docs/archive/EXECUTIVE_OVERVIEW.md)** - Comparison vs claude-squad (archived)
 
 ### NEW: Anthropic Skills Parity
 - **[docs/MULTI_FILE_AGENTS.md](docs/MULTI_FILE_AGENTS.md)** - Multi-file packages, bundled scripts, MCP

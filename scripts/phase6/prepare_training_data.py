@@ -49,7 +49,7 @@ def prepare_training_data():
     test = dataset[train_size+val_size:]
 
     # Save datasets
-    ml_dir = PROJECT_ROOT / "ml-pipeline" / "data"
+    ml_dir = PROJECT_ROOT / "docs" / "experimental" / "phase6" / "ml-data"
     ml_dir.mkdir(parents=True, exist_ok=True)
 
     for name, data in [("train", train), ("val", val), ("test", test)]:

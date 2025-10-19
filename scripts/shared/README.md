@@ -54,7 +54,7 @@ scripts/shared/
 ### From an Agent Script
 
 ```python
-# In agents/security-auditor/scripts/audit.py
+# In agents/security-auditor/scripts/scan_vulnerabilities.py
 import sys
 from pathlib import Path
 

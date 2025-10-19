@@ -34,7 +34,7 @@ export PYTHONPATH="$HOME/Projects/claude-oak-agents:$PYTHONPATH"
 
 # Phase 4+ Configuration
 export OAK_MODELS_DIR="$HOME/Projects/claude-oak-agents/models"
-export OAK_ML_DIR="$HOME/Projects/claude-oak-agents/ml-pipeline"
+export OAK_ML_DIR="$HOME/Projects/claude-oak-agents/docs/experimental/phase6/ml-pipeline"
 ```
 
 Then reload:
@@ -711,12 +711,12 @@ Next: Train RL policy with: python scripts/phase6/train_rl_policy.py
 
 **Train RL Policy:**
 ```bash
-python scripts/phase6/train_rl_policy.py --config configs/rl_config.yaml
+python scripts/phase6/train_rl_policy.py --config docs/experimental/phase6/rl_config.yaml
 ```
 
 Uses offline RL (Conservative Q-Learning) to learn agent selection policy.
 
-Configuration in `configs/rl_config.yaml`:
+Configuration in `docs/experimental/phase6/rl_config.yaml`:
 ```yaml
 rl_training:
   algorithm: CQL  # Conservative Q-Learning
@@ -1034,7 +1034,7 @@ What it checks:
 
 1. **Comprehensive Audit:**
    ```bash
-   python scripts/audit/quarterly_audit.py
+   # Future: python scripts/audit/quarterly_audit.py (to be implemented)
    ```
 
    Full system analysis:
@@ -1051,13 +1051,13 @@ What it checks:
 
 3. **System Optimization:**
    ```bash
-   python scripts/maintenance/optimize_system.py
+   # Future: python scripts/maintenance/optimize_system.py (to be implemented)
    ```
 
-   - Archive old telemetry data
-   - Optimize database queries
-   - Update dependencies
-   - Security updates
+   - Archive old telemetry data (manual for now)
+   - Optimize database queries (manual for now)
+   - Update dependencies (manual for now)
+   - Security updates (manual for now)
 
 4. **Team Sync:**
    - Share quarterly report with team

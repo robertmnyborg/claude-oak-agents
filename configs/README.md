@@ -21,7 +21,9 @@ Central configuration files for OaK agent system.
 - `scripts/phase5/ab_test_status.py`
 - `scripts/automation/monthly_analysis.py`
 
-### `rl_config.yaml`
+### `rl_config.yaml` (MOVED)
+
+**Status:** This configuration has been moved to `docs/experimental/phase6/rl_config.yaml` as Phase 6 is experimental/future work.
 
 **Purpose:** Controls Phase 6 offline RL training and policy learning
 
@@ -33,11 +35,13 @@ Central configuration files for OaK agent system.
 - **policy_export:** Policy deployment configuration
 - **safety:** Gradual rollout and rollback rules
 
-**Used By:**
+**Used By (Future):**
 - `scripts/phase6/prepare_training_data.py`
 - `scripts/phase6/validate_training_data.py`
 - `scripts/phase6/train_baseline_models.py`
 - `scripts/phase6/train_rl_policy.py`
+
+**Note:** Phase 6 ML pipeline will be implemented when Phase 6 begins. Configuration file will be created in experimental directory at that time.
 
 ### `ab_test_template.yaml`
 
