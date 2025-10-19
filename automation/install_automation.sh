@@ -28,6 +28,38 @@ fi
 
 cd "$OAK_PROJECT_DIR"
 
+# ============================================================================
+# PREREQUISITE CHECK: Telemetry Hooks
+# ============================================================================
+
+echo -e "\n${BLUE}Checking prerequisites...${NC}"
+
+# Check if hooks are installed
+if [ ! -L "$HOME/.claude/hooks/pre_agent.sh" ] || [ ! -L "$HOME/.claude/hooks/post_agent.sh" ]; then
+    echo -e "\n${YELLOW}⚠  Telemetry hooks not installed!${NC}"
+    echo -e "\nThe automation system requires telemetry hooks for data collection."
+    echo -e "Without hooks, the system cannot track agent performance.\n"
+    echo -e "${YELLOW}Would you like to install telemetry hooks now? (y/n)${NC}"
+    read -r install_hooks
+
+    if [[ "$install_hooks" =~ ^[Yy]$ ]]; then
+        echo -e "\n${BLUE}Installing telemetry hooks...${NC}"
+        ./hooks/install_hooks.sh
+        echo -e "${GREEN}  ✓ Hooks installed${NC}"
+    else
+        echo -e "\n${RED}Warning: Automation will run but no data will be collected!${NC}"
+        echo -e "Install hooks later with: ${YELLOW}./hooks/install_hooks.sh${NC}\n"
+        echo -e "${YELLOW}Continue anyway? (y/n)${NC}"
+        read -r continue_anyway
+        if [[ ! "$continue_anyway" =~ ^[Yy]$ ]]; then
+            echo -e "${RED}Installation cancelled.${NC}"
+            exit 1
+        fi
+    fi
+else
+    echo -e "${GREEN}  ✓ Telemetry hooks already installed${NC}"
+fi
+
 # Create necessary directories
 echo -e "\n${BLUE}Creating directories...${NC}"
 mkdir -p logs
@@ -39,10 +71,10 @@ echo -e "${GREEN}  ✓ Directories created${NC}"
 echo -e "\n${BLUE}Making scripts executable...${NC}"
 chmod +x automation/oak_prompts.sh
 chmod +x automation/oak_notify.sh
-chmod +x scripts/automation/*.py
-chmod +x scripts/phase4/*.py
-chmod +x scripts/phase5/*.py
-chmod +x scripts/phase6/*.py
+chmod +x scripts/automation/*.py 2>/dev/null || true
+chmod +x scripts/phase4/*.py 2>/dev/null || true
+chmod +x scripts/phase5/*.py 2>/dev/null || true
+chmod +x scripts/phase6/*.py 2>/dev/null || true
 echo -e "${GREEN}  ✓ Scripts are executable${NC}"
 
 # ============================================================================

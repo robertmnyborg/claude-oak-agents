@@ -50,18 +50,27 @@ cd ~/Projects/claude-oak-agents
 mkdir -p ~/.claude/agents
 ln -s ~/Projects/claude-oak-agents/agents/* ~/.claude/agents/
 
-# 3. Install automation (optional but recommended)
-./automation/install_automation.sh
-# This adds shell prompts and scheduled reviews
+# 3. Install telemetry hooks (automatic performance logging)
+./hooks/install_hooks.sh
+# Sets up automatic logging of all agent invocations
+# Adds environment variables to ~/.zshrc
 
-# 4. You're done! Start using agents normally in Claude Code
+# 4. Install automation (optional but recommended)
+./automation/install_automation.sh
+# Adds shell prompts and scheduled reviews
+
+# 5. Restart terminal or reload shell
+source ~/.zshrc
+
+# 6. You're done! Start using agents normally in Claude Code
 ```
 
 **That's it!** The system is now:
-- ✅ Logging every agent invocation automatically
-- ✅ Tracking performance metrics
-- ✅ Detecting capability gaps
-- ✅ Prompting you when reviews are due
+- ✅ Logging every agent invocation automatically (via hooks)
+- ✅ Tracking performance metrics (duration, success, quality)
+- ✅ Detecting capability gaps (auto-creates missing agents)
+- ✅ Prompting you when reviews are due (shell integration)
+- ✅ Learning from experience (continuous improvement)
 
 ---
 

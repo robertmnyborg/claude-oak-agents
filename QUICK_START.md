@@ -6,30 +6,39 @@
 
 ## ✅ Setup (Complete Today)
 
-### 1. Add Environment Variables
+### 1. Install Telemetry Hooks
 
-Add to `~/.zshrc`:
+Install automatic telemetry logging:
+
 ```bash
-export OAK_TELEMETRY_ENABLED=true
-export OAK_TELEMETRY_DIR="$HOME/Projects/claude-oak-agents/telemetry"
-export OAK_PROMPT_FEEDBACK=false
-export PYTHONPATH="$HOME/Projects/claude-oak-agents:$PYTHONPATH"
+cd ~/Projects/claude-oak-agents
+./hooks/install_hooks.sh
 ```
 
-Reload:
-```bash
-source ~/.zshrc
-```
+This installs:
+- ✅ **Pre-agent hook**: Logs agent invocation start with state features
+- ✅ **Post-agent hook**: Logs completion with duration and outcome
+- ✅ **Environment variables**: Adds to `~/.zshrc` automatically
+- ✅ **Fail-safe design**: Hooks never block agent execution
+
+**What gets logged**:
+- Agent name, type, task description
+- State features (languages, frameworks, LOC, complexity)
+- Execution metrics (duration, success/failure, files modified)
+- All data stored locally in `telemetry/` directory
 
 ### 2. Verify Installation
 
 ```bash
 cd ~/Projects/claude-oak-agents
 
-# Hooks should already be installed
+# Check hooks are installed
 ls -la ~/.claude/hooks/
 
-# Test the system
+# Verify environment variables (in new terminal)
+echo $OAK_TELEMETRY_ENABLED  # Should show: true
+
+# Test the system (optional)
 python scripts/test_telemetry_e2e.py
 ```
 
