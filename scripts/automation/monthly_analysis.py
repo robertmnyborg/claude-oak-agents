@@ -118,7 +118,26 @@ def monthly_analysis():
     print(f"\n📊 Monthly Analysis: {datetime.now().strftime('%B %Y')}")
     print("=" * 70)
 
-    # 1. Run agent portfolio audit (Agentic HR)
+    # Step 1: Detect false completions (auto-feedback)
+    print("\n🔍 Checking for false completions...")
+    script_path = Path(__file__).parent.parent / "detect_false_completions.py"
+    try:
+        result = subprocess.run(
+            [sys.executable, str(script_path)],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        # Show the output from the detection script
+        if result.stdout:
+            for line in result.stdout.strip().split('\n'):
+                if line.strip():
+                    print(f"   {line}")
+    except Exception as e:
+        print(f"   ⚠️  False completion detection failed: {e}")
+        print("   Continuing with analysis...")
+
+    # Step 2: Run agent portfolio audit (Agentic HR)
     audit_success = run_agent_audit()
 
     if not audit_success:

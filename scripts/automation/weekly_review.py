@@ -14,11 +14,32 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from telemetry.analyzer import TelemetryAnalyzer
 from telemetry.feedback_utils import collect_feedback_interactive
+import subprocess
 
 def weekly_review():
     print(f"\n📊 Weekly Review: {datetime.now().strftime('%Y-%m-%d')}")
     print("="*70)
 
+    # Step 1: Detect false completions (auto-feedback)
+    print("\n🔍 Checking for false completions...")
+    script_path = Path(__file__).parent.parent / "detect_false_completions.py"
+    try:
+        result = subprocess.run(
+            [sys.executable, str(script_path)],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        # Show the output from the detection script
+        if result.stdout:
+            for line in result.stdout.strip().split('\n'):
+                if line.strip():
+                    print(f"   {line}")
+    except Exception as e:
+        print(f"   ⚠️  False completion detection failed: {e}")
+        print("   Continuing with review...")
+
+    # Step 2: Analyze performance
     analyzer = TelemetryAnalyzer()
     stats = analyzer.generate_statistics()
 
