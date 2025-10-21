@@ -317,6 +317,48 @@ oak-check-pending() {
     python3 scripts/agent_review.py check
 }
 
+# Proposal Review Commands (Phase 2)
+oak-review-proposals() {
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/phase2/list_proposals.py
+}
+
+oak-review-proposal() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-review-proposal <agent-name>"
+        return 1
+    fi
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/phase2/review_proposal.py "$1"
+}
+
+oak-approve-proposal() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-approve-proposal <agent-name> [notes]"
+        return 1
+    fi
+    cd ~/Projects/claude-oak-agents
+    if [ -n "$2" ]; then
+        python3 scripts/phase2/approve_proposal.py "$1" "$2"
+    else
+        python3 scripts/phase2/approve_proposal.py "$1"
+    fi
+}
+
+oak-reject-proposal() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Usage: oak-reject-proposal <agent-name> \"<reason>\""
+        return 1
+    fi
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/phase2/reject_proposal.py "$1" "$2"
+}
+
+oak-apply-improvements() {
+    cd ~/Projects/claude-oak-agents
+    python3 scripts/phase2/apply_improvements.py
+}
+
 # Show prompt on shell startup (only once per session)
 if [ -z "$OAK_PROMPT_SHOWN" ]; then
     export OAK_PROMPT_SHOWN=1

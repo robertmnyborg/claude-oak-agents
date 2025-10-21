@@ -18,6 +18,7 @@ from typing import List, Dict, Any, Set
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from telemetry.issue_tracker import IssueTracker
+from telemetry.proposal_tracker import ProposalTracker
 
 
 # Root cause categories
@@ -437,7 +438,11 @@ def main():
         reports_dir.mkdir(parents=True, exist_ok=True)
         output_file = reports_dir / f"{datetime.now().strftime('%Y-%m')}.md"
 
-    # Generate markdown report
+    # Initialize proposal tracker
+    proposal_tracker = ProposalTracker()
+    proposal_period = datetime.now().strftime('%Y-%m')
+
+    # Generate markdown report and create tracker entries
     with open(output_file, 'w') as f:
         f.write(f"# Improvement Proposals - {datetime.now().strftime('%B %Y')}\n\n")
         f.write(f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
@@ -447,15 +452,26 @@ def main():
 
         # Sort by total issues (most problematic first)
         for analysis in sorted(analyses, key=lambda x: x['total_issues'], reverse=True):
-            proposal = generate_improvement_proposal(analysis)
-            f.write(proposal)
+            proposal_content = generate_improvement_proposal(analysis)
+            f.write(proposal_content)
+
+            # Create proposal tracker entry
+            proposal_tracker.create_proposal(
+                agent_name=analysis['agent_name'],
+                proposal_period=proposal_period,
+                proposal_content=proposal_content,
+                root_cause=analysis['root_cause_category'],
+                issue_count=analysis['total_issues'],
+                expected_impact=f"Reduce {analysis['root_cause_info']['name'].lower()} issues"
+            )
 
     print(f"\n✓ Proposals saved to: {output_file}")
+    print(f"✓ {len(analyses)} proposal(s) added to tracking system")
     print(f"\nNext steps:")
-    print(f"  1. Review proposals: cat {output_file}")
-    print(f"  2. Edit proposals if needed")
-    print(f"  3. Apply improvements to agent markdown files")
-    print(f"  4. Track metrics to validate improvements")
+    print(f"  1. Review proposals: oak-review-proposals")
+    print(f"  2. Review specific: oak-review-proposal <agent-name>")
+    print(f"  3. Approve: oak-approve-proposal <agent-name>")
+    print(f"  4. Apply: oak-apply-improvements")
 
 
 if __name__ == '__main__':
