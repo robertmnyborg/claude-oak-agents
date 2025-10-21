@@ -74,6 +74,9 @@ telemetry/*.json
 debug/
 crash-reports/
 
+# Auto-generated reports
+reports/
+
 # Python cache
 __pycache__/
 *.pyc
