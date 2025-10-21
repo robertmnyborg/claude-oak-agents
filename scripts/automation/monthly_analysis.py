@@ -15,6 +15,7 @@ import subprocess
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from telemetry.analyzer import TelemetryAnalyzer
+from telemetry.feedback_utils import collect_feedback_interactive
 from datetime import datetime
 
 
@@ -133,6 +134,25 @@ def monthly_analysis():
         print("   ✓ Telemetry analysis complete")
         print(f"   Total invocations: {stats.get('total_invocations', 0)}")
         print(f"   Unique agents: {len(stats.get('agents', {}))}")
+
+        # Collect feedback on all active agents
+        if stats.get('agents'):
+            print("\n" + "="*70)
+            print("Optional: Provide feedback on active agents")
+            print("="*70)
+
+            # Get active agents sorted by invocation count
+            active_agents = sorted(
+                stats['agents'].items(),
+                key=lambda x: x[1]['invocation_count'],
+                reverse=True
+            )
+
+            for agent_name, agent_stats in active_agents:
+                print(f"\n{agent_name}: {agent_stats['invocation_count']} uses, "
+                      f"{agent_stats['success_rate']*100:.0f}% success")
+                collect_feedback_interactive(agent_name, "monthly")
+
     except Exception as e:
         print(f"   ⚠️  Analysis failed: {e}")
 

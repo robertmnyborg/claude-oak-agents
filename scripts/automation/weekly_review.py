@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from telemetry.analyzer import TelemetryAnalyzer
+from telemetry.feedback_utils import collect_feedback_interactive
 
 def weekly_review():
     print(f"\n📊 Weekly Review: {datetime.now().strftime('%Y-%m-%d')}")
@@ -49,6 +50,13 @@ def weekly_review():
         print("\nNeeds Attention:")
         for name, agent_stats in needs_attention:
             print(f"  ⚠️  {name}: {agent_stats['success_rate']*100:.0f}% success")
+
+        # Collect feedback on agents that need attention
+        print("\n" + "="*70)
+        print("Optional: Provide feedback on agents needing attention")
+        print("="*70)
+        for name, agent_stats in needs_attention:
+            collect_feedback_interactive(name, "weekly")
 
     # Generate HTML report
     # TODO: Create detailed HTML report

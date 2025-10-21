@@ -89,9 +89,11 @@ oak_count_new_invocations() {
     local count=0
 
     while IFS= read -r line; do
-        local timestamp=$(echo "$line" | grep -o '"timestamp":"[^"]*"' | cut -d'"' -f4)
+        local timestamp=$(echo "$line" | grep -o '"timestamp":[[:space:]]*"[^"]*"' | sed 's/.*"\([^"]*\)".*/\1/')
         if [ -n "$timestamp" ]; then
-            local line_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "${timestamp%Z}" +%s 2>/dev/null || echo 0)
+            # Remove microseconds and Z suffix: 2025-10-19T15:31:47.887917Z -> 2025-10-19T15:31:47
+            local clean_timestamp=$(echo "$timestamp" | sed 's/\.[0-9]*Z$//' | sed 's/Z$//')
+            local line_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$clean_timestamp" +%s 2>/dev/null || echo 0)
             if [ $line_epoch -gt $since_epoch ]; then
                 count=$((count + 1))
             fi

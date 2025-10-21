@@ -185,7 +185,11 @@ def generate_agent_audit_report(
     # Capability gaps
     if gaps:
         report += "## Capability Gaps Detected\n\n"
+        # Initialize gap categories before use
         critical_gaps = [g for g in gaps if g['urgency'] == 'HIGH']
+        moderate_gaps = [g for g in gaps if g['urgency'] == 'MEDIUM']
+        minor_gaps = [g for g in gaps if g['urgency'] == 'LOW']
+
         if critical_gaps:
             report += "### Critical Gaps (Create New Agent)\n\n"
             for gap in critical_gaps:
@@ -197,13 +201,17 @@ def generate_agent_audit_report(
                     report += f"  - {example}\n"
                 report += "\n"
 
-        moderate_gaps = [g for g in gaps if g['urgency'] == 'MEDIUM']
         if moderate_gaps:
             report += "### Moderate Gaps (Monitor or Expand)\n\n"
             for gap in moderate_gaps:
                 report += f"- **{gap['domain']}**: {gap['failure_count']} failures\n"
 
         report += "\n"
+    else:
+        # Initialize empty lists when no gaps exist
+        critical_gaps = []
+        moderate_gaps = []
+        minor_gaps = []
 
     # Strategic recommendations
     report += "## Strategic Recommendations\n\n"

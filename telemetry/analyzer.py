@@ -289,6 +289,53 @@ class TelemetryAnalyzer:
 
         return rankings
 
+    def print_comparison(self, before_stats: Dict[str, Any], after_stats: Dict[str, Any]) -> None:
+        """
+        Print performance deltas between two statistics snapshots.
+
+        Args:
+            before_stats: Statistics from before period
+            after_stats: Statistics from after period
+        """
+        print("\n" + "=" * 70)
+        print("PERFORMANCE COMPARISON")
+        print("=" * 70)
+
+        before_agents = before_stats.get("agents", {})
+        after_agents = after_stats.get("agents", {})
+
+        # Find agents with significant changes
+        significant_changes = []
+
+        for agent_name in set(list(before_agents.keys()) + list(after_agents.keys())):
+            before = before_agents.get(agent_name, {})
+            after = after_agents.get(agent_name, {})
+
+            if not before or not after:
+                continue  # Skip new/removed agents
+
+            success_delta = after.get("success_rate", 0) - before.get("success_rate", 0)
+            quality_delta = after.get("average_quality", 0) - before.get("average_quality", 0)
+
+            # Show if success rate changed >5% OR quality changed >0.1
+            if abs(success_delta) > 0.05 or abs(quality_delta) > 0.1:
+                significant_changes.append((agent_name, success_delta, quality_delta))
+
+        if not significant_changes:
+            print("\nNo significant performance changes detected.")
+            return
+
+        print("\nAgents with Significant Changes:")
+        for agent_name, success_delta, quality_delta in significant_changes:
+            success_arrow = "↑" if success_delta > 0 else "↓"
+            quality_arrow = "↑" if quality_delta > 0 else "↓"
+
+            print(f"\n{agent_name}:")
+            print(f"  Success Rate: {success_arrow} {abs(success_delta)*100:.1f}%")
+            print(f"  Quality: {quality_arrow} {abs(quality_delta):.2f}")
+
+        print("\n" + "=" * 70)
+
 
 def main():
     """Run telemetry analysis and print summary."""
