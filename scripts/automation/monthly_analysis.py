@@ -138,13 +138,51 @@ def monthly_analysis():
         print(f"   ⚠️  False completion detection failed: {e}")
         print("   Continuing with analysis...")
 
-    # Step 2: Run agent portfolio audit (Agentic HR)
+    # Step 2: Collect metrics (Phase 3)
+    print("\n📈 Collecting Monthly Metrics...")
+    print("-" * 70)
+    metrics_script = Path(__file__).parent.parent / "phase3" / "collect_metrics.py"
+    try:
+        result = subprocess.run(
+            [sys.executable, str(metrics_script), "--period", "month"],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        if result.stdout:
+            for line in result.stdout.strip().split('\n'):
+                if line.strip():
+                    print(f"   {line}")
+    except Exception as e:
+        print(f"   ⚠️  Metrics collection failed: {e}")
+        print("   Continuing with analysis...")
+
+    # Step 3: Run root cause analysis (Phase 2)
+    print("\n🔍 Analyzing Root Causes...")
+    print("-" * 70)
+    root_cause_script = Path(__file__).parent.parent / "phase2" / "analyze_root_causes.py"
+    try:
+        result = subprocess.run(
+            [sys.executable, str(root_cause_script), "--min-issues", "2"],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        if result.stdout:
+            for line in result.stdout.strip().split('\n'):
+                if line.strip():
+                    print(f"   {line}")
+    except Exception as e:
+        print(f"   ⚠️  Root cause analysis failed: {e}")
+        print("   Continuing with analysis...")
+
+    # Step 4: Run agent portfolio audit (Agentic HR)
     audit_success = run_agent_audit()
 
     if not audit_success:
         print("\n⚠️  Agent audit failed, but continuing with analysis...")
 
-    # 2. Generate basic telemetry analysis
+    # Step 5: Generate basic telemetry analysis
     print("\n📈 Analyzing Telemetry Data...")
     print("-" * 70)
 
@@ -176,7 +214,7 @@ def monthly_analysis():
     except Exception as e:
         print(f"   ⚠️  Analysis failed: {e}")
 
-    # 3. Check for issues needing verification
+    # Step 6: Check for issues needing verification
     tracker = IssueTracker()
     issues_needing_verification = tracker.get_issues_needing_verification()
 
@@ -213,7 +251,7 @@ def monthly_analysis():
                 # Leave in needs_verification state
                 print(f"ℹ️  Issue remains in verification queue")
 
-    # 4. Show issue statistics
+    # Step 7: Show issue statistics
     stats_issues = tracker.get_statistics()
     if stats_issues["total_issues"] > 0:
         print(f"\n📊 Issue Tracking Stats:")
@@ -222,21 +260,25 @@ def monthly_analysis():
         print(f"   Needs Verification: {stats_issues['by_state']['needs_verification']}")
         print(f"   Resolved: {stats_issues['by_state']['resolved']}")
 
-    # 5. Generate curation agenda
+    # Step 8: Generate curation agenda
     agenda_file = generate_curation_agenda({})
 
-    # 6. Summary
+    # Step 9: Summary
     print("\n" + "=" * 70)
     print("✓ Monthly analysis complete!")
     print(f"\n📁 Reports Generated:")
+    print(f"   - Metrics: telemetry/agent_metrics.jsonl, telemetry/system_metrics.jsonl")
+    print(f"   - Root Causes: reports/improvement_proposals/{datetime.now().strftime('%Y-%m')}.md")
     print(f"   - Agent Audit: reports/agent_audit/audit_{datetime.now().strftime('%Y-%m-%d')}.md")
     print(f"   - Curation Agenda: {agenda_file}")
 
     print(f"\n📋 Next Steps:")
-    print(f"   1. Review agent audit report")
-    print(f"   2. Review curation agenda")
-    print(f"   3. Make decisions on recommended actions")
-    print(f"   4. Execute approved agent creation/refactoring/deprecation")
+    print(f"   1. Review improvement proposals (Phase 2)")
+    print(f"   2. View metrics trends: python3 scripts/phase3/view_trends.py")
+    print(f"   3. Review agent audit report")
+    print(f"   4. Review curation agenda")
+    print(f"   5. Make decisions on recommended improvements")
+    print(f"   6. Apply approved agent improvements")
 
     return True
 

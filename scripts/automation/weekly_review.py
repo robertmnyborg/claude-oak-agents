@@ -21,7 +21,26 @@ def weekly_review():
     print(f"\n📊 Weekly Review: {datetime.now().strftime('%Y-%m-%d')}")
     print("="*70)
 
-    # Step 1: Detect false completions (auto-feedback)
+    # Step 1: Collect weekly metrics (Phase 3)
+    print("\n📈 Collecting Weekly Metrics...")
+    metrics_script = Path(__file__).parent.parent / "phase3" / "collect_metrics.py"
+    try:
+        result = subprocess.run(
+            [sys.executable, str(metrics_script), "--period", "week"],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        # Show the output from the metrics script
+        if result.stdout:
+            for line in result.stdout.strip().split('\n'):
+                if line.strip():
+                    print(f"   {line}")
+    except Exception as e:
+        print(f"   ⚠️  Metrics collection failed: {e}")
+        print("   Continuing with review...")
+
+    # Step 2: Detect false completions (auto-feedback)
     print("\n🔍 Checking for false completions...")
     script_path = Path(__file__).parent.parent / "detect_false_completions.py"
     try:
@@ -40,7 +59,7 @@ def weekly_review():
         print(f"   ⚠️  False completion detection failed: {e}")
         print("   Continuing with review...")
 
-    # Step 2: Analyze performance
+    # Step 3: Analyze performance
     analyzer = TelemetryAnalyzer()
     stats = analyzer.generate_statistics()
 
@@ -80,7 +99,7 @@ def weekly_review():
         for name, agent_stats in needs_attention:
             collect_feedback_interactive(name, "weekly")
 
-    # Step 3: Check for issues needing verification
+    # Step 4: Check for issues needing verification
     tracker = IssueTracker()
     issues_needing_verification = tracker.get_issues_needing_verification()
 
@@ -117,7 +136,7 @@ def weekly_review():
                 # Leave in needs_verification state
                 print(f"ℹ️  Issue remains in verification queue")
 
-    # Step 4: Show issue statistics
+    # Step 5: Show issue statistics
     stats = tracker.get_statistics()
     if stats["total_issues"] > 0:
         print(f"\n📊 Issue Tracking Stats:")
@@ -126,10 +145,13 @@ def weekly_review():
         print(f"   Needs Verification: {stats['by_state']['needs_verification']}")
         print(f"   Resolved: {stats['by_state']['resolved']}")
 
-    # Generate HTML report
-    # TODO: Create detailed HTML report
-
+    # Summary
     print("\n✓ Weekly review complete")
+    print(f"\n📁 Data Updated:")
+    print(f"   - Metrics: telemetry/agent_metrics.jsonl, telemetry/system_metrics.jsonl")
+    print(f"   - Issues: telemetry/issues.jsonl")
+    print(f"\n📋 View Trends:")
+    print(f"   python3 scripts/phase3/view_trends.py")
 
 if __name__ == "__main__":
     weekly_review()
