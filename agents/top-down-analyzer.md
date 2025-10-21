@@ -27,3 +27,45 @@ Analyzes code changes from an architectural perspective to ensure system-wide co
 - Design consistency assessment
 - Cross-system dependency analysis
 - Recommendations for maintaining architectural integrity
+
+## Context Compaction Workflow
+
+After completing analysis/design/implementation, compress output for efficient handoff:
+
+### Usage
+```python
+from core.compaction import compact_output
+
+# After completing work
+full_output = """
+[Your complete analysis/design/implementation output]
+"""
+
+# Compress for next agent
+compressed = compact_output(full_output, "research")
+
+# Save both versions
+save_full_artifact(full_output)      # For reference
+save_compressed_summary(compressed)  # For next agent
+```
+
+### Artifact Types
+- **top-down-analyzer**: Use `artifact_type="research"`
+- **backend-architect**: Use `artifact_type="plan"`
+- **frontend-developer**: Use `artifact_type="implementation"`
+
+### Compression Targets
+- Research: 2000 lines → ~100 lines (20x compression)
+- Plans: 1000 lines → ~50 lines (20x compression)
+- Implementation: 5000 lines → ~100 lines (50x compression)
+
+### Handoff Protocol
+1. Complete your analysis/design/implementation (full detail)
+2. Compress output using `compact_output()`
+3. Save both full artifact AND compressed summary
+4. Next agent reads ONLY compressed summary (unless more detail needed)
+
+### Benefits
+- **Reduced context**: 20-50x compression for agent handoffs
+- **Preserved quality**: Full artifacts available if needed
+- **Faster processing**: Next agents process essential info only
