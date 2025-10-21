@@ -59,6 +59,30 @@ def weekly_review():
         print(f"   ⚠️  False completion detection failed: {e}")
         print("   Continuing with review...")
 
+    # Step 2.5: Generate improvement proposals from patterns
+    print("\n🔧 Generating improvement proposals...")
+    project_root = Path(__file__).parent.parent.parent
+    proposal_script = project_root / "scripts/phase2/generate_proposals.sh"
+    if proposal_script.exists():
+        try:
+            result = subprocess.run(
+                ["bash", str(proposal_script)],
+                capture_output=True,
+                text=True,
+                cwd=project_root,
+                timeout=60
+            )
+            if result.returncode == 0 and result.stdout:
+                for line in result.stdout.strip().split('\n'):
+                    if line.strip():
+                        print(f"   {line}")
+            elif result.returncode != 0:
+                print(f"   ⚠️  Proposal generation failed: {result.stderr}")
+        except Exception as e:
+            print(f"   ⚠️  Proposal generation error: {e}")
+    else:
+        print(f"   ⚠️  Proposal generator not found at {proposal_script}")
+
     # Step 3: Analyze performance
     analyzer = TelemetryAnalyzer()
     stats = analyzer.generate_statistics()

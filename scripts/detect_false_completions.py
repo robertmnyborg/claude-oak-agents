@@ -115,8 +115,14 @@ def find_repetitions(invocations: List[Dict], time_window_hours: int = TIME_WIND
 
 
 def is_false_completion(attempts: List[Dict]) -> bool:
-    """Check if earlier succeeded but task was repeated."""
-    if len(attempts) < MIN_REPETITIONS:
+    """Check if earlier succeeded but task was repeated.
+
+    BUG FIX (2025-10-21): Changed < to <= to correctly enforce MIN_REPETITIONS threshold.
+    With MIN_REPETITIONS=1, we need MORE than 1 attempt (i.e., at least 2 total attempts).
+    Previous logic: len(attempts) < 1 only caught empty lists (impossible)
+    Fixed logic: len(attempts) <= 1 filters out single attempts (correct)
+    """
+    if len(attempts) <= MIN_REPETITIONS:
         return False
     
     # Check if first attempt claimed success
