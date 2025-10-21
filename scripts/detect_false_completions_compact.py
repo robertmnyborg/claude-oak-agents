@@ -9,7 +9,7 @@ from collections import defaultdict
 STOPWORDS = {'the','a','an','is','are','was','were','be','have','has','had','do','does','did',
              'will','would','could','should','can','make','fix','update','change','add','create',
              'build','for','to','and','or','but','in','on','at','with','from','of'}
-MIN_OVERLAP, MIN_REPS, WINDOW_HRS = 2, 2, 24
+MIN_OVERLAP, MIN_REPS, WINDOW_HRS = 2, 1, 24  # Ask twice = failure
 
 def extract_keywords(text):
     """Extract keywords, removing stopwords."""

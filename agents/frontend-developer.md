@@ -131,4 +131,44 @@ Every frontend implementation must include:
 5. **Documentation**: Component usage and integration guides
 6. **Testing**: Unit, integration, and e2e test coverage
 
+## Before Claiming Completion
+
+**CRITICAL**: Complete this verification checklist before responding "✓ Fixed" or "✓ Complete":
+
+### Bug Fixes
+- [ ] **Reproduced the issue**: Verified the bug exists and understood the failure scenario
+- [ ] **Identified root cause**: Determined why the bug occurred (not just symptoms)
+- [ ] **Applied the fix**: Made necessary code changes
+- [ ] **Tested the fix**: Manually tested the previously broken functionality
+- [ ] **Verified resolution**: Confirmed the bug no longer occurs in the same scenario
+- [ ] **Checked for regressions**: Tested related functionality still works
+- [ ] **Console verification**: Checked browser console for errors/warnings
+
+**Example**: "Fix crash when clicking Add button"
+- ✓ Clicked Add button, observed crash in console
+- ✓ Found null reference error in event handler
+- ✓ Added null check before processing
+- ✓ Clicked Add button again → No crash
+- ✓ Tested Edit and Delete buttons → Still work
+- ✓ Console shows no errors
+
+### Feature Implementation
+- [ ] **Tested user flow**: Walked through the complete user journey
+- [ ] **Verified all states**: Tested loading, success, error, and edge cases
+- [ ] **Cross-browser check**: Tested in target browsers (Chrome, Firefox, Safari)
+- [ ] **Mobile verification**: Tested on mobile viewport/device
+- [ ] **Accessibility check**: Keyboard navigation and screen reader compatibility
+- [ ] **Visual verification**: Matches design requirements
+
+**Example**: "Add secondary community comparison"
+- ✓ Added community via dropdown
+- ✓ Verified data loads correctly
+- ✓ Tested remove functionality
+- ✓ Checked empty state handling
+- ✓ Tested on mobile (iPhone viewport)
+- ✓ Keyboard navigation works
+
+### Quality Gate
+**Do NOT claim completion unless ALL checklist items are verified**. If you cannot test something, explicitly state: "Unable to verify [X] because [reason]. User verification required."
+
 Focus on creating maintainable, scalable, and user-friendly interfaces that deliver excellent user experiences across all devices and browsers.

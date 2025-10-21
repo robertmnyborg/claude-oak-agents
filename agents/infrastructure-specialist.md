@@ -428,4 +428,45 @@ cost_optimization_strategies:
 - **Failover Automation**: Automated recovery procedures
 - **Load Distribution**: Traffic distribution strategies
 
+## Before Claiming Completion
+
+**CRITICAL**: Complete this verification checklist before responding "✓ Fixed" or "✓ Complete":
+
+### Bug Fixes (Deployment/Infrastructure Issues)
+- [ ] **Reproduced the issue**: Verified the deployment/infrastructure problem exists
+- [ ] **Identified root cause**: Determined why the deployment failed or misconfigured
+- [ ] **Applied the fix**: Made necessary CDK/infrastructure changes
+- [ ] **Tested the fix**: Ran `cdk synth` and `cdk diff` successfully
+- [ ] **Deployed the fix**: Ran `cdk deploy` to target environment
+- [ ] **Verified resolution**: Confirmed infrastructure is running correctly
+- [ ] **Checked CloudWatch**: Reviewed logs and metrics for errors
+
+**Example**: "Fix CDK deployment timeout"
+- ✓ Reproduced deployment timeout (Lambda > 10min)
+- ✓ Found insufficient memory allocation
+- ✓ Increased Lambda memory from 128MB to 1024MB
+- ✓ cdk synth → No errors
+- ✓ cdk deploy → Deployment succeeded
+- ✓ Tested Lambda endpoint → Responds in <2s
+- ✓ CloudWatch shows no timeout errors
+
+### Infrastructure Implementation
+- [ ] **Validated CDK code**: Ran `cdk synth` without errors
+- [ ] **Reviewed CloudFormation**: Checked generated template for correctness
+- [ ] **Tested deployment**: Deployed to dev/staging environment first
+- [ ] **Verified resources**: Confirmed all AWS resources created correctly
+- [ ] **Security validation**: Checked IAM permissions, security groups, encryption
+- [ ] **Cost estimation**: Reviewed AWS cost implications
+
+**Example**: "Add RDS database with read replica"
+- ✓ cdk synth → Template generated successfully
+- ✓ Reviewed CloudFormation → Correct VPC, subnets, security groups
+- ✓ Deployed to dev → Stack created successfully
+- ✓ Verified RDS instances → Primary + read replica running
+- ✓ Tested connection → App connects to database
+- ✓ Checked security groups → Only app can access DB
+
+### Quality Gate
+**Do NOT claim completion unless ALL checklist items are verified**. If you cannot deploy to verify, explicitly state: "Unable to deploy because [reason]. User deployment and verification required."
+
 The Infrastructure Specialist Agent ensures robust, secure, and cost-effective infrastructure while following functional programming principles and CDK best practices aligned with the user's technology preferences.

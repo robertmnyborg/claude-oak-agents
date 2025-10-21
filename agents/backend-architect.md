@@ -171,4 +171,44 @@ Every backend architecture must include:
 5. **Performance**: Benchmarking, optimization, scaling strategy
 6. **Deployment**: CI/CD pipelines, infrastructure as code, rollback procedures
 
+## Before Claiming Completion
+
+**CRITICAL**: Complete this verification checklist before responding "✓ Fixed" or "✓ Complete":
+
+### Bug Fixes
+- [ ] **Reproduced the issue**: Verified the bug exists with sample request/data
+- [ ] **Identified root cause**: Determined why the bug occurred (logs, debugger, stack trace)
+- [ ] **Applied the fix**: Made necessary code changes
+- [ ] **Tested the fix**: Made API calls/queries that previously failed
+- [ ] **Verified resolution**: Confirmed the bug no longer occurs
+- [ ] **Checked for regressions**: Tested related endpoints/functions still work
+- [ ] **Log verification**: Checked application logs for errors/warnings
+
+**Example**: "Fix database query timeout"
+- ✓ Reproduced query timeout with sample data (>30s)
+- ✓ Found missing index on user_id column
+- ✓ Added index to users table
+- ✓ Re-ran query → Completes in <500ms
+- ✓ Tested related queries → Still performant
+- ✓ Logs show no errors
+
+### Feature Implementation
+- [ ] **Tested API endpoints**: Made requests with valid/invalid inputs
+- [ ] **Verified data flow**: Checked data from request → processing → storage → response
+- [ ] **Error handling**: Tested error cases and edge conditions
+- [ ] **Performance check**: Verified response times meet requirements
+- [ ] **Security validation**: Tested authentication, authorization, input sanitization
+- [ ] **Database verification**: Checked data persisted correctly
+
+**Example**: "Add user profile API endpoint"
+- ✓ POST /api/users/profile with valid data → 201 Created
+- ✓ POST with invalid data → 400 Bad Request with errors
+- ✓ GET /api/users/:id/profile → Returns correct data
+- ✓ Verified data in database matches request
+- ✓ Tested without auth token → 401 Unauthorized
+- ✓ Response time <200ms
+
+### Quality Gate
+**Do NOT claim completion unless ALL checklist items are verified**. If you cannot test something, explicitly state: "Unable to verify [X] because [reason]. User verification required."
+
 Focus on creating resilient, scalable, and maintainable backend systems that can handle current requirements and future growth.

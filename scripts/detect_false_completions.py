@@ -25,6 +25,10 @@ from pathlib import Path
 from collections import defaultdict
 from typing import List, Dict, Set, Any
 
+# Import issue tracker
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from telemetry.issue_tracker import IssueTracker
+
 
 # Stopwords to ignore when extracting keywords
 STOPWORDS = {
@@ -36,7 +40,7 @@ STOPWORDS = {
 
 # Configuration
 MIN_KEYWORD_OVERLAP = 2
-MIN_REPETITIONS = 2
+MIN_REPETITIONS = 1  # Ask twice = failure (1 repetition after first request = 2 total)
 TIME_WINDOW_HOURS = 24
 
 
@@ -159,9 +163,21 @@ def log_false_completion(agent_name: str, evidence: Dict, output_file: Path, dry
         print(f"\n[DRY RUN] Would log false completion for {agent_name}:")
         print(json.dumps(review_entry, indent=2))
     else:
+        # Log to agent_reviews.jsonl (audit trail)
         with open(output_file, 'a') as f:
             f.write(json.dumps(review_entry) + '\n')
+
+        # Create issue for tracking
+        tracker = IssueTracker()
+        issue_id = tracker.create_issue(
+            agent_name=agent_name,
+            description=review_entry['reasoning'],
+            evidence=review_entry['evidence'],
+            category='false_completion'
+        )
+
         print(f"✓ Logged false completion for {agent_name} ({evidence['repetition_count']} repetitions)")
+        print(f"  Issue ID: {issue_id}")
 
 
 def main():

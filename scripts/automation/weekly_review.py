@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from telemetry.analyzer import TelemetryAnalyzer
 from telemetry.feedback_utils import collect_feedback_interactive
+from telemetry.issue_tracker import IssueTracker, prompt_user_confirmation
 import subprocess
 
 def weekly_review():
@@ -78,6 +79,52 @@ def weekly_review():
         print("="*70)
         for name, agent_stats in needs_attention:
             collect_feedback_interactive(name, "weekly")
+
+    # Step 3: Check for issues needing verification
+    tracker = IssueTracker()
+    issues_needing_verification = tracker.get_issues_needing_verification()
+
+    if issues_needing_verification:
+        print("\n" + "="*70)
+        print("Issues Needing Your Verification")
+        print("="*70)
+        print(f"\n{len(issues_needing_verification)} issue(s) await your confirmation:\n")
+
+        for issue in issues_needing_verification:
+            response = prompt_user_confirmation(issue)
+
+            if response == "confirmed":
+                tracker.update_state(
+                    issue["issue_id"],
+                    "resolved",
+                    notes="User confirmed issue is fixed",
+                    user_confirmed=True,
+                    resolved_at=datetime.utcnow().isoformat() + "Z"
+                )
+                print(f"✓ Issue marked as resolved")
+
+            elif response == "still_broken":
+                tracker.update_state(
+                    issue["issue_id"],
+                    "open",
+                    notes="User reports issue still exists - agent false completion",
+                    user_confirmed=False,
+                    reopened_at=datetime.utcnow().isoformat() + "Z"
+                )
+                print(f"⚠️  Issue reopened - agent will be flagged for quality review")
+
+            elif response == "will_test_later":
+                # Leave in needs_verification state
+                print(f"ℹ️  Issue remains in verification queue")
+
+    # Step 4: Show issue statistics
+    stats = tracker.get_statistics()
+    if stats["total_issues"] > 0:
+        print(f"\n📊 Issue Tracking Stats:")
+        print(f"   Total Issues: {stats['total_issues']}")
+        print(f"   Open: {stats['by_state']['open']}")
+        print(f"   Needs Verification: {stats['by_state']['needs_verification']}")
+        print(f"   Resolved: {stats['by_state']['resolved']}")
 
     # Generate HTML report
     # TODO: Create detailed HTML report
