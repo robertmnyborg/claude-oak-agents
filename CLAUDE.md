@@ -247,6 +247,341 @@ Phase 2A maintains full backward compatibility:
 - Automated workflow optimization
 - Machine learning-based agent selection
 
+## Hybrid Planning Model (Phase 3 - Implemented)
+
+### Overview
+
+The Hybrid Planning Model combines top-down strategic planning with bottom-up implementation expertise. This mirrors real engineering teams where executives set direction, individual contributors propose implementation options, and leadership reviews and refines the plan before execution.
+
+**Key Principle**: Strategic planning at the top, implementation planning from domain experts, synthesis and refinement by leadership, then execution.
+
+### When to Use Hybrid Planning
+
+**MANDATORY for:**
+- Risk level: HIGH or CRITICAL
+- Estimated time: >4 hours
+- Number of agents: ≥4
+- Security-critical changes (authentication, authorization, data protection)
+- Data migrations or schema changes
+- Architecture decisions
+
+**RECOMMENDED for:**
+- Complexity: HIGH + Novelty: HIGH
+- Cost of failure: >2 hours of rework
+- Cross-domain integration (2+ domains)
+- Novel solutions without established patterns
+
+**SKIP for:**
+- Simple tasks (single agent, <1 hour)
+- Well-understood patterns
+- Low-risk changes
+- Bug fixes (unless security-related)
+
+### Workflow Structure
+
+The hybrid planning model has 4 distinct phases:
+
+```yaml
+phase_1_strategic_planning:
+  participants: [Main LLM, design-simplicity-advisor, project-manager]
+  outputs:
+    - task_assignments: "Which agents handle which responsibilities"
+    - constraints: "Requirements, limitations, business rules"
+    - context: "Codebase state, available tools, timeline"
+  duration: "10-30 minutes"
+
+phase_2_implementation_planning:
+  mode: parallel
+  participants: [all_assigned_execution_agents]
+  each_agent_outputs:
+    - options: "[2-3 implementation approaches]"
+    - trade_offs: "[pros, cons, risks for each option]"
+    - estimates: "[time, complexity, dependencies]"
+    - recommendation: "preferred option with rationale"
+  duration: "5-20 minutes per agent (parallel)"
+
+phase_3_plan_review:
+  mode: parallel
+  participants: [project-manager, state-analyzer, product-strategist, design-simplicity-advisor]
+  validates:
+    - technical_feasibility: "Can this actually work?"
+    - requirement_alignment: "Does this solve the stated goal?"
+    - conflict_detection: "Do agent plans contradict each other?"
+    - simplicity_check: "Is this over-engineered?"
+    - dependency_validation: "Are cross-agent dependencies valid?"
+  outputs:
+    - refined_plan: "Synthesized plan incorporating best options"
+    - risk_warnings: "Identified risks requiring mitigation"
+    - go_no_go: "Proceed with execution or re-plan"
+  duration: "10-20 minutes"
+
+phase_4_execution:
+  mode: sequential_or_parallel
+  participants: [execution_agents_with_refined_tasks]
+  inputs: "Refined plan from Phase 3"
+  outputs: "Implemented solution"
+  duration: "Varies by task complexity"
+```
+
+### Decision Matrix for Workflow Selection
+
+```python
+def select_workflow_type(task):
+    """
+    Determines whether to use simple delegation or hybrid planning.
+    """
+    # MANDATORY hybrid planning triggers
+    if task.risk_level in ["high", "critical"]:
+        return "hybrid_planning"
+    if task.estimated_time_hours > 4:
+        return "hybrid_planning"
+    if task.num_required_agents >= 4:
+        return "hybrid_planning"
+    if task.security_critical:
+        return "hybrid_planning"
+
+    # RECOMMENDED hybrid planning triggers
+    if task.complexity == "high" and task.novelty == "high":
+        return "hybrid_planning"
+    if task.num_domains >= 2 and task.integration_complexity == "high":
+        return "hybrid_planning"
+    if task.cost_of_failure_hours > 2:
+        return "hybrid_planning"
+
+    # Simple delegation for everything else
+    return "simple_delegation"
+```
+
+### Agent Modes
+
+All execution agents now support two modes:
+
+**1. Planning Mode** (Phase 2)
+- Input: Task description, constraints, context
+- Output: 2-3 implementation options with trade-offs
+- Focus: Exploration and analysis
+- Duration: 5-15 minutes
+
+**2. Execution Mode** (Phase 4)
+- Input: Refined task with selected approach
+- Output: Implemented solution
+- Focus: Implementation
+- Duration: Varies
+
+### Planning Mode Output Format
+
+All execution agents in planning mode must output this structure:
+
+```yaml
+agent_plan:
+  agent_name: "backend-architect"
+  task: "Implement OAuth2 endpoints"
+
+  implementation_options:
+    option_a:
+      approach: "Use Passport.js OAuth2 strategy"
+      description: "Leverage battle-tested OAuth2 library"
+      pros:
+        - "Well-documented with extensive community support"
+        - "Quick implementation (4 hours)"
+        - "Handles edge cases automatically"
+      cons:
+        - "External dependency (~200KB)"
+        - "Less control over implementation details"
+      time_estimate_hours: 4
+      complexity: "low"
+      risks:
+        - "Dependency maintenance burden"
+        - "Potential version conflicts"
+      dependencies:
+        - "npm: passport"
+        - "npm: passport-oauth2"
+
+    option_b:
+      approach: "Custom OAuth2 implementation"
+      description: "Build from scratch using Node crypto"
+      pros:
+        - "Zero external dependencies"
+        - "Full control over implementation"
+        - "Optimized for specific use case"
+      cons:
+        - "Higher security risk (easy to make mistakes)"
+        - "Longer development time"
+        - "Requires comprehensive security audit"
+      time_estimate_hours: 12
+      complexity: "high"
+      risks:
+        - "OAuth2 spec compliance errors"
+        - "Security vulnerabilities"
+        - "Missing edge case handling"
+      dependencies: []
+
+    option_c:
+      approach: "Minimal OAuth2 subset (authorization_code only)"
+      description: "Implement only core authorization_code flow"
+      pros:
+        - "Simpler than full OAuth2 spec"
+        - "Zero dependencies"
+        - "Faster than Option B (8 hours)"
+        - "Can extend later if needed"
+      cons:
+        - "Limited functionality initially"
+        - "May require refactoring for advanced flows"
+      time_estimate_hours: 8
+      complexity: "medium"
+      risks:
+        - "Feature gaps for advanced use cases"
+        - "Potential rework if requirements expand"
+      dependencies: []
+
+  recommendation:
+    selected: "option_c"
+    rationale: "Balances zero-dependency requirement with reasonable implementation time. YAGNI principle - implement what's needed now, extend later if required."
+    conditions:
+      - "Requires security-auditor review before production"
+      - "Document limitations for future extensibility"
+      - "Plan migration path to full OAuth2 if needed"
+```
+
+### Review Agent Responsibilities
+
+**project-manager (Plan Synthesis)**:
+- Detect conflicts between agent plans
+- Validate cross-agent dependencies
+- Aggregate time estimates
+- Synthesize final execution plan
+- Identify blockers and risks
+
+**state-analyzer (Technical Validation)**:
+- Verify technical feasibility
+- Check compatibility with existing codebase
+- Validate dependency assumptions
+- Assess infrastructure requirements
+
+**product-strategist (Business Alignment)**:
+- Validate against business objectives
+- Ensure user value delivery
+- Check success criteria alignment
+- Verify scope appropriateness
+
+**design-simplicity-advisor (Complexity Review)**:
+- Identify over-engineering
+- Recommend simpler alternatives
+- Validate KISS principle adherence
+- Challenge unnecessary complexity
+
+### Example: Hybrid Planning Workflow
+
+**User Request**: "Implement OAuth2 authentication with JWT tokens"
+
+**Phase 1: Strategic Planning** (15 minutes)
+```
+Main LLM: Classifies as IMPLEMENTATION, HIGH risk, COMPLEX
+  ↓
+design-simplicity-advisor: "Custom OAuth2 justified for control, but recommend minimal implementation"
+  ↓
+project-manager: Creates strategic plan
+  - Task 1: OAuth2 endpoints → backend-architect
+  - Task 2: Security review → security-auditor
+  - Task 3: JWT handling → backend-architect
+  - Task 4: Frontend integration → frontend-developer
+  - Task 5: Testing → unit-test-expert + qa-specialist
+
+Decision: Use hybrid planning (HIGH risk + 5 agents)
+```
+
+**Phase 2: Implementation Planning** (Parallel, 10 minutes)
+```
+backend-architect: Proposes 3 options
+  - Option A: Passport.js (4hrs, dependency)
+  - Option B: Custom full OAuth2 (12hrs, risky)
+  - Option C: Minimal OAuth2 (8hrs, extensible) ← Recommends
+
+security-auditor: Proposes 2 options
+  - Option A: JWT in httpOnly cookies (XSS safe) ← Recommends
+  - Option B: JWT in localStorage (XSS risky)
+
+frontend-developer: Proposes 2 options
+  - Option A: Context API (simple) ← Recommends
+  - Option B: Redux (overkill)
+
+unit-test-expert: Proposes 1 approach
+  - Comprehensive test suite (3hrs)
+```
+
+**Phase 3: Plan Review** (Parallel, 10 minutes)
+```
+project-manager:
+  - backend Option C + security Option A = Compatible ✓
+  - Total time: 8hrs (backend) + 3hrs (tests) + 2hrs (frontend) = 13hrs
+  - Missing: HTTPS requirement for cookies
+  - Action: Add infrastructure-specialist for HTTPS setup
+
+state-analyzer:
+  - Validates: TypeScript codebase supports all approaches
+  - Identifies: No existing OAuth2 code to conflict with
+  - Warns: JWT library needed (jwt-simple or custom)
+
+product-strategist:
+  - Validates: Minimal OAuth2 meets current requirements
+  - Approves: Extension path exists for future needs
+  - Confirms: Aligns with "ship fast, iterate" strategy
+
+design-simplicity-advisor:
+  - Approves backend Option C (minimal is good)
+  - Approves security Option A (standard approach)
+  - Approves frontend Option A (simple is sufficient)
+  - Flags: Consider if OAuth2 is needed vs simple sessions
+
+Synthesis:
+  - Proceed with backend Option C, security Option A, frontend Option A
+  - Add infrastructure-specialist for HTTPS
+  - Add jwt-simple dependency (lightweight)
+  - Refined estimate: 14 hours
+```
+
+**Phase 4: Execution** (14 hours)
+```
+infrastructure-specialist: Sets up HTTPS (1hr)
+backend-architect: Implements minimal OAuth2 (8hrs)
+security-auditor: Reviews implementation (1hr)
+frontend-developer: Integrates auth flow (2hrs)
+unit-test-expert: Comprehensive tests (3hrs)
+git-workflow-manager: Commits changes
+```
+
+### Benefits of Hybrid Planning
+
+1. **Early Conflict Detection**: Discover incompatibilities during planning, not execution
+2. **Better Estimates**: Domain experts provide accurate time estimates
+3. **Risk Mitigation**: Identify and address risks before committing resources
+4. **Knowledge Capture**: Planning discussions generate valuable learning data
+5. **Optimized Solutions**: Review process selects best options from multiple proposals
+6. **Reduced Rework**: Validation prevents expensive implementation mistakes
+
+### Telemetry Integration
+
+Planning phases are tracked in telemetry:
+
+```json
+{
+  "invocation_id": "inv-20251022-abc123",
+  "workflow_id": "wf-20251022-def456",
+  "agent_name": "backend-architect",
+  "mode": "planning",
+  "phase": "implementation_planning",
+  "options_proposed": 3,
+  "recommended_option": "option_c",
+  "timestamp": "2025-10-22T14:30:00Z"
+}
+```
+
+This enables analysis of:
+- Planning accuracy (estimated vs actual time)
+- Option selection patterns
+- Review effectiveness (conflicts caught)
+- Planning ROI (planning time vs rework prevented)
+
 ---
 
 <PersistentRules>

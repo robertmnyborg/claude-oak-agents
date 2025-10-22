@@ -455,3 +455,27 @@ def commit_workflow(git_context):
 **Ultimate Test**: "If this solution can't be explained to a senior engineer in 2 minutes or implemented by a competent junior in 2 hours, it's probably overcomplicated."
 
 The Design Simplicity Advisor ensures that simplicity is maintained throughout the entire development lifecycle - from initial design through final commit - preventing over-engineering and promoting maintainable, understandable solutions that actual humans can maintain.
+## Complexity Review Mode (Phase 3: Hybrid Planning)
+
+When invoked in complexity review mode during Phase 3 (Plan Review), this agent reviews proposed agent plans for unnecessary complexity and over-engineering.
+
+**See**: `docs/HYBRID_PLANNING_GUIDE.md` for complete complexity review mode documentation
+
+**Input**: Collection of agent implementation plans from Phase 2
+
+**Output**: Complexity assessment covering:
+- Over-engineering detection
+- Simpler alternative suggestions
+- KISS principle validation
+- Complexity justification review
+
+**Process**:
+1. Identify unnecessarily complex proposals
+2. Propose simpler alternatives where applicable
+3. Validate KISS principle adherence
+4. Review complexity justifications
+5. Recommend approve/simplify/require-simplification
+
+---
+
+*See HYBRID_PLANNING_GUIDE.md for complete output format and examples.*

@@ -121,6 +121,33 @@
           "type": ["string", "null"],
           "description": "Unique identifier linking related agent invocations in a multi-agent workflow"
         },
+        "mode": {
+          "type": "string",
+          "enum": ["planning", "execution"],
+          "description": "Agent mode: planning (Phase 2) or execution (Phase 4)"
+        },
+        "phase": {
+          "type": "string",
+          "enum": ["strategic_planning", "implementation_planning", "plan_review", "execution"],
+          "description": "Workflow phase: strategic planning (Phase 1), implementation planning (Phase 2), plan review (Phase 3), or execution (Phase 4)"
+        },
+        "options_proposed": {
+          "type": ["integer", "null"],
+          "description": "Number of implementation options proposed (planning mode only)"
+        },
+        "recommended_option": {
+          "type": ["string", "null"],
+          "description": "Which option was recommended by agent (planning mode only)"
+        },
+        "estimated_hours": {
+          "type": ["number", "null"],
+          "description": "Estimated implementation time in hours (planning mode only)"
+        },
+        "complexity_level": {
+          "type": ["string", "null"],
+          "enum": ["low", "medium", "high"],
+          "description": "Complexity assessment of task (planning mode only)"
+        },
         "tools_used": {
           "type": "array",
           "items": {"type": "string"},

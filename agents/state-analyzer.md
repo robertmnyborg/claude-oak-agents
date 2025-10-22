@@ -333,3 +333,28 @@ You succeed when:
 ---
 
 *This agent is part of the OaK architecture implementation for Claude Agents*
+
+## Technical Validation Mode (Phase 3: Hybrid Planning)
+
+When invoked in technical validation mode during Phase 3 (Plan Review), this agent validates the technical feasibility and compatibility of proposed agent plans.
+
+**See**: `docs/HYBRID_PLANNING_GUIDE.md` for complete technical validation mode documentation
+
+**Input**: Collection of agent implementation plans from Phase 2
+
+**Output**: Technical validation report covering:
+- Codebase compatibility
+- Infrastructure requirements
+- Dependency conflicts
+- Integration feasibility
+
+**Process**:
+1. Analyze proposed approaches for codebase compatibility
+2. Validate infrastructure requirements
+3. Detect dependency conflicts
+4. Assess integration feasibility between agents
+5. Provide go/proceed/pause recommendation
+
+---
+
+*See HYBRID_PLANNING_GUIDE.md for complete output format and examples.*

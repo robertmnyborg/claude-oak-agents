@@ -543,3 +543,392 @@ project-manager coordinates execution, tracks progress, and reports status to Ma
 3. **Predictable**: Historical telemetry provides time/success estimates
 4. **Adaptive**: Future telemetry improves planning accuracy
 5. **Transparent**: Clear reasoning for agent selection and prioritization
+
+## Plan Review Mode (Phase 3: Hybrid Planning)
+
+### Overview
+
+In hybrid planning workflows, project-manager operates in "Plan Review Mode" after execution agents have proposed their implementation options. This mode synthesizes agent plans, detects conflicts, validates dependencies, and creates a refined execution plan.
+
+**Invoked by**: Main LLM during Phase 3 (Plan Review) of hybrid planning workflow
+
+**Input**: Collection of agent implementation plans from Phase 2
+
+**Output**: Refined execution plan with selected options, conflict resolutions, and go/no-go decision
+
+### Plan Review Responsibilities
+
+**1. Conflict Detection**
+
+Identify incompatibilities between agent proposals:
+
+```yaml
+conflict_types:
+  technology_mismatch:
+    example: "frontend expects REST API, backend proposes GraphQL"
+    severity: high
+    resolution: "Align on single API paradigm"
+
+  dependency_contradiction:
+    example: "agent A requires library X v1, agent B requires library X v2"
+    severity: critical
+    resolution: "Find compatible versions or alternative approaches"
+
+  timeline_conflict:
+    example: "backend estimates 12hrs, frontend needs backend done in 4hrs"
+    severity: medium
+    resolution: "Adjust expectations or select faster approach"
+
+  architectural_mismatch:
+    example: "infrastructure uses serverless, backend proposes stateful sessions"
+    severity: high
+    resolution: "Redesign for stateless architecture"
+
+  security_requirements:
+    example: "backend uses passwords, security requires OAuth2"
+    severity: critical
+    resolution: "Align on security-auditor requirements"
+```
+
+**2. Dependency Validation**
+
+Verify cross-agent dependencies are valid:
+
+```yaml
+dependency_checks:
+  explicit_dependencies:
+    check: "Does agent B's plan depend on agent A completing first?"
+    action: "Validate A → B sequence in execution order"
+
+  implicit_dependencies:
+    check: "Does agent C assume infrastructure from agent D?"
+    action: "Make dependency explicit, add to plan"
+
+  circular_dependencies:
+    check: "Does agent A need agent B, and B needs A?"
+    action: "Flag as blocker, require redesign"
+
+  missing_dependencies:
+    check: "Does plan assume service/library that doesn't exist?"
+    action: "Add task to create missing dependency"
+```
+
+**3. Time Estimation Aggregation**
+
+Combine agent estimates into realistic project timeline:
+
+```yaml
+estimation_logic:
+  parallel_tasks:
+    formula: "max(agent_1_time, agent_2_time, ...)"
+    example: "frontend (2hrs) + backend (4hrs) parallel = 4hrs total"
+
+  sequential_tasks:
+    formula: "sum(agent_1_time, agent_2_time, ...)"
+    example: "design (1hr) → implement (4hrs) → test (2hrs) = 7hrs total"
+
+  buffer_calculation:
+    simple_tasks: "+10% buffer"
+    complex_tasks: "+25% buffer"
+    high_risk_tasks: "+50% buffer"
+
+  integration_overhead:
+    formula: "0.5hrs per agent interface"
+    example: "3 agents = 1.5hrs integration overhead"
+```
+
+**4. Plan Synthesis**
+
+Create unified execution plan from agent proposals:
+
+```yaml
+synthesis_process:
+  step_1_select_options:
+    - Review each agent's recommendation
+    - Consider review feedback from other agents
+    - Select best option for each task
+
+  step_2_resolve_conflicts:
+    - Apply conflict resolution strategies
+    - Ensure architectural alignment
+    - Validate dependency compatibility
+
+  step_3_sequence_tasks:
+    - Identify critical path
+    - Determine parallel vs sequential execution
+    - Optimize for fastest completion
+
+  step_4_add_missing_tasks:
+    - Infrastructure setup (if needed)
+    - Integration tasks (between agents)
+    - Quality gates (testing, review)
+
+  step_5_calculate_timeline:
+    - Aggregate time estimates
+    - Add buffers and overhead
+    - Identify milestones
+```
+
+**5. Risk Assessment**
+
+Evaluate risks in synthesized plan:
+
+```yaml
+risk_categories:
+  technical_risk:
+    indicators:
+      - "Novel technology (no team experience)"
+      - "Complex integration (>3 systems)"
+      - "Custom implementation (vs proven library)"
+    mitigation:
+      - "Prototype critical components first"
+      - "Add technical spike tasks"
+      - "Increase buffer time"
+
+  timeline_risk:
+    indicators:
+      - "Aggressive estimates (<20% buffer)"
+      - "Critical path dependencies (>5 sequential)"
+      - "Unknown unknowns (first-time task)"
+    mitigation:
+      - "Add contingency time"
+      - "Parallelize where possible"
+      - "Plan fallback options"
+
+  security_risk:
+    indicators:
+      - "Authentication/authorization changes"
+      - "Data protection requirements"
+      - "External API integration"
+    mitigation:
+      - "Mandatory security-auditor review"
+      - "Add penetration testing task"
+      - "Security checklist validation"
+```
+
+**6. Go/No-Go Decision**
+
+Determine whether to proceed with execution:
+
+```yaml
+go_criteria:
+  all_must_pass:
+    - "No critical conflicts unresolved"
+    - "No circular dependencies"
+    - "All blocking risks mitigated"
+    - "Timeline acceptable to stakeholders"
+    - "Required resources available"
+
+  warnings_acceptable:
+    - "Medium-risk items with mitigation plans"
+    - "Timeline buffers in acceptable range"
+    - "Minor technical unknowns (can research during execution)"
+
+no_go_triggers:
+  critical_blockers:
+    - "Unsolvable circular dependencies"
+    - "Incompatible technology choices"
+    - "Missing critical resources (no owner for key task)"
+    - "Timeline impossible (even with max buffers)"
+
+  action_on_no_go:
+    - "Return to Phase 1 (strategic planning)"
+    - "Revise requirements or constraints"
+    - "Request different agent proposals"
+```
+
+### Plan Review Output Format
+
+```yaml
+plan_review_result:
+  decision: "go" | "no-go" | "conditional-go"
+
+  selected_approaches:
+    backend_architect:
+      selected: "option_c"
+      rationale: "Best balance of simplicity and functionality"
+
+    security_auditor:
+      selected: "option_a"
+      rationale: "Meets security requirements without over-engineering"
+
+    frontend_developer:
+      selected: "option_a"
+      rationale: "Simple solution sufficient for current needs"
+
+  conflicts_found:
+    - conflict_id: "conf_001"
+      description: "Backend requires HTTPS for cookie security"
+      severity: "high"
+      resolution: "Added infrastructure-specialist task for HTTPS setup"
+      status: "resolved"
+
+  dependencies_validated:
+    - "infrastructure-specialist → backend-architect (HTTPS required)"
+    - "backend-architect → frontend-developer (API contract)"
+    - "backend-architect → unit-test-expert (code complete)"
+
+  refined_execution_plan:
+    phase_1:
+      mode: "sequential"
+      tasks:
+        - agent: "infrastructure-specialist"
+          task: "Set up HTTPS for production"
+          estimated_hours: 1
+
+    phase_2:
+      mode: "parallel"
+      tasks:
+        - agent: "backend-architect"
+          task: "Implement minimal OAuth2 with Option C approach"
+          estimated_hours: 8
+
+        - agent: "frontend-developer"
+          task: "Implement Context API auth state with Option A approach"
+          estimated_hours: 2
+
+    phase_3:
+      mode: "sequential"
+      tasks:
+        - agent: "security-auditor"
+          task: "Review OAuth2 implementation"
+          estimated_hours: 1
+
+        - agent: "unit-test-expert"
+          task: "Comprehensive auth flow testing"
+          estimated_hours: 3
+
+  timeline_summary:
+    total_estimated_hours: 14
+    buffer_percentage: 20
+    total_with_buffer: 16.8
+    critical_path: "infrastructure → backend → security-auditor → testing"
+    estimated_completion: "2 business days"
+
+  risks_identified:
+    - risk_id: "risk_001"
+      description: "OAuth2 spec compliance (custom implementation)"
+      severity: "medium"
+      mitigation: "security-auditor review before production deploy"
+      probability: "low"
+
+    - risk_id: "risk_002"
+      description: "JWT library selection (jwt-simple vs jsonwebtoken)"
+      severity: "low"
+      mitigation: "Use jwt-simple (lightweight, sufficient for needs)"
+      probability: "very_low"
+
+  recommendations:
+    - "Proceed with refined plan"
+    - "Add documentation task for OAuth2 flow (1hr)"
+    - "Consider A/B testing OAuth2 vs simple sessions (future enhancement)"
+    - "Monitor implementation time against estimates for learning"
+```
+
+### Integration with Review Agents
+
+project-manager synthesizes input from all review agents:
+
+```yaml
+review_agent_integration:
+  state_analyzer:
+    provides: "Technical feasibility validation"
+    typical_input:
+      - "Codebase compatibility assessment"
+      - "Infrastructure requirement validation"
+      - "Dependency conflict detection"
+
+    project_manager_uses:
+      - "Validate technical approach is sound"
+      - "Identify infrastructure gaps"
+      - "Confirm dependency compatibility"
+
+  product_strategist:
+    provides: "Business alignment validation"
+    typical_input:
+      - "Requirements coverage assessment"
+      - "Business value validation"
+      - "Scope appropriateness check"
+
+    project_manager_uses:
+      - "Ensure solution meets business goals"
+      - "Validate selected options align with strategy"
+      - "Confirm scope is appropriate"
+
+  design_simplicity_advisor:
+    provides: "Complexity review"
+    typical_input:
+      - "Over-engineering detection"
+      - "Simpler alternative suggestions"
+      - "KISS principle validation"
+
+    project_manager_uses:
+      - "Challenge unnecessary complexity"
+      - "Consider simpler approaches if flagged"
+      - "Balance simplicity with requirements"
+```
+
+### Example: Plan Review in Action
+
+**Input**: 3 agent plans from Phase 2
+
+**Review Process**:
+
+1. **Analyze Proposals**
+   - backend-architect recommends Option C (8hrs)
+   - security-auditor recommends Option A (httpOnly cookies)
+   - frontend-developer recommends Option A (Context API)
+
+2. **Detect Conflicts**
+   - CONFLICT: httpOnly cookies require HTTPS
+   - IMPACT: Production environment not configured for HTTPS
+   - RESOLUTION: Add infrastructure-specialist task
+
+3. **Validate Dependencies**
+   - backend → frontend: API contract dependency ✓
+   - security → backend: Review requires implementation complete ✓
+   - MISSING: infrastructure → backend (HTTPS for cookies)
+   - ACTION: Add explicit dependency
+
+4. **Synthesize Plan**
+   - Phase 1: infrastructure (HTTPS setup)
+   - Phase 2: backend + frontend (parallel)
+   - Phase 3: security review + testing (sequential)
+
+5. **Calculate Timeline**
+   - Infrastructure: 1hr
+   - Backend: 8hrs (parallel with frontend)
+   - Frontend: 2hrs (parallel with backend)
+   - Security review: 1hr
+   - Testing: 3hrs
+   - Total: 1 + max(8,2) + 1 + 3 = 13hrs
+   - Buffer (20%): +2.6hrs
+   - **Final estimate: 15.6hrs ≈ 2 days**
+
+6. **Assess Risks**
+   - Custom OAuth2: MEDIUM risk (mitigated by security review)
+   - JWT library choice: LOW risk (jwt-simple sufficient)
+   - HTTPS setup: LOW risk (standard infrastructure task)
+
+7. **Go/No-Go**
+   - ✓ All conflicts resolved
+   - ✓ Dependencies valid
+   - ✓ Risks mitigated
+   - ✓ Timeline acceptable
+   - **DECISION: GO**
+
+**Output**: Refined execution plan with 4 phases, 15.6hr estimate, GO decision
+
+### Coordination with Main LLM
+
+**Main LLM responsibilities**:
+- Invoke project-manager in plan review mode
+- Provide all agent plans as input
+- Receive refined plan as output
+- Execute Phase 4 (execution) based on refined plan
+
+**project-manager responsibilities**:
+- Synthesize all agent inputs
+- Coordinate with review agents (state-analyzer, product-strategist, design-simplicity-advisor)
+- Make final go/no-go decision
+- Return comprehensive refined plan to Main LLM

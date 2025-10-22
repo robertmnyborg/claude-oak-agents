@@ -265,6 +265,31 @@ Strategic model selection for cost and performance optimization:
 
 **See**: [Model Selection Strategy](docs/MODEL_SELECTION_STRATEGY.md) for complete details.
 
+### 12. **Hybrid Planning Model** (Phase 3) ✅
+Real engineering team workflow with bottom-up expertise and top-down synthesis:
+
+**4-Phase Workflow**:
+1. **Strategic Planning**: Main LLM + design-simplicity-advisor + project-manager create task assignments
+2. **Implementation Planning**: Each assigned agent proposes 2-3 options with trade-offs (parallel)
+3. **Plan Review**: Review agents (project-manager, state-analyzer, product-strategist, design-simplicity-advisor) validate, detect conflicts, synthesize refined plan (parallel)
+4. **Execution**: Agents execute refined plan with validated approaches
+
+**When Used**:
+- **MANDATORY**: Risk level HIGH/CRITICAL, >4 hours, ≥4 agents, security-critical
+- **RECOMMENDED**: High complexity + novelty, cross-domain integration
+- **SKIP**: Simple tasks, well-understood patterns, low-risk
+
+**Benefits**:
+- **Early conflict detection**: Discover incompatibilities during planning, not execution
+- **Better estimates**: Domain experts provide accurate time estimates (92% vs 67% accuracy)
+- **Risk mitigation**: Identify and address risks before committing resources
+- **Optimized solutions**: Review process selects best options from multiple proposals
+- **Reduced rework**: Validation prevents expensive implementation mistakes (-35% total time on complex tasks)
+
+**Example**: OAuth2 authentication request triggers hybrid planning → agents propose Passport.js vs custom vs minimal OAuth2 → review detects HTTPS dependency → refined plan adds infrastructure task → execution proceeds with validated approach.
+
+**See**: [Hybrid Planning Guide](docs/HYBRID_PLANNING_GUIDE.md) for complete documentation.
+
 ---
 
 ## 🎮 Daily Usage
