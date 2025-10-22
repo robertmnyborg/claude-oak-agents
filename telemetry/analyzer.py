@@ -29,6 +29,7 @@ class TelemetryAnalyzer:
         self.invocations_file = self.telemetry_dir / "agent_invocations.jsonl"
         self.metrics_file = self.telemetry_dir / "success_metrics.jsonl"
         self.stats_file = self.telemetry_dir / "performance_stats.json"
+        self.workflow_events_file = self.telemetry_dir / "workflow_events.jsonl"
 
     def load_invocations(self) -> List[Dict[str, Any]]:
         """Load all agent invocations from the log file."""
@@ -335,6 +336,290 @@ class TelemetryAnalyzer:
             print(f"  Quality: {quality_arrow} {abs(quality_delta):.2f}")
 
         print("\n" + "=" * 70)
+
+    def load_workflow_events(self) -> List[Dict[str, Any]]:
+        """Load all workflow events from the log file."""
+        events = []
+        if not self.workflow_events_file.exists():
+            return events
+
+        with open(self.workflow_events_file, "r") as f:
+            for line in f:
+                if line.strip():
+                    events.append(json.loads(line))
+        return events
+
+    def analyze_workflows(self) -> Dict[str, Any]:
+        """
+        Analyze multi-agent workflow performance.
+
+        Returns:
+            Dictionary with workflow statistics:
+            - total_workflows: Number of workflows executed
+            - avg_duration_minutes: Average workflow duration
+            - success_rate: Percentage of successful workflows
+            - avg_agents_per_workflow: Average number of agents
+            - most_common_patterns: List of common agent sequences
+        """
+        events = self.load_workflow_events()
+
+        if not events:
+            return {
+                "total_workflows": 0,
+                "avg_duration_minutes": 0.0,
+                "success_rate": 0.0,
+                "avg_agents_per_workflow": 0.0,
+                "most_common_patterns": []
+            }
+
+        # Group events by workflow_id
+        workflows = defaultdict(lambda: {
+            "start": None,
+            "complete": None,
+            "handoffs": []
+        })
+
+        for event in events:
+            workflow_id = event.get("workflow_id")
+            if not workflow_id:
+                continue
+
+            if event["event"] == "workflow_start":
+                workflows[workflow_id]["start"] = event
+            elif event["event"] == "workflow_complete":
+                workflows[workflow_id]["complete"] = event
+            elif event["event"] == "agent_handoff":
+                workflows[workflow_id]["handoffs"].append(event)
+
+        # Calculate statistics
+        total_workflows = len([w for w in workflows.values() if w["complete"]])
+        if total_workflows == 0:
+            return {
+                "total_workflows": 0,
+                "avg_duration_minutes": 0.0,
+                "success_rate": 0.0,
+                "avg_agents_per_workflow": 0.0,
+                "most_common_patterns": []
+            }
+
+        durations = []
+        successes = 0
+        agent_counts = []
+        agent_patterns = []
+
+        for workflow_data in workflows.values():
+            if not workflow_data["complete"]:
+                continue
+
+            complete_event = workflow_data["complete"]
+            durations.append(complete_event["duration_seconds"])
+
+            if complete_event.get("success", False):
+                successes += 1
+
+            agents = complete_event.get("agents_executed", [])
+            agent_counts.append(len(agents))
+            agent_patterns.append("→".join(agents))
+
+        avg_duration = sum(durations) / len(durations) if durations else 0.0
+        success_rate = successes / total_workflows if total_workflows > 0 else 0.0
+        avg_agents = sum(agent_counts) / len(agent_counts) if agent_counts else 0.0
+
+        # Find most common patterns
+        pattern_counts = defaultdict(int)
+        for pattern in agent_patterns:
+            pattern_counts[pattern] += 1
+
+        most_common_patterns = sorted(
+            pattern_counts.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )[:5]
+
+        return {
+            "total_workflows": total_workflows,
+            "avg_duration_minutes": round(avg_duration / 60, 2),
+            "success_rate": round(success_rate, 3),
+            "avg_agents_per_workflow": round(avg_agents, 2),
+            "most_common_patterns": [
+                {"pattern": p, "count": c} for p, c in most_common_patterns
+            ]
+        }
+
+    def calculate_coordination_overhead(self) -> Dict[str, Any]:
+        """
+        Calculate coordination overhead percentage.
+
+        Coordination overhead = (Total workflow time - Sum of agent execution time) / Total workflow time
+
+        Returns:
+            Dictionary with:
+            - coordination_overhead_pct: Percentage of time spent coordinating
+            - recommendation: "Stay Phase 1-2" or "Consider Phase 3"
+            - avg_coordination_minutes: Average coordination time per workflow
+        """
+        workflow_events = self.load_workflow_events()
+        invocations = self.load_invocations()
+
+        if not workflow_events or not invocations:
+            return {
+                "coordination_overhead_pct": 0.0,
+                "recommendation": "Insufficient data",
+                "avg_coordination_minutes": 0.0
+            }
+
+        # Group events by workflow_id
+        workflows = defaultdict(lambda: {
+            "duration": 0,
+            "session_id": None
+        })
+
+        for event in workflow_events:
+            if event["event"] == "workflow_complete":
+                workflow_id = event.get("workflow_id")
+                workflows[workflow_id]["duration"] = event.get("duration_seconds", 0)
+                workflows[workflow_id]["session_id"] = event.get("session_id")
+
+        # Calculate total agent execution time per workflow
+        total_workflow_time = 0
+        total_agent_time = 0
+        workflow_count = 0
+
+        for workflow_id, workflow_data in workflows.items():
+            if workflow_data["duration"] == 0:
+                continue
+
+            workflow_duration = workflow_data["duration"]
+            session_id = workflow_data["session_id"]
+
+            # Sum agent execution times for this workflow's session
+            agent_time = 0
+            for inv in invocations:
+                if inv.get("session_id") == session_id and inv.get("duration_seconds"):
+                    agent_time += inv["duration_seconds"]
+
+            if agent_time > 0:
+                total_workflow_time += workflow_duration
+                total_agent_time += agent_time
+                workflow_count += 1
+
+        if total_workflow_time == 0 or workflow_count == 0:
+            return {
+                "coordination_overhead_pct": 0.0,
+                "recommendation": "Insufficient data",
+                "avg_coordination_minutes": 0.0
+            }
+
+        coordination_time = total_workflow_time - total_agent_time
+        overhead_pct = (coordination_time / total_workflow_time) * 100
+        avg_coordination_minutes = (coordination_time / workflow_count) / 60
+
+        # Recommendation based on overhead
+        if overhead_pct > 30:
+            recommendation = "Consider Phase 3 (High coordination overhead)"
+        elif overhead_pct > 15:
+            recommendation = "Monitor overhead (Moderate coordination time)"
+        else:
+            recommendation = "Stay Phase 1-2 (Efficient coordination)"
+
+        return {
+            "coordination_overhead_pct": round(overhead_pct, 2),
+            "recommendation": recommendation,
+            "avg_coordination_minutes": round(avg_coordination_minutes, 2)
+        }
+
+    def get_agent_performance_trends(
+        self,
+        agent_name: str,
+        days: int = 30
+    ) -> Dict[str, Any]:
+        """
+        Analyze agent performance trends over time.
+
+        Args:
+            agent_name: Name of agent to analyze
+            days: Number of days to look back
+
+        Returns:
+            Dictionary with:
+            - trend: "improving", "stable", or "declining"
+            - success_rate_change: Percentage point change
+            - recent_success_rate: Success rate in last 7 days
+            - historical_success_rate: Success rate in prior period
+        """
+        invocations = self.load_invocations()
+
+        if not invocations:
+            return {
+                "trend": "insufficient_data",
+                "success_rate_change": 0.0,
+                "recent_success_rate": 0.0,
+                "historical_success_rate": 0.0
+            }
+
+        # Filter invocations for this agent
+        agent_invocations = [
+            inv for inv in invocations
+            if inv.get("agent_name") == agent_name
+        ]
+
+        if len(agent_invocations) < 2:
+            return {
+                "trend": "insufficient_data",
+                "success_rate_change": 0.0,
+                "recent_success_rate": 0.0,
+                "historical_success_rate": 0.0
+            }
+
+        # Calculate cutoff timestamps (ensure timezone aware)
+        from datetime import timezone
+        now = datetime.now(timezone.utc)
+        recent_cutoff = now - __import__("datetime").timedelta(days=7)
+        historical_cutoff = now - __import__("datetime").timedelta(days=days)
+
+        # Split into recent and historical
+        recent_invocations = []
+        historical_invocations = []
+
+        for inv in agent_invocations:
+            try:
+                timestamp = datetime.fromisoformat(inv["timestamp"].replace("Z", "+00:00"))
+                if timestamp >= recent_cutoff:
+                    recent_invocations.append(inv)
+                elif timestamp >= historical_cutoff:
+                    historical_invocations.append(inv)
+            except (ValueError, KeyError):
+                continue
+
+        # Calculate success rates
+        def calc_success_rate(invocations_list):
+            if not invocations_list:
+                return 0.0
+            successes = sum(
+                1 for inv in invocations_list
+                if inv.get("outcome", {}).get("status") == "success"
+            )
+            return successes / len(invocations_list)
+
+        recent_rate = calc_success_rate(recent_invocations)
+        historical_rate = calc_success_rate(historical_invocations)
+
+        # Determine trend
+        rate_change = recent_rate - historical_rate
+
+        if abs(rate_change) < 0.05:
+            trend = "stable"
+        elif rate_change > 0:
+            trend = "improving"
+        else:
+            trend = "declining"
+
+        return {
+            "trend": trend,
+            "success_rate_change": round(rate_change, 3),
+            "recent_success_rate": round(recent_rate, 3),
+            "historical_success_rate": round(historical_rate, 3)
+        }
 
 
 def main():

@@ -59,6 +59,44 @@ def weekly_review():
         print(f"   ⚠️  False completion detection failed: {e}")
         print("   Continuing with review...")
 
+    # Step 2.5: Workflow Analysis (Phase 2)
+    print("\n📊 Analyzing multi-agent workflows...")
+    try:
+        analyzer = TelemetryAnalyzer()
+
+        # Check if workflow_events.jsonl exists
+        project_root = Path(__file__).parent.parent.parent
+        workflow_file = project_root / "telemetry" / "workflow_events.jsonl"
+
+        if workflow_file.exists() and workflow_file.stat().st_size > 0:
+            workflow_stats = analyzer.analyze_workflows()
+
+            print(f"\n   Workflow Statistics:")
+            print(f"   Total Workflows: {workflow_stats['total_workflows']}")
+            print(f"   Success Rate: {workflow_stats['success_rate']:.0%}")
+            print(f"   Avg Duration: {workflow_stats['avg_duration_minutes']:.1f} minutes")
+            print(f"   Avg Agents/Workflow: {workflow_stats['avg_agents_per_workflow']:.1f}")
+
+            if workflow_stats.get('most_common_patterns'):
+                print(f"\n   Common Agent Patterns:")
+                for pattern_data in workflow_stats['most_common_patterns'][:3]:
+                    pattern = pattern_data['pattern']
+                    count = pattern_data['count']
+                    print(f"     {pattern} ({count}x)")
+
+            # Coordination overhead analysis
+            overhead = analyzer.calculate_coordination_overhead()
+            print(f"\n   Coordination Overhead: {overhead['coordination_overhead_pct']:.1f}%")
+            print(f"   Recommendation: {overhead['recommendation']}")
+
+            if overhead['coordination_overhead_pct'] > 30:
+                print(f"   ⚠️  Consider Phase 3 (Structured State Files)")
+        else:
+            print("   No workflow data yet (single-agent tasks only)")
+
+    except Exception as e:
+        print(f"   ⚠️  Workflow analysis failed: {e}")
+
     # Step 2.5: Generate improvement proposals from patterns
     print("\n🔧 Generating improvement proposals...")
     project_root = Path(__file__).parent.parent.parent

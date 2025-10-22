@@ -359,6 +359,132 @@ oak-apply-improvements() {
     python3 scripts/phase2/apply_improvements.py
 }
 
+# Workflow Coordination Commands (Phase 2)
+oak-workflows() {
+    echo "📊 Recent Multi-Agent Workflows"
+    echo "========================================================================"
+
+    OAK_ROOT="${OAK_ROOT:-$HOME/Projects/claude-oak-agents}"
+    cd "$OAK_ROOT" || return 1
+
+    if [ ! -f "telemetry/workflow_events.jsonl" ] || [ ! -s "telemetry/workflow_events.jsonl" ]; then
+        echo "No workflow data yet (single-agent tasks only)"
+        return 0
+    fi
+
+    python3 << 'EOF'
+import sys
+from pathlib import Path
+import json
+from datetime import datetime
+
+sys.path.insert(0, str(Path.cwd()))
+from telemetry.analyzer import TelemetryAnalyzer
+
+analyzer = TelemetryAnalyzer()
+stats = analyzer.analyze_workflows()
+
+print(f"\nTotal Workflows: {stats['total_workflows']}")
+print(f"Success Rate: {stats['success_rate']:.0%}")
+print(f"Avg Duration: {stats['avg_duration_minutes']:.1f} minutes")
+print(f"Avg Agents/Workflow: {stats['avg_agents_per_workflow']:.1f}")
+
+if stats.get('most_common_patterns'):
+    print(f"\nCommon Agent Patterns:")
+    for pattern_data in stats['most_common_patterns'][:5]:
+        pattern = pattern_data['pattern']
+        count = pattern_data['count']
+        print(f"  {pattern} ({count}x)")
+
+overhead = analyzer.calculate_coordination_overhead()
+print(f"\nCoordination Overhead: {overhead['coordination_overhead_pct']:.1f}%")
+print(f"Recommendation: {overhead['recommendation']}")
+EOF
+}
+
+oak-query-agent() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-query-agent \"task description\" [domain]"
+        echo "Example: oak-query-agent \"API development\" backend"
+        return 1
+    fi
+
+    local task="$1"
+    local domain="${2:-}"
+
+    OAK_ROOT="${OAK_ROOT:-$HOME/Projects/claude-oak-agents}"
+    cd "$OAK_ROOT" || return 1
+
+    if [ -n "$domain" ]; then
+        python3 scripts/query_best_agent.py --task "$task" --domain "$domain"
+    else
+        python3 scripts/query_best_agent.py --task "$task"
+    fi
+}
+
+oak-agent-trends() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-agent-trends <agent-name>"
+        echo "Example: oak-agent-trends backend-architect"
+        return 1
+    fi
+
+    local agent_name="$1"
+
+    OAK_ROOT="${OAK_ROOT:-$HOME/Projects/claude-oak-agents}"
+    cd "$OAK_ROOT" || return 1
+
+    python3 << EOF
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path.cwd()))
+from telemetry.analyzer import TelemetryAnalyzer
+
+analyzer = TelemetryAnalyzer()
+trend_data = analyzer.get_agent_performance_trends("$agent_name", days=30)
+
+print(f"\n📈 Performance Trends: $agent_name")
+print(f"=" * 60)
+print(f"Trend: {trend_data['trend']}")
+print(f"Recent Success Rate (7 days): {trend_data['recent_success_rate']:.0%}")
+print(f"Historical Success Rate: {trend_data['historical_success_rate']:.0%}")
+print(f"Change: {trend_data['success_rate_change']:+.1f} percentage points")
+EOF
+}
+
+oak-help() {
+    cat << 'EOF'
+OaK Agent System Commands
+======================================================================
+
+Workflow Coordination (Phase 2):
+  oak-workflows                    Show recent multi-agent workflow stats
+  oak-query-agent "task" [domain]  Query best agent for a task
+  oak-agent-trends <agent-name>    View agent performance trends
+
+Weekly/Monthly Reviews:
+  oak-weekly-review                Run weekly telemetry review
+  oak-monthly-review               Run monthly agent portfolio audit
+  oak-health-check                 Check system health
+
+Agent Management:
+  oak-list-pending-agents          List agents pending review
+  oak-review-agent <name>          Review agent specification
+  oak-approve-agent <name>         Approve and deploy agent
+  oak-status                       Show overall system status
+
+Improvement Proposals (Phase 2):
+  oak-review-proposals             List pending improvement proposals
+  oak-review-proposal <name>       Review specific proposal
+  oak-approve-proposal <name>      Approve and queue proposal
+  oak-reject-proposal <name> "reason"  Reject proposal
+  oak-apply-improvements           Apply approved improvements
+
+Documentation:
+  oak-help                         Show this help message
+EOF
+}
+
 # Show prompt on shell startup (only once per session)
 if [ -z "$OAK_PROMPT_SHOWN" ]; then
     export OAK_PROMPT_SHOWN=1

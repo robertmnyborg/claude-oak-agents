@@ -50,6 +50,124 @@ COMPLEXITY: [Simple/Medium/Complex]
 
 **NO BYPASS**: Main LLM CANNOT skip classification or execute without plan
 
+## Workflow Coordination (Phase 2 - Data-Driven)
+
+### When to Track Workflows
+
+Track multi-agent workflows when:
+- **COORDINATION classification** detected (multiple agents required)
+- **2+ agents** in execution plan
+- **Complex project** requiring sequential or parallel agent execution
+
+### Workflow Tracking Protocol
+
+When coordinating multi-agent workflows, the Main LLM should:
+
+1. **Generate Workflow ID**: Create unique identifier (e.g., "wf-20251021-001")
+2. **Query Best Agents**: Use historical performance data for agent selection
+3. **Log Workflow Start**: Record project name, agent plan, estimated duration
+4. **Log Agent Handoffs**: Track artifact passing between agents
+5. **Log Workflow Complete**: Record duration, success, and agents executed
+
+### Agent Selection Decision Tree
+
+**Step 1: Query Telemetry Data**
+```
+If telemetry_data_sufficient (>= 10 historical tasks):
+    recommendation = query_best_agent(task, domain)
+
+    If confidence >= 0.7:
+        use_recommended_agent()
+    Elif confidence >= 0.5:
+        show_recommendation_and_heuristic_to_user()
+    Else:
+        fallback_to_heuristic()
+Else:
+    fallback_to_heuristic()
+```
+
+**Step 2: Fallback to Heuristic**
+- Use existing CLAUDE.md classification rules
+- Domain-based routing (API → backend-architect, Security → security-auditor, etc.)
+
+**Step 3: Log Decision**
+- Record agent selection to telemetry
+- Include: selected_agent, confidence, selection_method (telemetry|heuristic)
+
+### Example: Multi-Agent Workflow with Phase 2 Integration
+
+```
+User Request: "Build a secure REST API with authentication"
+
+CLASSIFICATION: COORDINATION
+DOMAINS: Backend, Security
+COMPLEXITY: Complex
+
+# Step 1: Generate workflow ID
+workflow_id = "wf-20251021-secure-api-001"
+
+# Step 2: Query best agents for each role
+backend_agent = query_best_agent("backend API development", "backend")
+# Returns: backend-architect (88% success rate, 0.85 confidence)
+
+security_agent = query_best_agent("security audit", "security")
+# Returns: security-auditor (95% success rate, 0.92 confidence)
+
+# Step 3: Log workflow start
+log_workflow_start(
+    workflow_id=workflow_id,
+    project_name="Secure REST API",
+    agent_plan=["design-simplicity-advisor", "backend-architect", "security-auditor", "unit-test-expert"],
+    estimated_duration=3600
+)
+
+# Step 4: Execute agents with handoff logging
+execute(design-simplicity-advisor) → analyze requirements
+
+log_agent_handoff(
+    workflow_id=workflow_id,
+    from_agent="design-simplicity-advisor",
+    to_agent="backend-architect",
+    artifacts=["artifacts/design-simplicity-advisor/architecture.md"]
+)
+
+execute(backend-architect) → implement API
+
+log_agent_handoff(
+    workflow_id=workflow_id,
+    from_agent="backend-architect",
+    to_agent="security-auditor",
+    artifacts=["artifacts/backend-architect/api-spec.yaml", "src/api/auth.ts"]
+)
+
+execute(security-auditor) → audit security
+
+execute(unit-test-expert) → create tests
+
+# Step 5: Log workflow completion
+log_workflow_complete(
+    workflow_id=workflow_id,
+    duration_seconds=3200,
+    success=true,
+    agents_executed=["design-simplicity-advisor", "backend-architect", "security-auditor", "unit-test-expert"]
+)
+```
+
+### Benefits of Phase 2 Integration
+
+- **Data-Driven Selection**: Historical performance guides agent choices
+- **Workflow Visibility**: Complete tracking of multi-agent coordination
+- **Coordination Analysis**: Measure overhead and identify bottlenecks
+- **Performance Trends**: Track agent improvements over time
+- **Informed Decisions**: Know when to upgrade to Phase 3 (structured state files)
+
+### Backward Compatibility
+
+- Single-agent tasks work exactly as before (no workflow tracking required)
+- Workflow tracking is optional but recommended for COORDINATION tasks
+- Existing telemetry continues functioning without changes
+- Graceful degradation if no workflow data exists
+
 ---
 
 <PersistentRules>

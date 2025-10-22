@@ -31,10 +31,12 @@ class TelemetryLogger:
         self.invocations_file = self.telemetry_dir / "agent_invocations.jsonl"
         self.metrics_file = self.telemetry_dir / "success_metrics.jsonl"
         self.stats_file = self.telemetry_dir / "performance_stats.json"
+        self.workflow_events_file = self.telemetry_dir / "workflow_events.jsonl"
 
         # Ensure files exist
         self.invocations_file.touch(exist_ok=True)
         self.metrics_file.touch(exist_ok=True)
+        self.workflow_events_file.touch(exist_ok=True)
 
         # Session ID persists for the lifetime of this logger instance
         self.session_id = str(uuid.uuid4())
@@ -201,6 +203,93 @@ class TelemetryLogger:
     def get_session_id(self) -> str:
         """Return the current session ID."""
         return self.session_id
+
+    def log_workflow_start(
+        self,
+        workflow_id: str,
+        project_name: str,
+        agent_plan: List[str],
+        estimated_duration: Optional[int] = None
+    ) -> None:
+        """
+        Log the start of a multi-agent workflow.
+
+        Args:
+            workflow_id: Unique identifier for this workflow
+            project_name: Human-readable project name
+            agent_plan: List of agent names in execution order
+            estimated_duration: Optional estimated duration in seconds
+        """
+        workflow_data = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "event": "workflow_start",
+            "workflow_id": workflow_id,
+            "session_id": self.session_id,
+            "project_name": project_name,
+            "agent_plan": agent_plan,
+            "estimated_duration": estimated_duration
+        }
+
+        with open(self.workflow_events_file, "a") as f:
+            f.write(json.dumps(workflow_data) + "\n")
+
+    def log_agent_handoff(
+        self,
+        workflow_id: str,
+        from_agent: str,
+        to_agent: str,
+        artifacts: List[str]
+    ) -> None:
+        """
+        Log artifact handoff between agents.
+
+        Args:
+            workflow_id: Workflow this handoff belongs to
+            from_agent: Agent that produced artifacts
+            to_agent: Agent that will consume artifacts
+            artifacts: List of artifact file paths
+        """
+        handoff_data = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "event": "agent_handoff",
+            "workflow_id": workflow_id,
+            "session_id": self.session_id,
+            "from_agent": from_agent,
+            "to_agent": to_agent,
+            "artifacts": artifacts
+        }
+
+        with open(self.workflow_events_file, "a") as f:
+            f.write(json.dumps(handoff_data) + "\n")
+
+    def log_workflow_complete(
+        self,
+        workflow_id: str,
+        duration_seconds: int,
+        success: bool,
+        agents_executed: List[str]
+    ) -> None:
+        """
+        Log workflow completion.
+
+        Args:
+            workflow_id: Workflow that completed
+            duration_seconds: Total workflow duration
+            success: Whether workflow succeeded
+            agents_executed: List of agents that actually ran
+        """
+        complete_data = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "event": "workflow_complete",
+            "workflow_id": workflow_id,
+            "session_id": self.session_id,
+            "duration_seconds": duration_seconds,
+            "success": success,
+            "agents_executed": agents_executed
+        }
+
+        with open(self.workflow_events_file, "a") as f:
+            f.write(json.dumps(complete_data) + "\n")
 
 
 def main():

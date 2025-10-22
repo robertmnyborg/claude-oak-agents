@@ -182,6 +182,49 @@ def monthly_analysis():
     if not audit_success:
         print("\n⚠️  Agent audit failed, but continuing with analysis...")
 
+    # Step 4.5: Agent Performance Trends Analysis (Phase 2)
+    print("\n📈 Analyzing agent performance trends...")
+    print("-" * 70)
+    try:
+        analyzer = TelemetryAnalyzer()
+
+        # Get all active agents
+        invocations = analyzer.load_invocations()
+        active_agents = set(inv['agent_name'] for inv in invocations)
+
+        print(f"\n   Agent Performance Trends (Last 30 Days):")
+
+        improving_agents = []
+        declining_agents = []
+
+        for agent_name in sorted(active_agents):
+            trend_data = analyzer.get_agent_performance_trends(agent_name, days=30)
+
+            if trend_data['trend'] == 'improving' and trend_data['success_rate_change'] > 0.05:
+                improving_agents.append((agent_name, trend_data))
+                print(f"   📈 {agent_name}: {trend_data['trend']} "
+                      f"({trend_data['recent_success_rate']:.0%} recent vs "
+                      f"{trend_data['historical_success_rate']:.0%} historical)")
+            elif trend_data['trend'] == 'declining' and trend_data['success_rate_change'] < -0.05:
+                declining_agents.append((agent_name, trend_data))
+                print(f"   📉 {agent_name}: {trend_data['trend']} "
+                      f"({trend_data['recent_success_rate']:.0%} recent vs "
+                      f"{trend_data['historical_success_rate']:.0%} historical)")
+
+        # Recommendations
+        if declining_agents:
+            print(f"\n   ⚠️  Agents Needing Attention ({len(declining_agents)}):")
+            for agent_name, trend_data in declining_agents:
+                print(f"      - {agent_name}: Review recent failures, consider improvements")
+
+        if improving_agents:
+            print(f"\n   ✅ Improving Agents ({len(improving_agents)}):")
+            for agent_name, trend_data in improving_agents[:3]:
+                print(f"      - {agent_name}: Recent improvements working well")
+
+    except Exception as e:
+        print(f"   ⚠️  Performance trend analysis failed: {e}")
+
     # Step 5: Generate basic telemetry analysis
     print("\n📈 Analyzing Telemetry Data...")
     print("-" * 70)
