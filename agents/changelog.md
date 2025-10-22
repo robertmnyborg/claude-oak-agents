@@ -1,6 +1,9 @@
 ---
 name: changelog-recorder
 description: INVOKED BY MAIN LLM immediately after git commits are made. This agent is triggered by the main LLM in sequence after git-workflow-manager completes commits.
+model: haiku
+model_tier: fast
+model_rationale: "Format git commits into changelog entries (procedural)"
 color: changelog-recorder
 ---
 

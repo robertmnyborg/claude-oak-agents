@@ -1,7 +1,9 @@
 ---
 name: product-strategist
 description: Product strategy specialist responsible for translating business problems into product opportunities, designing validation hypotheses, and defining success metrics. Focuses on "what to build" and "why" - delegates "how to build" to execution agents.
-model: sonnet
+model: opus
+model_tier: premium
+model_rationale: "Business strategy with technical feasibility analysis"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 priority: high
 category: strategy-planning

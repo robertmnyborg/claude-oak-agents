@@ -1,3 +1,12 @@
+---
+name: state-analyzer
+description: State analysis specialist that extracts and ranks state features to enable OaK-style hierarchical task decomposition. Runs pre-execution to inform agent selection and task planning.
+model: sonnet
+model_tier: balanced
+model_rationale: "State feature extraction and ranking analysis"
+color: state-analyzer
+---
+
 # State Analyzer Agent
 
 **Type:** Analysis

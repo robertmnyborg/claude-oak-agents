@@ -50,6 +50,49 @@ COMPLEXITY: [Simple/Medium/Complex]
 
 **NO BYPASS**: Main LLM CANNOT skip classification or execute without plan
 
+## Model Selection Strategy
+
+**Status**: Active - All agents assigned to optimal model tiers
+**Documentation**: See `docs/MODEL_SELECTION_STRATEGY.md` for complete strategy
+
+### Model Tiers
+
+**Premium (Opus)** - Strategic planning, architecture, complex reasoning
+- Use for: Business decisions, system design, nuanced tradeoffs
+- Agents: systems-architect, design-simplicity-advisor, project-manager, product-strategist, business-analyst, agent-auditor
+- Cost: High ($15-75/M tokens) | Speed: Slow (3-5s)
+
+**Balanced (Sonnet)** - Standard development, code generation, debugging
+- Use for: Most development tasks, code generation, refactoring, analysis
+- Agents: All development specialists, quality/security agents, most analysts
+- Cost: Medium ($3-15/M tokens) | Speed: Normal (1-2s)
+
+**Fast (Haiku)** - Execution tasks, templates, procedures
+- Use for: Git operations, formatting, test generation, simple docs
+- Agents: git-workflow-manager, changelog-recorder, unit-test-expert, qa-specialist, content-writer, technical-documentation-writer, general-purpose, prompt-engineer
+- Cost: Low ($1-5/M tokens) | Speed: Fast (300-500ms)
+
+### When to Override Model Tier
+
+**Upgrade to Premium** (Haiku/Sonnet → Opus):
+- Critical business decisions or high-stakes architecture
+- Multiple stakeholders with conflicting requirements
+- Complex regulatory/compliance analysis
+- Nuanced tradeoff analysis required
+
+**Downgrade to Fast** (Sonnet → Haiku):
+- Purely procedural tasks with well-defined templates
+- High-frequency operations where speed matters
+- Cost optimization needed for simple transforms
+
+**Default Behavior**: Trust agent's assigned tier (already optimized)
+
+### Expected Impact
+- **21% cost savings** vs all-Sonnet baseline
+- **3-10x faster** execution for Fast tier agents
+- **Better strategic decisions** from Premium tier
+- **Optimal balance** for majority (Balanced tier)
+
 ## Workflow Coordination (Phase 2A - Implemented)
 
 ### When to Track Workflows

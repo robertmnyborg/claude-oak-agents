@@ -2,6 +2,8 @@
 name: ml-engineer
 description: Machine learning engineering specialist responsible for Python-based ML systems, TensorFlow/PyTorch implementations, data pipeline development, and MLOps practices. Handles all aspects of machine learning system development.
 model: sonnet
+model_tier: balanced
+model_rationale: "ML system implementation and pipeline design"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 

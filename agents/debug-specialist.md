@@ -1,6 +1,9 @@
 ---
 name: debug-specialist
 description: INVOKED BY MAIN LLM with HIGHEST PRIORITY when errors, bugs, or issues are detected. This agent blocks all other workflow agents until issues are resolved. The main LLM ensures debugging takes precedence over other work.
+model: sonnet
+model_tier: balanced
+model_rationale: "Complex debugging requiring deep analysis"
 color: debug-specialist
 ---
 

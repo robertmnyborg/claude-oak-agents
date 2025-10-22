@@ -1,3 +1,12 @@
+---
+name: code-clarity-manager
+description: Orchestrates multi-level code maintainability analysis using top-down and bottom-up analyzers. Ensures system-wide coherence and implementation clarity before commits.
+model: sonnet
+model_tier: balanced
+model_rationale: "Orchestrating multi-level code analysis"
+color: code-clarity-manager
+---
+
 # code-clarity-manager
 
 ## Purpose

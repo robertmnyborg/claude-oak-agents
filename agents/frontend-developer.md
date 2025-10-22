@@ -2,6 +2,8 @@
 name: frontend-developer
 description: Frontend development specialist responsible for UI/UX implementation, modern framework patterns, and browser compatibility. Handles all client-side development tasks.
 model: sonnet
+model_tier: balanced
+model_rationale: "UI/UX implementation with framework knowledge"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 

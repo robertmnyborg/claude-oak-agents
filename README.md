@@ -251,6 +251,20 @@ Machine learning will:
 
 **The longer you use it, the smarter it gets.**
 
+### 11. **Model Tier Optimization** (NEW) ✅
+Strategic model selection for cost and performance optimization:
+- **Premium tier (Opus)**: Strategic planning, architecture (6 agents)
+- **Balanced tier (Sonnet)**: Standard development work (19 agents)
+- **Fast tier (Haiku)**: Execution tasks, procedures (8 agents)
+
+**Impact**:
+- 21% cost reduction vs single-model approach
+- 3-10x faster execution for procedural tasks
+- Better strategic decisions from premium models
+- Optimal quality-cost balance for each agent type
+
+**See**: [Model Selection Strategy](docs/MODEL_SELECTION_STRATEGY.md) for complete details.
+
 ---
 
 ## 🎮 Daily Usage

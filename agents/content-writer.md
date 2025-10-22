@@ -1,7 +1,9 @@
 ---
 name: content-writer
 description: Content writing specialist responsible for technical documentation, marketing content, API documentation, user guides, and all forms of written communication. Handles content creation across technical and business domains.
-model: sonnet
+model: haiku
+model_tier: fast
+model_rationale: "Follow content templates and style guides"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 

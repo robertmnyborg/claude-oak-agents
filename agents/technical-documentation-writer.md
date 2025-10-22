@@ -1,6 +1,9 @@
 ---
 name: technical-documentation-writer
 description: Use this agent when you need to create or improve technical documentation for code, APIs, or software systems.
+model: haiku
+model_tier: fast
+model_rationale: "Document code following straightforward patterns"
 color: technical-documentation-writer
 ---
 

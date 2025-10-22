@@ -2,6 +2,8 @@
 name: mobile-developer
 description: Mobile development specialist responsible for React Native, iOS, and Android application development. Handles cross-platform mobile development, native integrations, and mobile-specific optimization.
 model: sonnet
+model_tier: balanced
+model_rationale: "Cross-platform mobile development complexity"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 

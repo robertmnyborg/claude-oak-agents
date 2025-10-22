@@ -1,6 +1,9 @@
 ---
 name: dependency-scanner
 description: Specialized agent for analyzing third-party dependencies, identifying security vulnerabilities, license compliance issues, and supply chain risks across all package managers and languages.
+model: sonnet
+model_tier: balanced
+model_rationale: "Security vulnerability analysis complexity"
 color: dependency-scanner
 ---
 

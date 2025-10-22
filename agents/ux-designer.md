@@ -2,6 +2,8 @@
 name: ux-designer
 description: User experience design specialist responsible for analyzing user workflows, designing intuitive interfaces, and optimizing information architecture. Focuses on reducing cognitive load and improving task completion through evidence-based UX principles.
 model: sonnet
+model_tier: balanced
+model_rationale: "UX analysis and design decision complexity"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 priority: medium
 category: design-quality

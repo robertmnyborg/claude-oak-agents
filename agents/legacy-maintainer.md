@@ -2,6 +2,8 @@
 name: legacy-maintainer
 description: Legacy system maintenance specialist responsible for Java, C#, and enterprise pattern work. Handles maintenance, modernization, and integration of legacy systems with modern infrastructure.
 model: sonnet
+model_tier: balanced
+model_rationale: "Understanding old codebases requires careful analysis"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 

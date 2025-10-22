@@ -1,3 +1,12 @@
+---
+name: top-down-analyzer
+description: Architectural impact analyzer that evaluates code changes from a system-wide perspective. Ensures design pattern consistency and identifies high-level architectural impacts.
+model: sonnet
+model_tier: balanced
+model_rationale: "Architectural impact analysis requires reasoning"
+color: top-down-analyzer
+---
+
 # top-down-analyzer
 
 ## Purpose

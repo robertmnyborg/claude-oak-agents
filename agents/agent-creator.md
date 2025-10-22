@@ -1,6 +1,9 @@
 ---
 name: agent-creator
 description: Meta-agent that designs and implements new specialized agents, updates coordination patterns, and maintains the agent ecosystem. Handles the complete agent creation workflow from requirements analysis to integration.
+model: sonnet
+model_tier: balanced
+model_rationale: "Creating new agents requires strong code generation"
 color: agent-creator
 ---
 

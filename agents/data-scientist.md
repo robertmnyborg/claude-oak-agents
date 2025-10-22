@@ -1,6 +1,9 @@
 ---
 name: data-scientist
 description: INVOKED BY MAIN LLM when data files are uploaded, analytical requests are detected, or data-driven insights are needed. This agent can run in parallel with other non-conflicting agents when coordinated by the main LLM.
+model: sonnet
+model_tier: balanced
+model_rationale: "Statistical analysis and data processing complexity"
 color: data-scientist
 ---
 

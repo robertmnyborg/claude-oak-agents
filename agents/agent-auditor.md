@@ -1,6 +1,9 @@
 ---
 name: agent-auditor
 description: Strategic agent portfolio manager (Agentic HR) that evaluates agent performance, identifies capability gaps, eliminates redundancy, and optimizes the agent ecosystem for maximum effectiveness.
+model: opus
+model_tier: premium
+model_rationale: "Strategic portfolio management and capability gap detection"
 color: agent-auditor
 ---
 

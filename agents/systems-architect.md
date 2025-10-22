@@ -1,6 +1,9 @@
 ---
 name: systems-architect
 description: Use this agent when you need to design system architecture, plan infrastructure, create technical specifications, or need architectural guidance for software projects.
+model: opus
+model_tier: premium
+model_rationale: "System design requires deep reasoning and tradeoff analysis"
 color: systems-architect
 ---
 

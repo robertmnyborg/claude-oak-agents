@@ -1,3 +1,12 @@
+---
+name: bottom-up-analyzer
+description: Implementation ripple effect analyzer that traces how code changes propagate through the codebase. Ensures function-level clarity and maintainability.
+model: sonnet
+model_tier: balanced
+model_rationale: "Implementation ripple effect analysis"
+color: bottom-up-analyzer
+---
+
 # bottom-up-analyzer
 
 ## Purpose

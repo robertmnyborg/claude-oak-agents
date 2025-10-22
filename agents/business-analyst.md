@@ -1,7 +1,9 @@
 ---
 name: business-analyst
 description: Business analysis specialist responsible for requirements analysis, user story creation, stakeholder communication, and bridging business needs with technical implementation. Handles all aspects of business requirement gathering and analysis.
-model: sonnet
+model: opus
+model_tier: premium
+model_rationale: "Requirements analysis with stakeholder context understanding"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 

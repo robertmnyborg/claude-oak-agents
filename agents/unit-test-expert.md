@@ -1,6 +1,9 @@
 ---
 name: unit-test-expert
 description: Use this agent when you need comprehensive unit tests written for your code, want to identify potential edge cases and vulnerabilities, or need to improve test coverage for existing functionality.
+model: haiku
+model_tier: fast
+model_rationale: "Generate tests following established patterns"
 color: unit-test-expert
 ---
 

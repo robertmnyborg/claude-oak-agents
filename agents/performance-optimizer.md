@@ -1,6 +1,9 @@
 ---
 name: performance-optimizer
 description: Performance analysis and optimization specialist that identifies bottlenecks, inefficient algorithms, and resource usage issues across all languages and frameworks. Provides specific optimization recommendations and performance monitoring strategies.
+model: sonnet
+model_tier: balanced
+model_rationale: "Performance bottleneck identification and optimization"
 color: performance-optimizer
 ---
 

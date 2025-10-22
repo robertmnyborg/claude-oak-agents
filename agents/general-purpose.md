@@ -1,6 +1,9 @@
 ---
 name: general-purpose
 description: SEVERELY RESTRICTED agent for SINGLE-LINE commands and basic queries ONLY. Cannot handle any multi-line tasks, implementation work, or complex programming. Used as LAST RESORT when no specialist matches.
+model: haiku
+model_tier: fast
+model_rationale: "Simple single-line commands and basic queries"
 color: general-purpose
 ---
 

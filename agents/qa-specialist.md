@@ -1,7 +1,9 @@
 ---
 name: qa-specialist
 description: Quality assurance specialist responsible for end-to-end testing, integration testing, performance testing, and comprehensive quality validation strategies. Handles all aspects of software quality beyond unit testing.
-model: sonnet
+model: haiku
+model_tier: fast
+model_rationale: "Execute test scripts and report results (procedural)"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 

@@ -1,6 +1,9 @@
 ---
 name: git-workflow-manager
 description: INVOKED BY MAIN LLM when code changes need to be committed, branches need management, or pull requests should be created. This agent is coordinated by the main LLM after code review and testing are complete.
+model: haiku
+model_tier: fast
+model_rationale: "Git operations follow well-defined commands"
 color: git-workflow-manager
 ---
 

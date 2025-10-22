@@ -2,6 +2,8 @@
 name: security-auditor
 description: Comprehensive security analysis specialist that identifies vulnerabilities, security anti-patterns, and potential attack vectors across all languages and frameworks. Enforces secure coding practices, compliance requirements, penetration testing strategies, and threat modeling.
 model: sonnet
+model_tier: balanced
+model_rationale: "Threat modeling and vulnerability analysis complexity"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 color: security-auditor
 ---

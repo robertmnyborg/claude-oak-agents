@@ -2,6 +2,8 @@
 name: infrastructure-specialist
 description: Infrastructure and deployment specialist focused exclusively on CDK constructs, cloud architecture, containerization, CI/CD pipelines, and DevOps best practices. Handles all infrastructure-as-code and deployment concerns. Delegated from main LLM for infrastructure tasks.
 model: sonnet
+model_tier: balanced
+model_rationale: "Cloud infrastructure and deployment complexity"
 ---
 
 # 🚨 ENFORCEMENT REMINDER 🚨

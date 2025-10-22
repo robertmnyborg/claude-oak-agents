@@ -1,6 +1,9 @@
 ---
 name: project-manager
 description: INVOKED BY MAIN LLM when complex multi-step projects are detected. This agent works with the main LLM to coordinate other agents (systems-architect, etc.) for comprehensive project planning and execution.
+model: opus
+model_tier: premium
+model_rationale: "Multi-step coordination and strategic project planning"
 color: project-manager
 ---
 

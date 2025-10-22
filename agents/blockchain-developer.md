@@ -2,6 +2,8 @@
 name: blockchain-developer
 description: Blockchain development specialist responsible for Solidity smart contracts, Web3 integration, DeFi protocols, and decentralized application development. Handles all aspects of blockchain system development.
 model: sonnet
+model_tier: balanced
+model_rationale: "Smart contract development requires high-quality code generation"
 tools: [Write, Edit, MultiEdit, Read, Bash, Grep, Glob]
 ---
 
