@@ -73,12 +73,18 @@ def log_agent_start(agent_name, agent_type, task_description):
         # Extract state features
         state_features = extract_state_features()
 
+        # Get workflow context from environment
+        workflow_id = os.getenv("OAK_WORKFLOW_ID")
+        parent_invocation_id = os.getenv("OAK_PARENT_INVOCATION_ID")
+
         # Log invocation
         invocation_id = logger.log_invocation(
             agent_name=agent_name,
             agent_type=agent_type,
             task_description=task_description,
             state_features=state_features,
+            parent_invocation_id=parent_invocation_id,
+            workflow_id=workflow_id,
             metadata={
                 "hook_version": "1.0",
                 "workspace": str(get_workspace_dir())

@@ -50,7 +50,7 @@ COMPLEXITY: [Simple/Medium/Complex]
 
 **NO BYPASS**: Main LLM CANNOT skip classification or execute without plan
 
-## Workflow Coordination (Phase 2 - Data-Driven)
+## Workflow Coordination (Phase 2A - Implemented)
 
 ### When to Track Workflows
 
@@ -59,114 +59,150 @@ Track multi-agent workflows when:
 - **2+ agents** in execution plan
 - **Complex project** requiring sequential or parallel agent execution
 
-### Workflow Tracking Protocol
+**Tracking is automatic** when environment variables are set by hooks integration.
 
-When coordinating multi-agent workflows, the Main LLM should:
+### Phase 2A Implementation
 
-1. **Generate Workflow ID**: Create unique identifier (e.g., "wf-20251021-001")
-2. **Query Best Agents**: Use historical performance data for agent selection
-3. **Log Workflow Start**: Record project name, agent plan, estimated duration
-4. **Log Agent Handoffs**: Track artifact passing between agents
-5. **Log Workflow Complete**: Record duration, success, and agents executed
+Phase 2A implements minimal workflow tracking that links multi-agent invocations:
 
-### Agent Selection Decision Tree
+**Implementation Files**:
+- `telemetry/workflow.py` - Workflow ID generation utility
+- `telemetry/logger.py` - Extended with workflow_id parameter
+- `scripts/query_workflow.sh` - Query tool for workflow analysis
+- `hooks/pre_agent.sh` - Automatic workflow context injection
 
-**Step 1: Query Telemetry Data**
-```
-If telemetry_data_sufficient (>= 10 historical tasks):
-    recommendation = query_best_agent(task, domain)
-
-    If confidence >= 0.7:
-        use_recommended_agent()
-    Elif confidence >= 0.5:
-        show_recommendation_and_heuristic_to_user()
-    Else:
-        fallback_to_heuristic()
-Else:
-    fallback_to_heuristic()
+**Telemetry Schema Addition**:
+```python
+# workflow_id field added to invocations
+{
+  "invocation_id": "inv-20251021-abc123",
+  "workflow_id": "wf-20251021-def456",      # NEW: Links related invocations
+  "parent_invocation_id": "inv-20251021-xyz789",  # Links agent sequences
+  "agent_name": "backend-architect",
+  "timestamp": "2025-10-21T14:30:00Z",
+  # ... other fields
+}
 ```
 
-**Step 2: Fallback to Heuristic**
+**Workflow ID Generation**:
+```python
+from telemetry.workflow import generate_workflow_id
+
+# Generate workflow ID for multi-agent coordination
+workflow_id = generate_workflow_id()  # Returns: wf-YYYYMMDD-<uuid>
+
+# Set environment for hooks
+os.environ["OAK_WORKFLOW_ID"] = workflow_id
+os.environ["OAK_PARENT_INVOCATION_ID"] = previous_invocation_id
+
+# Execute agents (hooks will capture workflow context automatically)
+execute_agent(agent_name, task)
+```
+
+**Hook Integration**:
+The pre-agent hook (`hooks/pre_agent.sh`) automatically injects workflow context:
+```bash
+# Hook checks environment and passes to logger
+if [ -n "$OAK_WORKFLOW_ID" ]; then
+  export WORKFLOW_ID="$OAK_WORKFLOW_ID"
+fi
+if [ -n "$OAK_PARENT_INVOCATION_ID" ]; then
+  export PARENT_INVOCATION_ID="$OAK_PARENT_INVOCATION_ID"
+fi
+```
+
+### Agent Selection (Phase 3+ Feature)
+
+Agent selection currently uses heuristic-based routing:
 - Use existing CLAUDE.md classification rules
 - Domain-based routing (API → backend-architect, Security → security-auditor, etc.)
 
-**Step 3: Log Decision**
-- Record agent selection to telemetry
-- Include: selected_agent, confidence, selection_method (telemetry|heuristic)
+**Future Enhancement** (Phase 3+):
+- Query telemetry for historical performance data
+- Confidence-based recommendations
+- Statistical analysis after sufficient data (50+ workflows)
 
-### Example: Multi-Agent Workflow with Phase 2 Integration
+### Example: Multi-Agent Secure API Workflow
 
-```
-User Request: "Build a secure REST API with authentication"
+```python
+# Example: Multi-agent secure API workflow
+from telemetry.workflow import generate_workflow_id
 
-CLASSIFICATION: COORDINATION
-DOMAINS: Backend, Security
-COMPLEXITY: Complex
+workflow_id = generate_workflow_id()
+parent_id = None
 
-# Step 1: Generate workflow ID
-workflow_id = "wf-20251021-secure-api-001"
+for agent in ["design-simplicity-advisor", "backend-architect", "security-auditor"]:
+    os.environ["OAK_WORKFLOW_ID"] = workflow_id
+    if parent_id:
+        os.environ["OAK_PARENT_INVOCATION_ID"] = parent_id
 
-# Step 2: Query best agents for each role
-backend_agent = query_best_agent("backend API development", "backend")
-# Returns: backend-architect (88% success rate, 0.85 confidence)
-
-security_agent = query_best_agent("security audit", "security")
-# Returns: security-auditor (95% success rate, 0.92 confidence)
-
-# Step 3: Log workflow start
-log_workflow_start(
-    workflow_id=workflow_id,
-    project_name="Secure REST API",
-    agent_plan=["design-simplicity-advisor", "backend-architect", "security-auditor", "unit-test-expert"],
-    estimated_duration=3600
-)
-
-# Step 4: Execute agents with handoff logging
-execute(design-simplicity-advisor) → analyze requirements
-
-log_agent_handoff(
-    workflow_id=workflow_id,
-    from_agent="design-simplicity-advisor",
-    to_agent="backend-architect",
-    artifacts=["artifacts/design-simplicity-advisor/architecture.md"]
-)
-
-execute(backend-architect) → implement API
-
-log_agent_handoff(
-    workflow_id=workflow_id,
-    from_agent="backend-architect",
-    to_agent="security-auditor",
-    artifacts=["artifacts/backend-architect/api-spec.yaml", "src/api/auth.ts"]
-)
-
-execute(security-auditor) → audit security
-
-execute(unit-test-expert) → create tests
-
-# Step 5: Log workflow completion
-log_workflow_complete(
-    workflow_id=workflow_id,
-    duration_seconds=3200,
-    success=true,
-    agents_executed=["design-simplicity-advisor", "backend-architect", "security-auditor", "unit-test-expert"]
-)
+    # Execute agent (hook automatically captures workflow context)
+    parent_id = execute_agent(agent, task)
 ```
 
-### Benefits of Phase 2 Integration
+### Querying Workflows
 
-- **Data-Driven Selection**: Historical performance guides agent choices
-- **Workflow Visibility**: Complete tracking of multi-agent coordination
-- **Coordination Analysis**: Measure overhead and identify bottlenecks
-- **Performance Trends**: Track agent improvements over time
-- **Informed Decisions**: Know when to upgrade to Phase 3 (structured state files)
+Use the query script to analyze workflows:
+
+```bash
+# List all workflows
+./scripts/query_workflow.sh --list-all
+
+# List today's workflows
+./scripts/query_workflow.sh --list-today
+
+# Show specific workflow details
+./scripts/query_workflow.sh wf-20251022-b71e4244
+
+# Example output:
+# Workflow: wf-20251022-b71e4244
+# Invocations: 3
+#
+# 1. design-simplicity-advisor (inv-20251022-abc123)
+#    Duration: 45.2s | Status: success
+# 2. backend-architect (inv-20251022-def456)
+#    Duration: 120.5s | Status: success | Parent: inv-20251022-abc123
+# 3. security-auditor (inv-20251022-ghi789)
+#    Duration: 78.3s | Status: success | Parent: inv-20251022-def456
+```
+
+### Benefits of Phase 2A
+
+- **Link Related Invocations**: Track multi-agent workflows as unified sequences
+- **Track Agent Sequences**: Use parent_invocation_id to follow agent handoffs
+- **Query Workflows**: Simple shell script for workflow analysis
+- **Backward Compatible**: workflow_id can be null for single-agent tasks
+- **Foundation for Analysis**: Data structure ready for Phase 2B+ enhancements
+- **Zero Breaking Changes**: Existing telemetry continues functioning normally
 
 ### Backward Compatibility
 
-- Single-agent tasks work exactly as before (no workflow tracking required)
-- Workflow tracking is optional but recommended for COORDINATION tasks
-- Existing telemetry continues functioning without changes
-- Graceful degradation if no workflow data exists
+Phase 2A maintains full backward compatibility:
+- **workflow_id can be null**: Single-agent invocations work without workflow tracking
+- **No schema changes**: Only added optional fields to existing schema
+- **Query tools handle both**: Scripts work with workflow and non-workflow invocations
+- **Graceful degradation**: Missing workflow_id is handled transparently
+- **Existing integrations unaffected**: No changes required to existing telemetry consumers
+
+### Phase 2B/2C Future Work
+
+**Phase 2B - Enhanced Query Tools** (After 10+ workflows):
+- Workflow duration analysis and statistics
+- Agent performance metrics per workflow type
+- Bottleneck identification in agent sequences
+- Success rate tracking by workflow pattern
+
+**Phase 2C - Statistical Analysis** (After 50+ workflows):
+- Confidence scoring for agent selection
+- Historical performance-based recommendations
+- Workflow pattern optimization suggestions
+- Predictive duration estimates
+
+**Phase 3+ - Advanced Features**:
+- Structured artifact files for agent handoffs
+- Real-time workflow monitoring dashboard
+- Automated workflow optimization
+- Machine learning-based agent selection
 
 ---
 

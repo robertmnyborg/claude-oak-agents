@@ -48,6 +48,7 @@ class TelemetryLogger:
         task_description: str,
         state_features: Optional[Dict[str, Any]] = None,
         parent_invocation_id: Optional[str] = None,
+        workflow_id: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None
     ) -> str:
         """
@@ -59,6 +60,7 @@ class TelemetryLogger:
             task_description: Human-readable task description
             state_features: Extracted state features (optional)
             parent_invocation_id: ID of parent agent if delegated (optional)
+            workflow_id: Unique identifier for multi-agent workflow (optional)
             metadata: Additional custom metadata (optional)
 
         Returns:
@@ -75,6 +77,7 @@ class TelemetryLogger:
             "task_description": task_description,
             "state_features": state_features or {},
             "parent_invocation_id": parent_invocation_id,
+            "workflow_id": workflow_id,
             "tools_used": [],
             "duration_seconds": None,
             "outcome": {

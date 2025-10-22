@@ -117,6 +117,10 @@
           "type": ["string", "null"],
           "description": "ID of parent agent if this was delegated"
         },
+        "workflow_id": {
+          "type": ["string", "null"],
+          "description": "Unique identifier linking related agent invocations in a multi-agent workflow"
+        },
         "tools_used": {
           "type": "array",
           "items": {"type": "string"},
