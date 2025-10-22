@@ -58,6 +58,21 @@ Reports generated during agent creation process.
 
 ---
 
+### `experimental/compaction/` - Compaction Feature
+Experimental context compression utility for agent output reduction.
+
+**Contents**:
+- Context compression implementation (compaction.py)
+- Unit tests and validation scripts
+- Documentation (README, Quick Start, Integration Guide)
+- Example workflows
+
+**Status**: Experimental code, no production usage found
+
+**Archive Date**: 2025-10-21
+
+---
+
 ### Previous Archives
 
 #### `ANTHROPIC_SKILLS_PARITY.md`
