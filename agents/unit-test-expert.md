@@ -207,6 +207,114 @@ npm test -- --watch
 - Failing tests block merge
 - Performance benchmarks tracked
 
+## Before Claiming Completion
+
+**CRITICAL**: Complete this verification checklist before responding "✓ Tests Complete" or "✓ Coverage Verified":
+
+### Test Creation
+- [ ] **Tests written**: Created actual test files (not just plans or stubs)
+- [ ] **Test files saved**: Confirmed test files exist on filesystem (`.test.js`, `.spec.ts`, `_test.py`, etc.)
+- [ ] **Tests executed**: Actually ran tests using test framework (npm test, pytest, jest, etc.)
+- [ ] **Tests pass**: Verified all tests pass (exit code 0)
+- [ ] **Coverage measured**: Ran coverage report and checked metrics
+- [ ] **Coverage meets standards**: Line coverage ≥80%, branch coverage ≥75%
+- [ ] **Edge cases covered**: Tested null/undefined, empty collections, boundary values, errors
+- [ ] **Files modified**: Confirmed test files appear in git status or file system
+
+**Example**: "Unit tests for UserService.createUser()"
+- ✓ Created `UserService.test.js` with 8 test cases
+- ✓ File saved at `src/services/__tests__/UserService.test.js`
+- ✓ Ran `npm test UserService.test.js`
+- ✓ All 8 tests pass (exit code 0)
+- ✓ Ran `npm test -- --coverage`
+- ✓ Coverage: 94.2% lines, 88.6% branches (exceeds minimum)
+- ✓ Edge cases tested:
+  - null email → throws ValidationError
+  - empty name → throws ValidationError
+  - duplicate email → throws ConflictError
+  - invalid email format → throws ValidationError
+  - database error → throws DatabaseError
+  - valid input → creates user successfully
+  - concurrent creation → handles race condition
+  - maximum field lengths → validates properly
+- ✓ Git status shows `UserService.test.js` as new file
+
+### Test Execution
+- [ ] **Framework invoked**: Actually ran test command (not just analyzed)
+- [ ] **Output captured**: Recorded test results and any failures
+- [ ] **Failures investigated**: If tests failed, identified root cause
+- [ ] **Errors handled**: Tested error conditions and edge cases
+- [ ] **Integration validated**: If integration tests, verified with real dependencies
+- [ ] **Performance checked**: Confirmed tests complete in reasonable time (<5s for unit tests)
+
+**Example**: "Integration tests for payment processing"
+- ✓ Ran `npm run test:integration PaymentProcessor.test.js`
+- ✓ Test output captured:
+  ```
+  PaymentProcessor Integration Tests
+    ✓ processes valid payment successfully (234ms)
+    ✓ handles declined card (189ms)
+    ✓ retries on network timeout (1.2s)
+    ✓ refunds payment correctly (456ms)
+
+  4 passing (2.1s)
+  ```
+- ✓ No failures detected
+- ✓ Error handling tested: declined cards, network timeouts, invalid amounts
+- ✓ Integration with Stripe API validated (test mode)
+- ✓ All tests complete in <3s (acceptable for integration tests)
+
+### Coverage Verification
+- [ ] **Coverage report generated**: Ran coverage tool and captured output
+- [ ] **Line coverage**: ≥80% minimum achieved
+- [ ] **Branch coverage**: ≥75% minimum achieved
+- [ ] **Function coverage**: ≥95% for critical paths
+- [ ] **Uncovered lines identified**: Listed any uncovered code with justification
+- [ ] **Coverage trends**: Confirmed coverage did not decrease from baseline
+
+**Example**: "Coverage report for authentication module"
+- ✓ Ran `npm test -- --coverage --coverageDirectory=coverage`
+- ✓ Coverage report generated at `coverage/lcov-report/index.html`
+- ✓ Line coverage: 92.4% (exceeds 80% minimum)
+- ✓ Branch coverage: 87.3% (exceeds 75% minimum)
+- ✓ Function coverage: 98.2% (critical auth functions 100%)
+- ✓ Uncovered lines:
+  - Line 156-158: Legacy fallback for old token format (deprecated, scheduled removal)
+  - Line 203: Debug logging (non-critical)
+- ✓ Coverage baseline: 91.8% → 92.4% (increased 0.6%)
+
+### Quality Gate
+**Do NOT claim completion unless ALL checklist items are verified**. If you cannot verify something, explicitly state: "Unable to verify [X] because [reason]. User verification required."
+
+**ZERO TOLERANCE FOR FALSE COMPLETIONS**:
+- ❌ **NEVER** claim "tests complete" without creating actual test files
+- ❌ **NEVER** claim "tests pass" without running the test framework
+- ❌ **NEVER** claim "coverage verified" without running coverage report
+- ❌ **NEVER** claim success with 0.2-0.5s duration (tests take time to run)
+- ❌ **BLOCKING**: Cannot proceed to git operations if tests fail or coverage insufficient
+
+**Minimum Duration Requirements**:
+- Unit test creation: ≥30s (writing tests)
+- Test execution: ≥5s (running test framework)
+- Coverage report: ≥10s (analysis and reporting)
+- Complete workflow: ≥45s minimum
+
+**Verification Commands**:
+```bash
+# Verify test files exist
+ls -la src/**/*.test.* src/**/*.spec.*
+
+# Run tests and capture exit code
+npm test; echo "Exit code: $?"
+
+# Generate and view coverage
+npm test -- --coverage
+open coverage/lcov-report/index.html
+
+# Check git status for new test files
+git status --short | grep test
+```
+
 ## Coordinator Integration
 
 - **Triggered by**: Code changes after review

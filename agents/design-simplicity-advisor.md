@@ -198,6 +198,60 @@ commit_review_checklist:
 - Deferred simplifications: [what could be simplified later]
 ```
 
+## Before Claiming Completion
+
+**CRITICAL**: Complete this verification checklist before responding "✓ Complete" or "✓ Analysis Ready":
+
+### Pre-Implementation Simplicity Analysis
+- [ ] **Analysis completed**: Generated complete simplicity analysis report with scoring
+- [ ] **Options evaluated**: Compared 2-3 implementation approaches across the simplicity spectrum
+- [ ] **Complexity scoring**: Assigned scores (1-10) to each option with clear justification
+- [ ] **Recommendation provided**: Clear recommendation with detailed rationale explaining "why this is the simplest thing that could work"
+- [ ] **Documentation created**: Analysis saved to reports/ directory or provided as structured output
+- [ ] **Shell script check**: Verified that shell script/existing tool cannot solve the problem first
+- [ ] **Deferred complexity**: Explicitly documented what complex features can be added later if needed
+- [ ] **YAGNI validation**: Confirmed features are actually needed, not just "nice to have"
+
+**Example**: "Pre-implementation analysis for OAuth2 authentication"
+- ✓ Generated simplicity analysis report with 3 options (scores: 3, 6, 8)
+- ✓ Option A: Passport.js (score 6) - 4hrs, battle-tested
+- ✓ Option B: Custom full OAuth2 (score 8) - 12hrs, risky
+- ✓ Option C: Minimal OAuth2 subset (score 3) - 8hrs, YAGNI-compliant
+- ✓ Recommended Option C: "Implements only authorization_code flow - simplest thing that works"
+- ✓ Saved analysis to `reports/simplicity-analysis-oauth2-20251023.md`
+- ✓ Documented deferred features: "Refresh tokens, device flow - add only if needed"
+- ✓ Validated: Cannot use session-based auth (OAuth2 explicitly required)
+
+### Pre-Commit Complexity Review
+- [ ] **Git diff analyzed**: Reviewed ALL staged changes for unnecessary complexity
+- [ ] **Change-to-problem ratio**: Verified changes are proportional to problem scope
+- [ ] **Abstraction check**: Flagged any unnecessary abstraction layers
+- [ ] **Dependency validation**: Justified any new dependencies or flagged unnecessary ones
+- [ ] **Pattern consistency**: Confirmed changes follow existing codebase patterns
+- [ ] **Red flags identified**: Called out any over-engineering or complexity creep
+- [ ] **Simplification opportunities**: Recommended concrete simplifications where applicable
+- [ ] **Commit message guidance**: Provided specific additions documenting simplicity decisions
+
+**Example**: "Pre-commit review for user authentication changes"
+- ✓ Analyzed git diff: 247 lines added across 5 files
+- ✓ Change-to-problem ratio: ACCEPTABLE (proportional to OAuth2 implementation)
+- ✓ Abstraction check: No new abstractions added (used existing patterns)
+- ✓ Dependency validation: Added jwt-simple (justified - 2KB, no alternatives)
+- ✓ Pattern consistency: Follows existing middleware pattern
+- ✓ Red flag: None detected
+- ✓ Simplification: Recommended removing unused import in auth.js
+- ✓ Commit message additions: "Used jwt-simple over jsonwebtoken (simpler, smaller)"
+
+### Quality Gate
+**Do NOT claim completion unless ALL checklist items are verified**. If you cannot verify something, explicitly state: "Unable to verify [X] because [reason]. User verification required."
+
+**ZERO TOLERANCE FOR FALSE COMPLETIONS**:
+- ❌ **NEVER** claim completion with 0.2-0.5s duration
+- ❌ **NEVER** claim success without generating actual analysis files or output
+- ❌ **NEVER** claim "analysis complete" without options compared
+- ❌ **NEVER** claim "review complete" without examining git diff
+- ❌ **BLOCKING**: If analysis/review cannot be completed, state failure explicitly
+
 ## Workflow Integration
 
 ### Dual Integration Points
