@@ -1,0 +1,146 @@
+name: PM Question or Help
+description: Product Manager questions, workflow help, or spec-related inquiries
+title: "[PM] "
+labels: ["pm-question", "help-wanted"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Product Manager Help
+
+        Ask questions about PM workflows, spec authoring, database design, prototyping, or any PM-related features.
+
+        **Before submitting**:
+        - Check [PM Quick Start](../../docs/PM_QUICK_START.md) for 6 detailed examples
+        - Check [PM Workflows](../../docs/PM_WORKFLOWS.md) for workflow patterns
+        - Search [existing PM issues](https://github.com/robertmnyborg/claude-oak-agents/issues?q=label%3Apm-question)
+
+  - type: dropdown
+    id: question-type
+    attributes:
+      label: Question Type
+      description: What kind of help do you need?
+      options:
+        - Getting Started (installation, first use)
+        - Spec Authoring (creating specifications)
+        - Database Design (schema, API design)
+        - UI Prototyping (components, state management)
+        - Workflow Mapping (user journeys, UX)
+        - Product Strategy (metrics, validation)
+        - Git Workflows (PRs, handoffs)
+        - Agent Behavior (agents not working as expected)
+        - Documentation (unclear docs, need examples)
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: experience-level
+    attributes:
+      label: Your Experience Level
+      description: How familiar are you with OaK Agents?
+      options:
+        - New User (just getting started)
+        - Beginner (used a few times)
+        - Intermediate (regular user)
+        - Advanced (power user)
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What do you need help with? Be as specific as possible.
+      placeholder: |
+        Example: "I'm trying to create a spec for a new authentication feature, but I'm not sure how to structure the requirements section. What's the best way to organize user stories vs technical requirements?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-tried
+    attributes:
+      label: What Have You Tried?
+      description: What steps have you already taken? What documentation have you checked?
+      placeholder: |
+        Example:
+        - Read PM Quick Start guide (Example 1)
+        - Tried: "Create spec for authentication"
+        - Got: A spec but requirements section seems too technical
+        - Checked: PM Workflows doc but need more guidance on requirements structure
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context that might help us answer your question?
+      placeholder: |
+        - What are you trying to accomplish (high-level goal)?
+        - What problem are you solving?
+        - Any relevant domain context (e.g., B2B SaaS, mobile app, etc.)?
+    validations:
+      required: false
+
+  - type: textarea
+    id: prompt-used
+    attributes:
+      label: Exact Prompt You Used (Optional)
+      description: If applicable, paste the exact prompt you used
+      placeholder: |
+        "Create a spec for user authentication with OAuth2 and JWT tokens"
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: output-received
+    attributes:
+      label: Output You Received (Optional)
+      description: If applicable, paste or describe what the system generated
+      placeholder: |
+        Paste relevant parts of the spec or describe what you got
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checked-docs
+    attributes:
+      label: Documentation Checked
+      description: Which documentation have you already checked?
+      options:
+        - label: README.md (project overview)
+        - label: PM Quick Start (6 examples)
+        - label: PM Workflows (workflow patterns)
+        - label: PM Capabilities (capability matrix)
+        - label: User Guide (general system guide)
+        - label: Specs README (spec-driven development)
+        - label: Searched existing issues
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this question?
+      options:
+        - Low (curious, learning)
+        - Medium (working on something, not blocked)
+        - High (blocked, need answer to continue)
+        - Critical (production issue)
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: ideal-outcome
+    attributes:
+      label: Ideal Outcome
+      description: What would a good answer look like for you?
+      placeholder: |
+        Example: "A clear example of how to structure requirements in a spec, with both user stories and technical requirements organized in a way that engineering can easily understand."
+    validations:
+      required: false

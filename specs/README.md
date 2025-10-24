@@ -6,6 +6,42 @@
 
 ---
 
+## For Product Managers
+
+**Spec-driven development is ideal for PM workflows**. Co-author feature specifications with AI agents, working in "spec terms" rather than code. Perfect for:
+
+- **Feature Specifications** - Comprehensive design docs with requirements, technical approach, and acceptance criteria
+- **Engineering Handoffs** - Complete specifications ready for implementation with all context
+- **Design Collaboration** - Approve each section before moving forward (goals → design → implementation → tests)
+- **Documentation** - Specs serve as permanent design documentation
+
+**Quick PM Example**:
+```
+"Create a spec for OAuth2 authentication"
+→ spec-manager guides you through:
+  1. Goals & Requirements (you approve)
+  2. Technical Design (you approve)
+  3. Implementation Plan (you approve)
+  4. Test Strategy (you approve)
+→ Output: Complete spec (MD + YAML) ready for engineering
+```
+
+**Benefits for PMs**:
+- ✅ Work at the right level of abstraction (product specs, not code)
+- ✅ Approval checkpoints ensure alignment before implementation
+- ✅ Changes discussed as "update spec section 2.3" not technical details
+- ✅ Professional engineering handoffs with complete context
+- ✅ Built-in documentation that persists after completion
+
+**Timeline**: 30-60 minutes from idea to engineering-ready spec
+
+**PM Documentation**:
+- **[PM Quick Start](../docs/PM_QUICK_START.md)** - Example 1 shows complete spec workflow
+- **[PM Workflows](../docs/PM_WORKFLOWS.md)** - "Spec-Driven Feature Development" pattern
+- **[PM Capabilities](../docs/PM_CAPABILITIES.md)** - Spec authoring capabilities
+
+---
+
 ## Table of Contents
 
 - [What is Spec-Driven Development?](#what-is-spec-driven-development)

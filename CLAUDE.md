@@ -50,6 +50,82 @@ COMPLEXITY: [Simple/Medium/Complex]
 
 **NO BYPASS**: Main LLM CANNOT skip classification or execute without plan
 
+## PRODUCT MANAGER CONTEXT
+
+### For Product Managers Using This System
+
+**What You Can Do**:
+- Co-author feature specifications with spec-manager
+- Design database schemas with backend-architect
+- Create UI prototypes with frontend-developer
+- Map user workflows with ux-designer
+- Frame product strategy with product-strategist
+- Create professional engineering handoffs with git-workflow-manager
+
+**Key PM Agents**:
+- **spec-manager**: Collaborative specification writing (Markdown + YAML)
+- **product-strategist**: Eigenquestion methodology, success metrics, validation hypotheses
+- **backend-architect**: Database schema, API design, DDL generation
+- **frontend-developer**: React/Vue components, state stores (Redux/Zustand/Pinia)
+- **ux-designer**: User journey mapping, friction point analysis, evidence-based UX
+- **git-workflow-manager**: Professional PRs with complete context for engineering
+- **business-analyst**: Requirements analysis, evidence synthesis, stakeholder communication
+
+**PM Workflow Example**:
+```
+1. Frame Problem
+   "Customer churn 15% monthly. Frame as product opportunity"
+   → product-strategist: Eigenquestion + hypotheses + metrics
+
+2. Create Spec
+   "Create spec for guided onboarding feature"
+   → spec-manager: Co-author with approval checkpoints
+
+3. Design Data Layer
+   "Design schema for onboarding progress tracking"
+   → backend-architect: Schema + migrations + indexes
+
+4. Prototype UI
+   "Create React onboarding wizard components"
+   → frontend-developer: Components + state store
+
+5. Engineering Handoff
+   "Create PR with spec, schema, prototype"
+   → git-workflow-manager: Complete PR ready for review
+```
+
+**PM Documentation**:
+- **Quick Start**: See `docs/PM_QUICK_START.md` for 6 detailed examples
+- **Workflow Patterns**: See `docs/PM_WORKFLOWS.md` for 7 reusable patterns
+- **Capabilities**: See `docs/PM_CAPABILITIES.md` for honest capability matrix
+- **Documentation Hub**: See `docs/INDEX.md` for complete navigation by role
+
+**How It Works for PMs**:
+1. You make requests in plain language (no technical syntax needed)
+2. System classifies request and selects appropriate PM agents
+3. Agents coordinate automatically (you approve at checkpoints)
+4. Output is PM-friendly (specs, diagrams, schemas, prototypes)
+5. Engineering handoffs are professional and complete
+
+**What's Automatic**:
+- Agent selection based on your request type
+- Multi-agent coordination for complex workflows
+- Technical feasibility validation
+- Quality checks and security reviews
+- Documentation and changelog generation
+
+**What Requires Your Input**:
+- Approval checkpoints in specifications
+- Design decisions and trade-offs
+- Success metrics and validation criteria
+- Business requirements and constraints
+
+**Timeline Expectations**:
+- Spec creation: 30-60 minutes (with your input)
+- Database design: 10-20 minutes
+- UI prototype: 20-40 minutes
+- Complete feature handoff: 60-90 minutes (problem → engineering-ready)
+
 ## Model Selection Strategy
 
 **Status**: Active - All agents assigned to optimal model tiers
