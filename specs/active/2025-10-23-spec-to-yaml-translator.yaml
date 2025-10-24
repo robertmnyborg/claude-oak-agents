@@ -1,0 +1,408 @@
+spec_id: spec-20251023-spec-to-yaml-translator
+created: '2025-10-23'
+updated: '2025-10-23'
+status: in-progress
+linked_request: ''
+goals:
+  primary: Build an automated translation tool that converts human-readable Markdown specification files into structured YAML format suitable for agent consumption, enabling the spec-driven development workflow.
+  user_stories:
+  - role: spec-manager agent
+    capability: to automatically convert approved Markdown specs to YAML
+    benefit: I can provide structured data to execution agents without manual transcription.
+  - role: developer
+    capability: changes to the Markdown spec to automatically sync to YAML
+    benefit: both formats remain consistent throughout the development lifecycle.
+  - role: execution agent
+    capability: to consume structured YAML specs
+    benefit: I can programmatically access task assignments, dependencies, and acceptance criteria.
+  acceptance_criteria:
+  - id: AC-1
+    criterion: Tool reads Markdown spec file and extracts all sections (Goals, Design, Implementation, Tests)
+    status: pending
+    linked_tasks: []
+    linked_tests: []
+  - id: AC-2
+    criterion: Tool generates valid YAML following the spec schema defined in `specs/templates/SPEC_SCHEMA.yaml`
+    status: pending
+    linked_tasks: []
+    linked_tests: []
+  - id: AC-3
+    criterion: All linkages are preserved (goals ↔ design ↔ tasks ↔ tests with explicit references)
+    status: pending
+    linked_tasks: []
+    linked_tests: []
+  - id: AC-4
+    criterion: Generated YAML passes JSON schema validation
+    status: pending
+    linked_tasks: []
+    linked_tests: []
+  - id: AC-5
+    criterion: Tool handles incremental updates (regenerate YAML when Markdown changes)
+    status: pending
+    linked_tasks: []
+    linked_tests: []
+  - id: AC-6
+    criterion: Metadata tracks last sync timestamp and Markdown source location
+    status: pending
+    linked_tasks: []
+    linked_tests: []
+  success_metrics:
+  - 'Translation accuracy: 100% of valid Markdown specs produce valid YAML'
+  - 'Sync reliability: YAML always reflects current Markdown state'
+  - 'Agent adoption: Execution agents successfully use YAML specs for task coordination'
+  - 'User satisfaction: spec-manager workflow functions without manual YAML editing'
+  out_of_scope:
+  - Reverse translation (YAML → Markdown) - Markdown is source of truth
+  - Visual spec editor or GUI - command-line tool only
+  - Automatic spec generation from code - manual spec authoring required
+  - Real-time collaborative editing - file-based workflow sufficient
+technical_design:
+  architecture:
+    overview: Python-based parser using regex and YAML libraries
+    key_decisions:
+    - decision: Python over Shell
+      rationale: Better regex support, YAML library ecosystem, easier testing
+    - decision: Template-driven
+      rationale: Use schema template as validation guide
+    - decision: Fail-fast
+      rationale: Strict validation, clear error messages on parse failures
+    - decision: Idempotent
+      rationale: Same Markdown always produces same YAML output
+  components:
+  - name: MarkdownParser
+    location: specs/tools/markdown_parser.py
+    responsibility: Extract structured data from Markdown spec sections
+    interfaces:
+    - '- parse_spec(file_path: str) -> Dict[str'
+    - Any]
+    dependencies:
+    - re (regex)
+    - pathlib (file handling)
+    links_to:
+    - AC-1
+    - AC-3
+  - name: YAMLGenerator
+    location: specs/tools/yaml_generator.py
+    responsibility: Build YAML structure from parsed data
+    interfaces:
+    - '- generate_yaml(parsed_data: Dict) -> str'
+    dependencies:
+    - pyyaml
+    - jsonschema (validation)
+    links_to:
+    - AC-2
+    - AC-4
+  - name: TranslationCLI
+    location: specs/tools/translate_spec.py
+    responsibility: CLI entry point for translation workflow
+    interfaces:
+    - '- translate(markdown_file: str'
+    - 'output_file: str)'
+    dependencies:
+    - markdown_parser
+    - yaml_generator
+    links_to:
+    - AC-5
+    - AC-6
+  data_structures:
+  - definition: "# Parsed Spec Data Structure\nParsedSpec:\n  metadata:\n    spec_id: str\n    created: datetime\n    updated: datetime\n    status: str\n  goals:\n    primary: str\n    user_stories: List[UserStory]\n    acceptance_criteria: List[AcceptanceCriterion]\n    success_metrics: List[str]\n    out_of_scope: List[str]\n  design:\n    architecture: ArchitectureOverview\n    components: List[Component]\n    data_structures: List[DataStructure]\n    apis: List[API]\n    dependencies: List[Dependency]\n  implementation:\n    tasks: List[Task]\n    execution_sequence: List[Stage]\n    risks: List[Risk]\n  test_strategy:\n    test_cases: List[TestCase]\n    test_types: TestTypes\n    validation_checklist: List[ChecklistItem]"
+  apis:
+  - example: "# Translate Markdown to YAML\npython specs/tools/translate_spec.py \\\n  --input specs/active/YYYY-MM-DD-feature.md \\\n  --output specs/active/YYYY-MM-DD-feature.yaml \\\n  --validate\n\n# Validate existing YAML\npython specs/tools/translate_spec.py \\\n  --validate-yaml specs/active/YYYY-MM-DD-feature.yaml\n\n# Watch for changes (auto-regenerate)\npython specs/tools/translate_spec.py \\\n  --watch specs/active/YYYY-MM-DD-feature.md"
+  dependencies:
+  - name: pyyaml
+    version: v6.0+
+    reason: YAML parsing and generation
+    type: external
+  - name: jsonschema
+    version: v4.17+
+    reason: JSON Schema validation
+    type: external
+  - name: watchdog
+    version: v3.0+
+    reason: File watching for auto-regeneration (optional)
+    type: external
+  - name: click
+    version: v8.1+
+    reason: CLI framework (optional, could use argparse)
+    type: external
+  security_considerations:
+  - concern: Input validation
+    mitigation: Sanitize file paths to prevent directory traversal
+  - concern: Safe YAML
+    mitigation: Use `yaml.safe_load` and `yaml.safe_dump` only (no arbitrary code execution)
+  performance_considerations:
+  - metric: Target performance
+    target: <500ms for typical spec (<10KB Markdown)
+  - metric: Optimization strategy
+    target: Lazy parsing (only parse sections when needed)
+implementation:
+  tasks:
+  - name: 'Task 1: Create Markdown Parser'
+    id: task-1
+    description: Build regex-based parser to extract structured data from Markdown spec sections
+    agent: backend-architect
+    files:
+    - specs/tools/markdown_parser.py
+    - specs/tools/test_markdown_parser.py
+    depends_on: none
+    estimate: moderate (4-6 hours)
+    status: pending
+    links_to:
+    - Component-1
+    - AC-1
+    - AC-3
+    - tc-1
+    - tc-2
+    - tc-3
+  - name: 'Task 2: Create YAML Generator'
+    id: task-2
+    description: Build YAML structure generator with schema validation
+    agent: backend-architect
+    files:
+    - specs/tools/yaml_generator.py
+    - specs/tools/test_yaml_generator.py
+    depends_on: none (can parallelize with task-1)
+    estimate: simple (2-3 hours)
+    status: pending
+    links_to:
+    - Component-2
+    - AC-2
+    - AC-4
+    - tc-4
+    - tc-5
+  - name: 'Task 3: Create CLI Tool'
+    id: task-3
+    description: Build command-line interface orchestrating parser + generator
+    agent: backend-architect
+    files:
+    - specs/tools/translate_spec.py
+    - specs/tools/test_cli.py
+    depends_on: task-1, task-2
+    estimate: simple (2-3 hours)
+    status: pending
+    links_to:
+    - Component-3
+    - AC-5
+    - AC-6
+    - tc-6
+    - tc-7
+  - name: 'Task 4: Integration Testing'
+    id: task-4
+    description: End-to-end integration tests with real spec examples
+    agent: unit-test-expert
+    files:
+    - specs/tools/test_integration.py
+    depends_on: task-3
+    estimate: simple (2 hours)
+    status: pending
+    links_to:
+    - AC-1
+    - AC-6
+    - tc-8
+  - name: 'Task 5: Documentation'
+    id: task-5
+    description: README for translation tool with usage examples
+    agent: technical-documentation-writer
+    files:
+    - specs/tools/README.md
+    depends_on: task-4
+    estimate: trivial (1 hour)
+    status: pending
+    links_to: []
+  execution_sequence:
+  - stage: parallel
+    tasks:
+    - task-1
+    - task-2 (can run concurrently)
+  - stage: sequential
+    tasks:
+    - task-3 → task-4 → task-5
+  risks:
+  - risk: Markdown structure varies between specs
+    impact: High
+    probability: Medium
+    mitigation: Define strict Markdown format rules, fail with clear errors
+    status: identified
+  - risk: YAML schema changes break translations
+    impact: Medium
+    probability: Low
+    mitigation: Version schema, test against multiple schema versions
+    status: identified
+  - risk: Parser regex too brittle
+    impact: High
+    probability: Medium
+    mitigation: Comprehensive test suite covering edge cases, use AST parser if regex insufficient
+    status: identified
+  - risk: Performance issues with large specs
+    impact: Low
+    probability: Low
+    mitigation: Profile and optimize if >500ms, lazy parsing if needed
+    status: identified
+test_strategy:
+  test_cases:
+  - name: 'Test Case 1: Parse Complete Spec'
+    id: tc-1
+    description: Parser extracts all sections from valid Markdown spec
+    given: Valid Markdown spec with all sections (Goals, Design, Implementation, Tests)
+    when: Parser processes spec file
+    then: Parsed data structure contains all sections with correct values
+    links_to:
+    - AC-1
+    - 2.2.Component-1
+    - task-1
+    status: pending
+    test_type: unit
+  - name: 'Test Case 2: Preserve Linkages'
+    id: tc-2
+    description: Parser preserves cross-references between sections
+    given: 'Markdown spec with explicit linkages (e.g., "Links to: AC-1, TC-2")'
+    when: Parser processes spec
+    then: Parsed data includes all linkages as structured references
+    links_to:
+    - AC-3
+    - Component-1
+    - task-1
+    status: pending
+    test_type: unit
+  - name: 'Test Case 3: Handle Malformed Markdown'
+    id: tc-3
+    description: Parser fails gracefully with clear errors on invalid input
+    given: Markdown spec with missing required sections
+    when: Parser processes spec
+    then: Raises ParseError with message indicating missing section
+    links_to:
+    - AC-1
+    - 2.6.SecurityConsiderations
+    - task-1
+    status: pending
+    test_type: unit
+  - name: 'Test Case 4: Generate Valid YAML'
+    id: tc-4
+    description: Generator produces schema-compliant YAML
+    given: Parsed spec data structure
+    when: Generator creates YAML
+    then: Output validates against `specs/templates/SPEC_SCHEMA.yaml`
+    links_to:
+    - AC-2
+    - AC-4
+    - 2.2.Component-2
+    - task-2
+    status: pending
+    test_type: unit
+  - name: 'Test Case 5: Idempotent Translation'
+    id: tc-5
+    description: Same Markdown produces identical YAML every time
+    given: Single Markdown spec file
+    when: Translate to YAML twice
+    then: Both YAML outputs are byte-for-byte identical
+    links_to:
+    - AC-5
+    - 2.1.ArchitectureOverview
+    - task-2
+    status: pending
+    test_type: unit
+  - name: 'Test Case 6: CLI End-to-End'
+    id: tc-6
+    description: CLI tool translates Markdown to YAML successfully
+    given: Valid Markdown spec file
+    when: Run `translate_spec.py --input spec.md --output spec.yaml --validate`
+    then: YAML file created, validation passes, exit code 0
+    links_to:
+    - AC-5
+    - AC-6
+    - Component-3
+    - task-3
+    status: pending
+    test_type: unit
+  - name: 'Test Case 7: Metadata Tracking'
+    id: tc-7
+    description: YAML includes sync metadata
+    given: Translated YAML spec
+    when: Inspect metadata section
+    then: Contains `last_sync` timestamp and `markdown_location` path
+    links_to:
+    - AC-6
+    - 2.2.Component-3
+    - task-3
+    status: pending
+    test_type: unit
+  - name: 'Test Case 8: Integration with Real Spec'
+    id: tc-8
+    description: Tool works with actual spec-driven workflow
+    given: This spec file (dogfooding!)
+    when: Translate this spec to YAML
+    then: Generated YAML is valid and usable by spec-manager
+    links_to:
+    - AC-1
+    - AC-6
+    - task-4
+    status: pending
+    test_type: unit
+  test_types:
+    unit_tests:
+    - test: MarkdownParser unit tests (tc-1, tc-2, tc-3)
+      status: pending
+    - test: YAMLGenerator unit tests (tc-4, tc-5)
+      status: pending
+    - test: CLI unit tests (tc-6, tc-7)
+      status: pending
+    integration_tests:
+    - test: End-to-end translation (tc-8)
+      status: pending
+    - test: Schema validation integration
+      status: pending
+    - test: Error handling integration
+      status: pending
+    end_to_end_tests:
+    - test: Translate real specs from `specs/active/`
+      status: pending
+    - test: spec-manager consumes generated YAML
+      status: pending
+    performance_tests:
+    - test: Translation completes in <500ms for typical spec
+      status: pending
+    - test: Memory usage remains <50MB for large specs
+      status: pending
+  validation_checklist:
+  - check: All test cases pass (tc-1 through tc-8)
+    status: pending
+  - check: All acceptance criteria met (AC-1 through AC-6)
+    status: pending
+  - check: No critical bugs or regressions
+    status: pending
+  - check: Code reviewed and approved
+    status: pending
+  - check: Documentation updated (README.md, docstrings)
+    status: pending
+execution_log: []
+changes:
+  design_changes: []
+  scope_changes: []
+  deviations: []
+completion:
+  acceptance_criteria_status: []
+  test_results:
+    unit_tests: 0/0 passed
+    integration_tests: 0/0 passed
+    e2e_tests: 0/0 passed
+    all_tests_passing: false
+  success_metrics_results: []
+  files_changed:
+    total: 0
+    created: []
+    modified: []
+    deleted: []
+  lessons_learned: []
+  follow_up_items: []
+metadata:
+  spec_version: '1.0'
+  generated_from_markdown: true
+  markdown_location: ../active/2025-10-23-spec-to-yaml-translator.md
+  last_sync: '2025-10-24T05:53:00.953162Z'
+  statistics:
+    total_tasks: 0
+    completed_tasks: 0
+    total_tests: 0
+    passed_tests: 0
+    agents_involved: []
+    duration_seconds: null
