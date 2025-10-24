@@ -638,6 +638,7 @@ This enables analysis of:
 
 #### Workflow & Management
 - **project-manager**: Multi-step coordination, timeline management
+- **spec-manager**: Specification-driven development workflow, co-authoring specs, task decomposition
 - **git-workflow-manager**: Git operations, branch management, PR creation
 - **changelog-recorder**: Automatic changelog generation
 
@@ -950,6 +951,191 @@ If agent cannot be created immediately:
 - **Gap Closure Rate**: % of identified gaps closed within 30 days
 - **Creation Precision**: % of created agents that get used regularly
 - **User Satisfaction**: Feedback on agent coverage
+</Rule>
+
+<Rule id="spec-driven-development">
+**SPEC-DRIVEN DEVELOPMENT WORKFLOW**: User co-authors specifications for significant changes
+
+### When to Use Spec-Driven Workflow
+
+**CREATE SPEC for (spec-manager delegation):**
+- **Significant features**: New features or subsystems
+- **Architectural changes**: Design decisions affecting multiple components
+- **Multi-agent coordination**: Requires 5+ files or 3+ agents
+- **Complex changes**: Significant refactoring or system modifications
+- **User explicitly requests**: "Let's create a spec" or "spec-driven approach"
+- **Security-critical**: Authentication, authorization, data protection
+- **Data migrations**: Schema changes or data transformations
+
+**USE TodoWrite for (standard workflow):**
+- **Simple bug fixes**: 1-2 files, single agent
+- **Typos/documentation**: Quick edits
+- **Single-file changes**: Isolated modifications
+- **User prefers quick iteration**: Explicit request for fast implementation
+
+### Spec-Driven Workflow Process
+
+**Main LLM Decision**:
+```
+Request Analysis
+    ↓
+Complexity Evaluation
+    ↓
+    ├─ Simple/Quick → TodoWrite (standard workflow)
+    │
+    └─ Significant → spec-manager Delegation:
+        1. "This looks like a significant change [because...]"
+        2. "I recommend spec-driven workflow (10-15 min upfront, clearer design)"
+        3. "Sound good?"
+        4. User confirms → Delegate to spec-manager
+```
+
+**spec-manager Workflow**:
+1. **Collaborative Spec Creation** (Markdown):
+   - Section 1: Goals & Requirements (with user approval)
+   - Section 2: Technical Design (with user approval)
+   - Section 3: Implementation Plan (with user approval)
+   - Section 4: Test Strategy (with user approval)
+   - Save to `specs/active/YYYY-MM-DD-feature-name.md`
+
+2. **YAML Translation**:
+   - Auto-generate from Markdown
+   - Save to `specs/active/YYYY-MM-DD-feature-name.yaml`
+
+3. **Task Decomposition**:
+   - Break spec into tasks
+   - Assign agents based on domain + historical performance
+   - Create execution plan (sequential/parallel)
+
+4. **Execution Coordination**:
+   - Invoke agents with spec context
+   - Log execution in spec (Section 5: Execution Log)
+   - Link telemetry: `spec_id` + `spec_section`
+
+5. **Change Management**:
+   - Handle changes in "spec terms" not "code terms"
+   - Example: "Spec section 2.3 (Auth Strategy) needs update. Current: JWT. Proposed: OAuth2. Affects sections [2.3, 3.1.task-2]. Approve?"
+   - Update Markdown → Regenerate YAML → Continue
+
+6. **Validation & Completion**:
+   - Verify all acceptance criteria met
+   - All tests pass
+   - Update Section 7: Completion Summary
+   - Move to `specs/completed/`
+
+### Spec File Structure
+
+**Markdown** (`specs/active/YYYY-MM-DD-feature-name.md`):
+- Human-readable, collaborative editing
+- Source of truth for user
+- Sections: Goals, Design, Implementation, Tests, Execution, Changes, Completion
+
+**YAML** (`specs/active/YYYY-MM-DD-feature-name.yaml`):
+- Machine-readable, auto-generated
+- Agent consumption format
+- Structured data: tasks, agents, dependencies, linkages
+
+### Telemetry Integration
+
+**Agent invocations include**:
+```python
+spec_id = "spec-20251023-feature-name"
+spec_section = ["2.2.comp-1", "3.1.task-1"]  # Which spec sections
+
+logger.log_invocation(
+    agent_name="backend-architect",
+    spec_id=spec_id,
+    spec_section=spec_section,
+    ...
+)
+```
+
+**Benefits**:
+- Trace agent invocations back to specs
+- Analyze which spec sections cause issues
+- Measure spec adherence quality
+- Track spec accuracy (% of specs needing changes during implementation)
+
+### User Communication
+
+**Spec Terms vs Code Terms**:
+- ✅ "Spec section 2.3 (Component X) needs update..."
+- ✅ "This affects acceptance criteria AC-1 and AC-2..."
+- ✅ "Want to review spec or proceed with implementation?"
+- ❌ "Should I change line 45 to use X instead of Y?"
+- ❌ "I modified these 8 files, want to see them?"
+
+**User Decisions**:
+- Approve spec approach (vs TodoWrite)
+- Approve spec sections (Goals, Design, Plan, Tests)
+- Approve spec changes during implementation
+- Approve completion (all criteria met)
+
+**Optional Code Review**:
+- User can always request: "Show me the code for X"
+- Default: Trust spec adherence, skip code review
+- Offer: "Implementation meets spec. View code or mark complete?"
+
+### Integration with Existing Workflow
+
+**Hybrid Model**:
+- **Simple tasks**: TodoWrite (existing workflow)
+- **Significant tasks**: spec-manager → spec-driven workflow
+- **Both supported**: User can request either approach
+
+**Workflow Selection**:
+```
+Main LLM Classification
+    ↓
+IMPLEMENTATION (Significant)
+    ↓
+    ├─ Quick fix requested? → TodoWrite
+    │
+    └─ Recommend spec-driven:
+        "This is a significant change. Spec-driven approach recommended.
+        Takes 10-15 min upfront but ensures alignment on design.
+        Use spec workflow or quick TodoWrite?"
+            ↓
+        User Decision → spec-manager OR TodoWrite
+```
+
+### Quality Metrics
+
+Track spec-driven workflow effectiveness:
+- **Spec Accuracy**: % of specs needing changes during implementation (target: <20%)
+- **User Satisfaction**: Did spec process help or hinder?
+- **Implementation Fidelity**: How well code matched spec
+- **Time Investment**: Spec creation vs rework prevented
+
+### Example: Spec-Driven vs TodoWrite
+
+**TodoWrite Example (Simple)**:
+```
+User: "Fix typo in README line 5"
+Main LLM: "Simple fix, using TodoWrite"
+    → Creates todo
+    → domain-specialist fixes
+    → git-workflow-manager commits
+```
+
+**Spec-Driven Example (Significant)**:
+```
+User: "Add OAuth2 authentication"
+Main LLM: "Significant feature. Recommend spec-driven approach (15 min upfront planning). Sound good?"
+User: "Yes"
+Main LLM: Delegates to spec-manager
+    → spec-manager co-authors spec (Goals, Design, Plan, Tests)
+    → User approves spec
+    → spec-manager generates YAML
+    → spec-manager decomposes tasks:
+        - Task 1: backend-architect (OAuth2 endpoints)
+        - Task 2: security-auditor (security review)
+        - Task 3: frontend-developer (login UI)
+    → spec-manager coordinates execution
+    → Agents log to spec execution log
+    → spec-manager validates completion
+    → "All 5 acceptance criteria met. Spec complete."
+```
 </Rule>
 
 <Rule id="classification-routing">

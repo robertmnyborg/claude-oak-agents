@@ -1,0 +1,338 @@
+# YAML Spec Schema Template
+# This is auto-generated from the Markdown spec by spec-manager
+# Agents consume this structured format for task execution
+
+spec_id: "spec-YYYYMMDD-feature-name"
+created: "YYYY-MM-DDTHH:MM:SSZ"
+updated: "YYYY-MM-DDTHH:MM:SSZ"
+status: "draft"  # draft | approved | in-progress | completed
+linked_request: "Verbatim user request or reference ID"
+
+# 1. GOALS & REQUIREMENTS
+goals:
+  primary: "High-level goal statement"
+
+  user_stories:
+    - id: "us-1"
+      role: "user/persona"
+      capability: "what they want"
+      benefit: "why they want it"
+    - id: "us-2"
+      role: "user/persona"
+      capability: "what they want"
+      benefit: "why they want it"
+
+  acceptance_criteria:
+    - id: "ac-1"
+      criterion: "Specific, testable criterion"
+      status: "pending"  # pending | in-progress | done
+      linked_tasks: ["task-1", "task-2"]
+      linked_tests: ["tc-1"]
+    - id: "ac-2"
+      criterion: "Another criterion"
+      status: "pending"
+      linked_tasks: ["task-3"]
+      linked_tests: ["tc-2", "tc-3"]
+
+  success_metrics:
+    - metric: "Metric description"
+      target: "Target value"
+      measured_value: null  # filled in at completion
+    - metric: "Another metric"
+      target: "Target value"
+      measured_value: null
+
+  out_of_scope:
+    - "Item explicitly not being done"
+    - "Another out of scope item"
+
+# 2. TECHNICAL DESIGN
+technical_design:
+  architecture:
+    overview: "High-level design approach"
+    key_decisions:
+      - decision: "Design decision 1"
+        rationale: "Why this approach"
+      - decision: "Design decision 2"
+        rationale: "Why this approach"
+
+  components:
+    - id: "comp-1"
+      name: "Component Name"
+      location: "path/to/file"
+      responsibility: "What it does"
+      interfaces:
+        - "API it exposes"
+      dependencies:
+        - "What it depends on"
+      links_to:
+        goals: ["ac-1"]
+        tasks: ["task-1"]
+
+    - id: "comp-2"
+      name: "Another Component"
+      location: "path/to/other/file"
+      responsibility: "What it does"
+      interfaces: []
+      dependencies: ["comp-1"]
+      links_to:
+        goals: ["ac-2"]
+        tasks: ["task-2", "task-3"]
+
+  data_structures:
+    - name: "DataModelName"
+      schema:
+        field1: "type"
+        field2: "type"
+        relationships:
+          - relates_to: "OtherModel"
+      links_to:
+        goals: ["ac-1"]
+        components: ["comp-1"]
+
+  apis:
+    - endpoint: "METHOD /path/to/endpoint"
+      purpose: "What it does"
+      input_schema:
+        param1: "type"
+        param2: "type"
+      output_schema:
+        result: "type"
+      links_to:
+        goals: ["ac-2"]
+        components: ["comp-2"]
+
+  dependencies:
+    - name: "library-name"
+      version: "1.0.0"
+      reason: "Why needed"
+      type: "npm | pip | gem | etc"
+
+  security_considerations:
+    - consideration: "Security aspect"
+      mitigation: "How addressed"
+      links_to: ["ac-X"]
+
+  performance_considerations:
+    - consideration: "Performance aspect"
+      approach: "How optimized"
+      links_to: ["metric-X"]
+
+# 3. IMPLEMENTATION PLAN
+implementation:
+  tasks:
+    - id: "task-1"
+      name: "Task Name"
+      description: "What needs to be done"
+      agent: "recommended-agent-name"
+      files:
+        - "path/to/file1"
+        - "path/to/file2"
+      depends_on: []  # task IDs this depends on
+      estimate: "trivial | simple | moderate | complex"
+      status: "pending"  # pending | in-progress | completed | blocked
+      links_to:
+        design: ["comp-1"]
+        goals: ["ac-1"]
+        tests: ["tc-1"]
+
+    - id: "task-2"
+      name: "Another Task"
+      description: "What needs to be done"
+      agent: "another-agent"
+      files:
+        - "path/to/file3"
+      depends_on: ["task-1"]
+      estimate: "moderate"
+      status: "pending"
+      links_to:
+        design: ["comp-2"]
+        goals: ["ac-2"]
+        tests: ["tc-2"]
+
+  execution_sequence:
+    - stage: 1
+      parallel: false
+      tasks: ["task-1"]
+    - stage: 2
+      parallel: true  # tasks can run in parallel
+      tasks: ["task-2", "task-3"]
+    - stage: 3
+      parallel: false
+      tasks: ["task-4"]
+
+  risks:
+    - risk: "Risk description"
+      impact: "high | medium | low"
+      probability: "high | medium | low"
+      mitigation: "How to mitigate"
+      status: "open | mitigated | occurred"
+
+# 4. TEST STRATEGY
+test_strategy:
+  test_cases:
+    - id: "tc-1"
+      name: "Test Case Name"
+      description: "What we're testing"
+      given: "Preconditions"
+      when: "Action"
+      then: "Expected result"
+      links_to:
+        goals: ["ac-1"]
+        design: ["comp-1"]
+        tasks: ["task-1"]
+      status: "pending"  # pending | passed | failed
+      test_type: "unit | integration | e2e | performance"
+
+    - id: "tc-2"
+      name: "Another Test Case"
+      description: "What we're testing"
+      given: "Preconditions"
+      when: "Action"
+      then: "Expected result"
+      links_to:
+        goals: ["ac-2"]
+        design: ["comp-2"]
+        tasks: ["task-2"]
+      status: "pending"
+      test_type: "integration"
+
+  test_types:
+    unit_tests:
+      - test: "Component 1 unit tests"
+        status: "pending"
+      - test: "Component 2 unit tests"
+        status: "pending"
+
+    integration_tests:
+      - test: "API integration tests"
+        status: "pending"
+      - test: "Database integration tests"
+        status: "pending"
+
+    e2e_tests:
+      - test: "User flow 1"
+        status: "pending"
+      - test: "User flow 2"
+        status: "pending"
+
+    performance_tests:
+      - test: "Load test scenario"
+        status: "pending"
+      - test: "Benchmark scenario"
+        status: "pending"
+
+  validation_checklist:
+    - check: "All test cases pass"
+      status: "pending"  # pending | done
+    - check: "All acceptance criteria met"
+      status: "pending"
+    - check: "No critical bugs or regressions"
+      status: "pending"
+    - check: "Code reviewed and approved"
+      status: "pending"
+    - check: "Documentation updated"
+      status: "pending"
+    - check: "Success metrics baseline established"
+      status: "pending"
+
+# 5. AGENT EXECUTION LOG
+execution_log:
+  # Auto-populated during implementation
+  - timestamp: "YYYY-MM-DDTHH:MM:SSZ"
+    event: "task_started"
+    agent: "agent-name"
+    task_id: "task-1"
+    telemetry_id: "inv-XXXXXX"
+    spec_sections: ["comp-1", "task-1"]
+
+  - timestamp: "YYYY-MM-DDTHH:MM:SSZ"
+    event: "task_completed"
+    agent: "agent-name"
+    task_id: "task-1"
+    telemetry_id: "inv-XXXXXX"
+    status: "success"  # success | failed | partial
+    duration_seconds: 120
+    notes: "Any relevant observations"
+    files_modified:
+      - "path/to/file1"
+      - "path/to/file2"
+
+# 6. CHANGES & DECISIONS
+changes:
+  design_changes:
+    - date: "YYYY-MM-DD"
+      description: "Change description"
+      reason: "Why we changed"
+      original_design: "What was planned"
+      new_design: "What we're doing instead"
+      sections_updated: ["comp-1", "task-1"]
+      approved_by: "user | spec-manager"
+      impact: "low | medium | high"
+
+  scope_changes:
+    - date: "YYYY-MM-DD"
+      change: "What changed in scope"
+      reason: "Why - new insight, blocker, user request"
+      sections_updated: ["ac-X", "task-X"]
+      approved_by: "user"
+
+  deviations:
+    - date: "YYYY-MM-DD"
+      deviation: "What was done differently"
+      reason: "Why - better approach, constraint"
+      spec_alignment: true  # still meets requirements?
+      proposed_update: "If false, what spec update needed"
+
+# 7. COMPLETION SUMMARY
+completion:
+  # Filled in when status = "completed"
+  acceptance_criteria_status:
+    - id: "ac-1"
+      status: "met"  # met | not-met
+    - id: "ac-2"
+      status: "met"
+
+  test_results:
+    unit_tests: "X/X passed"
+    integration_tests: "X/X passed"
+    e2e_tests: "X/X passed"
+    all_tests_passing: true
+
+  success_metrics_results:
+    - metric: "Metric 1"
+      target: "Target value"
+      actual: "Measured value"
+    - metric: "Metric 2"
+      target: "Target value"
+      actual: "Measured value"
+
+  files_changed:
+    total: 0
+    created: []
+    modified: []
+    deleted: []
+
+  lessons_learned:
+    - "What went well"
+    - "What could be improved"
+
+  follow_up_items:
+    - item: "Deferred work or technical debt"
+      priority: "high | medium | low"
+      created_issue: null  # link to tracking issue
+
+# METADATA
+metadata:
+  spec_version: "1.0"  # spec schema version
+  generated_from_markdown: true
+  markdown_location: "specs/YYYY-MM-DD-feature-name.md"
+  last_sync: "YYYY-MM-DDTHH:MM:SSZ"
+
+  statistics:
+    total_tasks: 0
+    completed_tasks: 0
+    total_tests: 0
+    passed_tests: 0
+    agents_involved: []
+    duration_seconds: null

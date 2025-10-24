@@ -49,6 +49,8 @@ class TelemetryLogger:
         state_features: Optional[Dict[str, Any]] = None,
         parent_invocation_id: Optional[str] = None,
         workflow_id: Optional[str] = None,
+        spec_id: Optional[str] = None,
+        spec_section: Optional[List[str]] = None,
         metadata: Optional[Dict[str, Any]] = None
     ) -> str:
         """
@@ -61,6 +63,8 @@ class TelemetryLogger:
             state_features: Extracted state features (optional)
             parent_invocation_id: ID of parent agent if delegated (optional)
             workflow_id: Unique identifier for multi-agent workflow (optional)
+            spec_id: Specification ID if this invocation is part of a spec-driven workflow (optional)
+            spec_section: List of spec sections this invocation relates to (e.g., ["2.2.comp-1", "3.1.task-1"]) (optional)
             metadata: Additional custom metadata (optional)
 
         Returns:
@@ -78,6 +82,8 @@ class TelemetryLogger:
             "state_features": state_features or {},
             "parent_invocation_id": parent_invocation_id,
             "workflow_id": workflow_id,
+            "spec_id": spec_id,
+            "spec_section": spec_section or [],
             "tools_used": [],
             "duration_seconds": None,
             "outcome": {

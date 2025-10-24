@@ -121,6 +121,15 @@
           "type": ["string", "null"],
           "description": "Unique identifier linking related agent invocations in a multi-agent workflow"
         },
+        "spec_id": {
+          "type": ["string", "null"],
+          "description": "Specification ID if this invocation is part of a spec-driven workflow (e.g., 'spec-20251023-feature-name')"
+        },
+        "spec_section": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of spec sections this invocation relates to (e.g., ['2.2.comp-1', '3.1.task-1'])"
+        },
         "mode": {
           "type": "string",
           "enum": ["planning", "execution"],
