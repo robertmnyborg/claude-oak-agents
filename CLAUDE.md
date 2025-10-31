@@ -2,6 +2,25 @@
 
 # 🚨 CRITICAL: MANDATORY DELEGATION ENFORCEMENT 🚨
 
+## AUTO-ACTIVATION SYSTEM (NEW - 2025-10-30)
+
+**IMPORTANT**: This system now includes intelligent agent auto-activation:
+
+- **Agent Auto-Activation Hook**: `.claude/hooks/agent-activation-prompt.md` analyzes prompts and suggests relevant agents
+- **Agent Rules Configuration**: `.claude/agent-rules.json` defines trigger patterns, keywords, and confidence thresholds
+- **Agent Patterns Guide**: `.claude/AGENT_PATTERNS.md` - comprehensive guide for agent selection and workflows
+- **Post-Execution Tracking**: `.claude/hooks/post-agent-execution.md` logs performance metrics
+- **Pre-Commit Validation**: `.claude/hooks/pre-commit-validation.md` enforces quality gates
+
+**How It Works**:
+1. User makes request
+2. Auto-activation hook analyzes keywords, file context, and patterns
+3. Suggests relevant agents based on `agent-rules.json`
+4. User accepts or continues without agents
+5. Execution tracked via telemetry for continuous improvement
+
+**See `.claude/AGENT_PATTERNS.md` for complete agent selection guide, common workflows, and decision trees.**
+
 ## MAIN LLM RESTRICTIONS (CANNOT BE BYPASSED)
 
 **PROHIBITED ACTIONS:**
@@ -46,7 +65,7 @@ COMPLEXITY: [Simple/Medium/Complex]
 - "Fix CDK deployment error" → IMPLEMENTATION | Infrastructure | infrastructure-specialist | Simple
 - "Build secure API with monitoring" → IMPLEMENTATION | Security+Backend+Infrastructure | design-simplicity-advisor → security-auditor + backend-architect + infrastructure-specialist → quality gates | Complex
 - "What is this error?" → INFORMATION | Context-dependent | Single read/explanation | Simple
-- "Analyze performance across system" → ANALYSIS | Performance+Infrastructure | performance-optimizer + infrastructure-specialist | Medium
+- "Analyze system architecture" → ANALYSIS | Architecture | systems-architect + infrastructure-specialist | Medium
 
 **NO BYPASS**: Main LLM CANNOT skip classification or execute without plan
 
@@ -58,7 +77,6 @@ COMPLEXITY: [Simple/Medium/Complex]
 - Co-author feature specifications with spec-manager
 - Design database schemas with backend-architect
 - Create UI prototypes with frontend-developer
-- Map user workflows with ux-designer
 - Frame product strategy with product-strategist
 - Create professional engineering handoffs with git-workflow-manager
 
@@ -67,9 +85,10 @@ COMPLEXITY: [Simple/Medium/Complex]
 - **product-strategist**: Eigenquestion methodology, success metrics, validation hypotheses
 - **backend-architect**: Database schema, API design, DDL generation
 - **frontend-developer**: React/Vue components, state stores (Redux/Zustand/Pinia)
-- **ux-designer**: User journey mapping, friction point analysis, evidence-based UX
 - **git-workflow-manager**: Professional PRs with complete context for engineering
 - **business-analyst**: Requirements analysis, evidence synthesis, stakeholder communication
+
+**Note**: ux-designer archived (October 2025). User workflow and UX design now handled by product-strategist and business-analyst.
 
 **PM Workflow Example**:
 ```
@@ -140,12 +159,12 @@ COMPLEXITY: [Simple/Medium/Complex]
 
 **Balanced (Sonnet)** - Standard development, code generation, debugging
 - Use for: Most development tasks, code generation, refactoring, analysis
-- Agents: All development specialists, quality/security agents, most analysts
+- Agents: All development specialists, quality-gate, security agents, most analysts
 - Cost: Medium ($3-15/M tokens) | Speed: Normal (1-2s)
 
 **Fast (Haiku)** - Execution tasks, templates, procedures
 - Use for: Git operations, formatting, test generation, simple docs
-- Agents: git-workflow-manager, changelog-recorder, unit-test-expert, qa-specialist, content-writer, technical-documentation-writer, general-purpose, prompt-engineer
+- Agents: git-workflow-manager, unit-test-expert, qa-specialist, technical-writer, general-purpose
 - Cost: Low ($1-5/M tokens) | Speed: Fast (300-500ms)
 
 ### When to Override Model Tier
@@ -666,7 +685,7 @@ This enables analysis of:
 <Rule id="delegation-enforcement">
 **DELEGATION ENFORCEMENT**: Zero tolerance implementation
 - 🚨 **NO MAIN LLM IMPLEMENTATION**: Absolute prohibition on coding/implementation
-- **DOMAIN ROUTING**: Frontend→frontend-developer, Backend→backend-architect, Infrastructure→infrastructure-specialist, Mobile→mobile-developer, Blockchain→blockchain-developer, ML/AI→ml-engineer, Legacy→legacy-maintainer
+- **DOMAIN ROUTING**: Frontend→frontend-developer, Backend→backend-architect, Infrastructure→infrastructure-specialist
 - **TRIGGERS**: Action verbs (implement, create, build, fix, etc.), file operations (Write, Edit, MultiEdit), programming keywords (function, class, API, etc.), multi-line requests, complex analysis
 - **IMMEDIATE DELEGATION**: No analysis before delegation, cannot break down tasks to avoid delegation
 - **NO BYPASS**: Emergency/urgency cannot override, general-purpose restricted to single-line commands only
@@ -677,7 +696,7 @@ This enables analysis of:
 **MAIN LLM ROLE**: Coordination and communication ONLY
 - ✅ **ALLOWED**: Task detection/delegation, simple reads/searches/questions (single-line), response formatting, language hierarchy coordination
 - ❌ **PROHIBITED**: Implementation, file modifications, coding, multi-line tasks, scripting/automation
-- **WORKFLOW**: specialist → code-reviewer → code-clarity-manager → testing → design-simplicity-advisor (pre-commit) → git-workflow-manager
+- **WORKFLOW**: specialist → quality-gate (unified validation) → git-workflow-manager
 </Rule>
 
 <Rule id="agent-responsibility-matrix">
@@ -693,16 +712,9 @@ This enables analysis of:
 #### Core Development
 - **frontend-developer**: UI/UX, client-side (TS/Vue > TS/React > JS/HTML, functional over OOP, Vue > React > Angular)
 - **backend-architect**: API, database, server logic (Go > TS > JS, functional over OOP, SOA thinking)
-- **mobile-developer**: Mobile apps, native integration (Swift/Kotlin > React Native > Flutter)
-- **blockchain-developer**: Blockchain, DeFi, smart contracts (Solidity > Go > TS/Web3)
-- **ml-engineer**: ML systems, data pipelines (Python > R > Julia > Kotlin)
-- **legacy-maintainer**: Legacy system maintenance/modernization (preserve existing language)
 
-#### Quality & Security (Sequential)
-- **code-reviewer**: Quality gates, code standards, security blocks
-- **code-clarity-manager**: Maintainability orchestration (top-down + bottom-up)
-- **top-down-analyzer**: System-wide architectural impact analysis
-- **bottom-up-analyzer**: Implementation ripple effect analysis
+#### Quality & Security
+- **quality-gate**: Unified code review, maintainability analysis, architectural impact assessment, and implementation complexity validation
 - **unit-test-expert**: Unit test creation, coverage validation
 - **security-auditor**: Penetration testing, compliance, threat modeling
 - **dependency-scanner**: Supply chain security, license compliance, vulnerabilities
@@ -710,19 +722,15 @@ This enables analysis of:
 #### Infrastructure & Operations
 - **infrastructure-specialist**: CDK/Terraform, cloud deployment (TS/CDK > Go/CDK > Python/CDK, Lambda > ECS > K8s)
 - **systems-architect**: High-level design, technical specifications
-- **performance-optimizer**: Performance analysis, bottleneck identification, optimization
 
 #### Workflow & Management
 - **project-manager**: Multi-step coordination, timeline management
 - **spec-manager**: Specification-driven development workflow, co-authoring specs, task decomposition
 - **git-workflow-manager**: Git operations, branch management, PR creation
-- **changelog-recorder**: Automatic changelog generation
 
 #### Analysis & Documentation
 - **business-analyst**: Requirements, user stories, stakeholder communication
-- **data-scientist**: Data analysis, statistical processing, insights
-- **content-writer**: Marketing content, user-facing docs
-- **technical-documentation-writer**: API docs, technical specs
+- **technical-writer**: Context-aware documentation for all audiences (technical, user-facing, marketing)
 
 #### Special Purpose
 - **design-simplicity-advisor**: KISS enforcement, MANDATORY before implementation and pre-commit
@@ -733,16 +741,29 @@ This enables analysis of:
 - **agent-auditor**: Agent portfolio management, capability gap detection, redundancy elimination (Agentic HR)
 
 #### Multi-Agent Coordination
-- **Security**: security-auditor + code-reviewer + dependency-scanner → Main LLM synthesis
-- **Performance**: performance-optimizer + qa-specialist + infrastructure-specialist → Main LLM coordination
+- **Security**: security-auditor + quality-gate + dependency-scanner → Main LLM synthesis
 - **Architecture**: systems-architect → backend-architect + infrastructure-specialist → Main LLM integration
-- **Testing**: unit-test-expert + qa-specialist + performance-optimizer → Main LLM comprehensive approach
+- **Testing**: unit-test-expert + qa-specialist → Main LLM comprehensive approach
 
 #### Exclusion Rules (What agents DON'T handle)
 - **design-simplicity-advisor**: No implementation (analysis only)
 - **general-purpose**: No implementation/multi-line tasks/scripting (single-line commands only)
-- **Domain boundaries**: Frontend≠backend≠infrastructure≠mobile≠blockchain≠ML≠legacy
+- **Domain boundaries**: Frontend≠backend≠infrastructure
 - **Cross-domain**: Utility scripts→infrastructure-specialist (automation) OR backend-architect (data processing)
+
+#### Archived Agents (October 2025)
+**Note**: 16 agents archived as part of portfolio optimization to reduce redundancy and improve workflow efficiency.
+
+**Consolidated Agents**:
+- **quality-gate** (consolidates 4 agents): code-reviewer, code-clarity-manager, top-down-analyzer, bottom-up-analyzer
+- **technical-writer** (consolidates 2 agents): content-writer, technical-documentation-writer
+
+**Archived Unused Agents**:
+- mobile-developer, blockchain-developer, ml-engineer, legacy-maintainer
+- deployment-manager, changelog-recorder, data-scientist, ux-designer
+- performance-optimizer, prompt-engineer
+
+**Reactivation**: See `agents/archived/ARCHIVAL_RECORD.md` for reactivation procedures if specific capabilities are needed.
 </Rule>
 
 <Rule id="classification-precedence">
@@ -757,9 +778,9 @@ This enables analysis of:
 
 ### CLASSIFICATION ROUTING
 - **INFORMATION** (Simple): Direct Main LLM handling - file reads, basic questions, definitions
-- **INFORMATION** (Complex): business-analyst, data-scientist, or domain analyst
-- **IMPLEMENTATION**: domain specialist → quality gate (combined) → git operations
-- **ANALYSIS**: Route to appropriate analyst (business-analyst, data-scientist, performance-optimizer, security-auditor)
+- **INFORMATION** (Complex): business-analyst or domain analyst
+- **IMPLEMENTATION**: domain specialist → quality-gate (unified validation) → git-workflow-manager
+- **ANALYSIS**: Route to appropriate analyst (business-analyst, security-auditor)
 - **COORDINATION**: Multi-agent workflow with Main LLM orchestration
 
 ### MANDATORY CLASSIFICATION OUTPUT
@@ -790,10 +811,6 @@ COMPLEXITY: [Simple|Medium|Complex]
 - **CDK/CloudFormation/Deployment errors** → Infrastructure domain
 - **Frontend errors** (JavaScript, React, Vue) → Frontend domain
 - **Backend errors** (API, database, server) → Backend domain
-- **Mobile errors** (iOS, Android, React Native) → Mobile domain
-- **Blockchain errors** (Solidity, Web3) → Blockchain domain
-- **ML errors** (Training, inference, pipeline) → ML/AI domain
-- **Legacy errors** (COBOL, mainframe) → Legacy domain
 
 ### Emergency Error Priority
 - **Production/Critical errors** → debug-specialist (HIGHEST PRIORITY)
@@ -801,7 +818,7 @@ COMPLEXITY: [Simple|Medium|Complex]
 
 ### Error Implementation Workflow
 ```
-Error Detection → IMPLEMENTATION Classification → Domain Identification → debug-specialist (if critical) OR design-simplicity-advisor → domain specialist → quality gates
+Error Detection → IMPLEMENTATION Classification → Domain Identification → debug-specialist (if critical) OR design-simplicity-advisor → domain specialist → quality-gate → git-workflow-manager
 ```
 
 ### No Error Explanation Without Fix
@@ -1221,14 +1238,8 @@ Main LLM: Delegates to spec-manager
 - **IMPLEMENTATION + Frontend context** → frontend-developer
 - **IMPLEMENTATION + Backend context** → backend-architect
 - **IMPLEMENTATION + Infrastructure context** → infrastructure-specialist
-- **IMPLEMENTATION + Mobile context** → mobile-developer
-- **IMPLEMENTATION + Blockchain context** → blockchain-developer
-- **IMPLEMENTATION + ML/AI context** → ml-engineer
-- **IMPLEMENTATION + Legacy context** → legacy-maintainer
 - **ANALYSIS + Security context** → security-auditor
-- **ANALYSIS + Performance context** → performance-optimizer
 - **ANALYSIS + Business context** → business-analyst
-- **ANALYSIS + Data context** → data-scientist
 
 ### Context Detection Hierarchy
 1. **File-Path Context**: File extensions and directories indicate domain
@@ -1246,8 +1257,8 @@ Main LLM: Delegates to spec-manager
 - **Blocks all other classification** until critical issues resolved
 
 ### Default Workflows
-- **IMPLEMENTATION**: specialist → quality gate (combined) → git operations
-- **IMPLEMENTATION** (complex): design-simplicity-advisor → specialist → sequential quality gates (when COMPLEX_WORKFLOW=true)
+- **IMPLEMENTATION**: specialist → quality-gate (unified validation) → git-workflow-manager
+- **IMPLEMENTATION** (complex): design-simplicity-advisor → specialist → quality-gate → git-workflow-manager
 - **ANALYSIS**: analyst(s) → Main LLM synthesis
 - **COORDINATION**: workflow management with appropriate specialists
 - **INFORMATION**: Direct handling (simple) or analyst delegation (complex)
@@ -1257,18 +1268,22 @@ Main LLM: Delegates to spec-manager
 **SIMPLIFIED WORKFLOW ENFORCEMENT**: KISS-based 3-step workflow replacing complex agent chains
 
 ### Primary Workflow (RECOMMENDED)
-**3-Step Simplified Workflow**: Implementation → Quality Gate → Git Operations
+**3-Step Simplified Workflow**: Implementation → quality-gate → git-workflow-manager
 
 1. **Implementation Phase**: Domain specialist executes the work
-2. **Quality Gate Phase**: Combined review (code review + tests + simplicity check)
-3. **Git Operations Phase**: Commit creation + changelog update
+2. **Quality Gate Phase**: quality-gate performs unified validation (code review + maintainability + complexity analysis)
+3. **Git Operations Phase**: git-workflow-manager creates commit + PR
 
 ### Quality Gate Integration
-**Quality Gate** combines multiple checks into single coordinated review:
+**quality-gate** combines multiple checks into single coordinated review:
 - Code review and standards validation
-- Unit test creation and execution
+- Maintainability and clarity analysis (replaces code-clarity-manager)
+- Top-down architectural impact assessment (replaces top-down-analyzer)
+- Bottom-up implementation complexity validation (replaces bottom-up-analyzer)
 - Simplicity and KISS compliance check
 - Security and performance basic validation
+
+**75% workflow reduction**: 4 sequential agents consolidated into 1 unified validation step
 
 ### Technical Enforcement
 **Workflow State Tracking**:
@@ -1302,18 +1317,17 @@ fi
 **MULTI-AGENT COORDINATION**: Workflow patterns for overlapping domains
 
 ### Coordination Types
-1. **Simplified Quality Gates** (RECOMMENDED): Implementation → Quality Gate (combined) → Git Operations
-2. **Legacy Sequential Gates** (optional): Implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
-3. **Parallel Analysis**: [security-auditor + performance-optimizer + dependency-scanner] → Main LLM synthesis
+1. **Simplified Quality Gates** (RECOMMENDED): Implementation → quality-gate (unified) → git-workflow-manager
+2. **Legacy Sequential Gates** (deprecated): Implementation → code-reviewer → code-clarity-manager → unit-test-expert → design-simplicity-advisor (pre-commit) → git-workflow-manager
+3. **Parallel Analysis**: [security-auditor + dependency-scanner] → Main LLM synthesis
 4. **Collaborative Architecture**: systems-architect → [backend-architect + infrastructure-specialist] → Main LLM integration
 5. **Domain Collaboration**: [specialist-1 + specialist-2] → Main LLM reconciliation
 
 ### Coordination Patterns
-- **Security**: security-auditor + code-reviewer + dependency-scanner → comprehensive report
-- **Performance**: performance-optimizer + qa-specialist + infrastructure-specialist → improvement plan
+- **Security**: security-auditor + quality-gate + dependency-scanner → comprehensive report
 - **Architecture**: systems-architect → backend-architect + infrastructure-specialist → consistency
-- **Testing**: unit-test-expert + qa-specialist + performance-optimizer → comprehensive approach
-- **Documentation**: technical-documentation-writer + content-writer + business-analyst → complete docs
+- **Testing**: unit-test-expert + qa-specialist → comprehensive approach
+- **Documentation**: technical-writer + business-analyst → complete docs
 
 ### When to Use Multi-Agent
 - **Compound triggers**: Multiple domain keywords
@@ -1351,29 +1365,32 @@ fi
 6. **Domain-expertise**: More specific takes precedence
 
 ### Example Patterns
-- **"Fix failing performance tests"**: debug-specialist + performance-optimizer + qa-specialist
-- **"Implement secure auth"**: design-simplicity-advisor → security-auditor + backend-architect + performance-optimizer
+- **"Fix failing tests"**: debug-specialist + qa-specialist
+- **"Implement secure auth"**: design-simplicity-advisor → security-auditor + backend-architect
 - **"Debug deployment"**: debug-specialist + infrastructure-specialist
-- **"Create API docs"**: technical-documentation-writer + content-writer
-- **"Optimize database"**: performance-optimizer + backend-architect + infrastructure-specialist
+- **"Create API docs"**: technical-writer
+- **"Optimize database"**: backend-architect + infrastructure-specialist
 </Rule>
 
 <Rule id="mandatory-simplicity-workflow">
 **MANDATORY SIMPLICITY WORKFLOW**: Simplified enforcement with technical backing
 
 ### Simplified Workflow (DEFAULT)
-`Task Detection → Implementation Agent → Quality Gate (combined) → Git Operations`
+`Task Detection → Implementation Agent → quality-gate (unified validation) → git-workflow-manager`
 
-**Quality Gate includes**:
+**quality-gate includes**:
 - Simplicity analysis (KISS compliance)
 - Code review and standards
-- Basic testing validation
-- Security and performance checks
+- Maintainability and clarity
+- Architectural impact assessment
+- Implementation complexity analysis
+- Basic security and performance checks
 
-### Legacy Complex Workflow (OPTIONAL)
-`Task Detection → design-simplicity-advisor (pre-implementation) → Implementation Agent → Sequential Quality Gates → design-simplicity-advisor (pre-commit) → git-workflow-manager`
+### Legacy Complex Workflow (OPTIONAL - Deprecated)
+`Task Detection → design-simplicity-advisor (pre-implementation) → Implementation Agent → code-reviewer → code-clarity-manager → top-down-analyzer → bottom-up-analyzer → design-simplicity-advisor (pre-commit) → git-workflow-manager`
 
-**Enable with**: `COMPLEX_WORKFLOW=true`
+**Status**: Deprecated - These agents have been consolidated into quality-gate
+**Enable with**: `COMPLEX_WORKFLOW=true` (requires archived agents to be reactivated)
 
 ### Implementation Blocking
 - **NO IMPLEMENTATION** until quality gate design analysis completes
@@ -1402,8 +1419,8 @@ TIMESTAMP=<iso_timestamp>
 - **Minimal dependencies**: Prefer built-in over external libraries
 
 ### Workflow Integration
-- **Simplified**: implementation → quality gate (includes simplicity) → git ops
-- **Complex**: design-simplicity-advisor → security-auditor → implementation → sequential gates
+- **Simplified**: implementation → quality-gate (unified validation) → git-workflow-manager
+- **Complex** (deprecated): design-simplicity-advisor → security-auditor → implementation → sequential gates (requires archived agents)
 - **Emergency**: debug-specialist (bypass with post-commit review requirement)
 </Rule>
 
@@ -1445,12 +1462,13 @@ fi
 - **SECURITY BASICS**: Check for common security issues
 
 ### Integration Options
-**Simplified Path**:
-- **NO GIT OPS** until quality gate complete
-- **FINAL GATE**: Quality gate is mandatory before git operations
+**Simplified Path** (DEFAULT):
+- **NO GIT OPS** until quality-gate complete
+- **FINAL GATE**: quality-gate is mandatory before git-workflow-manager
+- **MANDATORY**: git-workflow-manager MUST be invoked after quality-gate passes
 - **EMERGENCY**: debug-specialist can bypass (critical production only), MUST schedule post-commit review
 
-**Complex Path** (when `COMPLEX_WORKFLOW=true`):
+**Complex Path** (when `COMPLEX_WORKFLOW=true` - deprecated):
 - **SEQUENCE**: unit-test-expert → design-simplicity-advisor → git-workflow-manager
 - **GRANULAR CONTROL**: Each agent provides specific validation
 - **DETAILED FEEDBACK**: Separate reports from each quality agent
@@ -1459,8 +1477,61 @@ fi
 **Failed Quality Gate**:
 1. Review failure report
 2. Address identified issues
-3. Re-run quality gate validation
-4. Proceed to git operations on success
+3. Re-run quality-gate validation
+4. Proceed to git-workflow-manager on success
+</Rule>
+
+<Rule id="git-workflow-mandatory">
+**GIT WORKFLOW MANDATORY**: Automatic invocation after quality gates
+
+### Workflow Completion Requirement
+- **MANDATORY**: git-workflow-manager MUST be invoked after quality-gate passes
+- **NO BYPASS**: Manual git operations not allowed (use git-workflow-manager)
+- **BLOCKING**: Workflow incomplete until git commit created
+
+### Invocation Trigger
+```
+quality-gate status = PASS
+  ↓
+AUTOMATIC: Invoke git-workflow-manager
+  - Create commit with descriptive message
+  - Include Claude Code attribution
+  - Update changelog (if applicable)
+  - Create PR (if requested)
+```
+
+### Workflow Sequence
+```yaml
+implementation_complete:
+  step_1: "quality-gate validates changes"
+  step_2_on_pass: "git-workflow-manager creates commit"
+  step_3: "Workflow marked complete"
+
+  step_2_on_fail: "Return to implementation with feedback"
+
+  blocking_behavior: "Main LLM MUST invoke git-workflow-manager on pass"
+```
+
+### Exception Handling
+**Emergency bypass** (debug-specialist only):
+- Critical production fix requiring immediate manual git operations
+- MUST schedule post-commit review with git-workflow-manager
+- Log bypass reason in telemetry
+
+**User explicitly requests manual git**:
+- Warn user about workflow incompleteness
+- Recommend using git-workflow-manager instead
+- If user insists: Allow but log as manual override
+
+### Root Cause Analysis
+**Problem**: git-workflow-manager has 0 invocations despite being mandatory
+
+**Causes Identified**:
+- Workflow rules don't explicitly enforce git-workflow-manager invocation
+- Main LLM coordination doesn't include git operations in standard workflow
+- Focus on pre-implementation (simplicity) but not post-implementation (git)
+
+**Solution**: Explicit rule enforcement with automatic invocation requirement
 </Rule>
 </AgentDelegationRules>
 

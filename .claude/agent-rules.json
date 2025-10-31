@@ -1,0 +1,660 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "description": "Agent activation rules for claude-oak-agents system",
+  "metadata": {
+    "last_updated": "2025-10-30",
+    "total_agents": 24,
+    "auto_activation_enabled": true
+  },
+  "agents": [
+    {
+      "name": "backend-architect",
+      "auto_activate": true,
+      "priority": "high",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "database", "schema", "API", "endpoint", "REST", "GraphQL",
+          "microservices", "backend", "server", "PostgreSQL", "MySQL",
+          "MongoDB", "Redis", "caching", "query optimization", "DDL",
+          "migration", "data model", "relational", "NoSQL"
+        ],
+        "file_patterns": [
+          "**/*schema*.{ts,js,py,sql}",
+          "**/migrations/**",
+          "**/models/**",
+          "**/repositories/**",
+          "**/api/**",
+          "**/routes/**",
+          "**/services/backend/**"
+        ],
+        "contexts": [
+          "database design",
+          "API architecture",
+          "backend implementation",
+          "data modeling",
+          "service design"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Database design, API architecture, and backend system implementation"
+    },
+    {
+      "name": "frontend-developer",
+      "auto_activate": true,
+      "priority": "high",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "React", "Vue", "Angular", "component", "frontend", "UI",
+          "state management", "Redux", "Zustand", "Pinia", "CSS",
+          "Tailwind", "styling", "responsive", "browser", "DOM",
+          "hooks", "props", "JSX", "TypeScript frontend"
+        ],
+        "file_patterns": [
+          "**/*.{jsx,tsx,vue}",
+          "**/components/**",
+          "**/pages/**",
+          "**/store/**",
+          "**/styles/**",
+          "**/hooks/**",
+          "**/*.css",
+          "**/*.scss"
+        ],
+        "contexts": [
+          "UI development",
+          "component creation",
+          "frontend implementation",
+          "state management",
+          "styling"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "React/Vue/Angular component development and state management"
+    },
+    {
+      "name": "security-auditor",
+      "auto_activate": true,
+      "priority": "critical",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "security", "vulnerability", "authentication", "authorization",
+          "encryption", "XSS", "CSRF", "SQL injection", "security audit",
+          "penetration test", "secure", "credentials", "secrets",
+          "OAuth", "JWT", "session", "password", "hashing", "PCI",
+          "compliance", "GDPR", "HIPAA"
+        ],
+        "file_patterns": [
+          "**/auth/**",
+          "**/security/**",
+          "**/middleware/auth*.{ts,js,py}",
+          "**/*password*.{ts,js,py}",
+          "**/*token*.{ts,js,py}"
+        ],
+        "contexts": [
+          "security review",
+          "authentication implementation",
+          "authorization logic",
+          "security audit",
+          "vulnerability scanning"
+        ],
+        "events": [
+          "before_commit",
+          "authentication_changes",
+          "payment_processing"
+        ]
+      },
+      "confidence_threshold": 0.70,
+      "description": "Security vulnerability analysis and secure coding practices"
+    },
+    {
+      "name": "infrastructure-specialist",
+      "auto_activate": true,
+      "priority": "high",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "CDK", "infrastructure", "deployment", "AWS", "cloud",
+          "Lambda", "ECS", "Fargate", "CloudFormation", "Terraform",
+          "Docker", "Kubernetes", "CI/CD", "pipeline", "DevOps",
+          "monitoring", "CloudWatch", "container", "serverless"
+        ],
+        "file_patterns": [
+          "**/infra/**",
+          "**/infrastructure/**",
+          "**/cdk/**",
+          "**/*.dockerfile",
+          "**/docker-compose*.{yml,yaml}",
+          "**/serverless.{yml,yaml}",
+          "**/.github/workflows/**",
+          "**/gitlab-ci.yml"
+        ],
+        "contexts": [
+          "infrastructure deployment",
+          "CDK development",
+          "cloud architecture",
+          "container deployment",
+          "CI/CD pipeline"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Infrastructure as code, cloud deployment, and DevOps"
+    },
+    {
+      "name": "code-reviewer",
+      "auto_activate": true,
+      "priority": "high",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "review", "code review", "quality", "refactor", "clean code",
+          "best practices", "code smell", "technical debt", "maintainability"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "code review",
+          "pre-commit",
+          "quality check",
+          "refactoring"
+        ],
+        "events": [
+          "before_commit",
+          "multiple_file_changes"
+        ],
+        "conditions": {
+          "file_changes_threshold": 3
+        }
+      },
+      "confidence_threshold": 0.80,
+      "description": "Comprehensive code quality review and best practices"
+    },
+    {
+      "name": "unit-test-expert",
+      "auto_activate": true,
+      "priority": "medium",
+      "model_tier": "fast",
+      "triggers": {
+        "keywords": [
+          "test", "unit test", "testing", "Jest", "Mocha", "pytest",
+          "test coverage", "TDD", "mock", "stub", "test case",
+          "assertion", "test suite"
+        ],
+        "file_patterns": [
+          "**/*.test.{ts,js,py}",
+          "**/*.spec.{ts,js,py}",
+          "**/tests/**",
+          "**/__tests__/**"
+        ],
+        "contexts": [
+          "writing tests",
+          "test coverage",
+          "unit testing",
+          "TDD"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Comprehensive unit test generation and coverage"
+    },
+    {
+      "name": "debug-specialist",
+      "auto_activate": true,
+      "priority": "critical",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "error", "bug", "debug", "fix", "issue", "problem",
+          "not working", "crash", "exception", "stack trace",
+          "TypeError", "undefined", "null reference", "fails"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "debugging",
+          "error resolution",
+          "bug fixing",
+          "troubleshooting"
+        ],
+        "events": [
+          "error_detected",
+          "test_failure",
+          "build_failure"
+        ]
+      },
+      "confidence_threshold": 0.70,
+      "description": "Error diagnosis and debugging assistance (HIGHEST PRIORITY when errors present)"
+    },
+    {
+      "name": "design-simplicity-advisor",
+      "auto_activate": true,
+      "priority": "critical",
+      "model_tier": "premium",
+      "triggers": {
+        "keywords": [
+          "design", "architecture", "complex", "over-engineering",
+          "simplify", "KISS", "YAGNI", "simple solution",
+          "design decision", "approach"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "design phase",
+          "architecture decisions",
+          "pre-implementation",
+          "complexity analysis"
+        ],
+        "events": [
+          "before_implementation",
+          "architectural_decision"
+        ],
+        "conditions": {
+          "complexity_signals": ["multiple services", "new abstraction", "framework choice"]
+        }
+      },
+      "confidence_threshold": 0.65,
+      "description": "Prevents over-engineering and enforces KISS principle (MANDATORY for complex designs)"
+    },
+    {
+      "name": "performance-optimizer",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "performance", "slow", "optimization", "bottleneck",
+          "latency", "speed", "memory", "CPU", "profiling",
+          "cache", "efficiency", "scalability"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "performance optimization",
+          "profiling",
+          "bottleneck analysis",
+          "efficiency improvement"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Performance analysis and optimization strategies"
+    },
+    {
+      "name": "git-workflow-manager",
+      "auto_activate": true,
+      "priority": "medium",
+      "model_tier": "fast",
+      "triggers": {
+        "keywords": [
+          "commit", "push", "pull request", "PR", "branch",
+          "merge", "git", "version control", "changelog"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "committing changes",
+          "creating PR",
+          "git workflow",
+          "version control"
+        ],
+        "events": [
+          "ready_to_commit",
+          "create_pr"
+        ]
+      },
+      "confidence_threshold": 0.80,
+      "description": "Git workflow management and professional commit/PR creation"
+    },
+    {
+      "name": "qa-specialist",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "fast",
+      "triggers": {
+        "keywords": [
+          "QA", "quality assurance", "integration test", "e2e",
+          "end-to-end", "test strategy", "test plan",
+          "acceptance test", "regression test"
+        ],
+        "file_patterns": [
+          "**/e2e/**",
+          "**/integration/**",
+          "**/*.e2e.{ts,js}",
+          "**/*.integration.{ts,js}"
+        ],
+        "contexts": [
+          "integration testing",
+          "e2e testing",
+          "QA strategy",
+          "test planning"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Integration testing, e2e testing, and QA strategies"
+    },
+    {
+      "name": "systems-architect",
+      "auto_activate": false,
+      "priority": "high",
+      "model_tier": "premium",
+      "triggers": {
+        "keywords": [
+          "architecture", "system design", "high-level design",
+          "architectural pattern", "design pattern", "scalability",
+          "distributed system", "system requirements"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "system architecture",
+          "architectural design",
+          "system planning",
+          "high-level design"
+        ]
+      },
+      "confidence_threshold": 0.70,
+      "description": "System architecture and high-level design planning"
+    },
+    {
+      "name": "project-manager",
+      "auto_activate": true,
+      "priority": "high",
+      "model_tier": "premium",
+      "triggers": {
+        "keywords": [
+          "project", "multiple features", "roadmap", "planning",
+          "coordinate", "multi-step", "complex feature"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "multi-agent coordination",
+          "complex project",
+          "feature planning",
+          "project management"
+        ],
+        "conditions": {
+          "complexity": "high",
+          "multiple_domains": true,
+          "estimated_agents": 3
+        }
+      },
+      "confidence_threshold": 0.65,
+      "description": "Coordinates complex multi-agent workflows and project planning"
+    },
+    {
+      "name": "spec-manager",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "specification", "spec", "requirements", "feature spec",
+          "product spec", "technical spec", "documentation"
+        ],
+        "file_patterns": [
+          "**/specs/**",
+          "**/*.spec.md",
+          "**/requirements/**"
+        ],
+        "contexts": [
+          "spec creation",
+          "requirements documentation",
+          "feature specification"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Collaborative specification writing with approval checkpoints"
+    },
+    {
+      "name": "product-strategist",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "premium",
+      "triggers": {
+        "keywords": [
+          "product strategy", "business problem", "user needs",
+          "success metrics", "eigenquestion", "product decision",
+          "validation hypothesis"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "product strategy",
+          "business analysis",
+          "product planning",
+          "success metrics"
+        ]
+      },
+      "confidence_threshold": 0.70,
+      "description": "Business problem framing and product strategy development"
+    },
+    {
+      "name": "business-analyst",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "premium",
+      "triggers": {
+        "keywords": [
+          "requirements", "business requirements", "stakeholder",
+          "business analysis", "user story", "acceptance criteria"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "requirements gathering",
+          "business analysis",
+          "stakeholder communication"
+        ]
+      },
+      "confidence_threshold": 0.70,
+      "description": "Requirements analysis and stakeholder communication"
+    },
+    {
+      "name": "dependency-scanner",
+      "auto_activate": false,
+      "priority": "low",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "dependencies", "npm audit", "security vulnerability",
+          "package", "library", "dependency update", "CVE"
+        ],
+        "file_patterns": [
+          "**/package.json",
+          "**/requirements.txt",
+          "**/Gemfile",
+          "**/go.mod",
+          "**/pom.xml"
+        ],
+        "contexts": [
+          "dependency scanning",
+          "security audit",
+          "dependency updates"
+        ]
+      },
+      "confidence_threshold": 0.80,
+      "description": "Dependency security scanning and vulnerability analysis"
+    },
+    {
+      "name": "technical-writer",
+      "auto_activate": false,
+      "priority": "low",
+      "model_tier": "fast",
+      "triggers": {
+        "keywords": [
+          "documentation", "docs", "README", "API docs",
+          "technical writing", "user guide", "tutorial"
+        ],
+        "file_patterns": [
+          "**/*.md",
+          "**/docs/**",
+          "**/README*"
+        ],
+        "contexts": [
+          "documentation creation",
+          "technical writing",
+          "API documentation"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Technical documentation creation and maintenance"
+    },
+    {
+      "name": "agent-creator",
+      "auto_activate": false,
+      "priority": "low",
+      "model_tier": "premium",
+      "triggers": {
+        "keywords": [
+          "create agent", "new agent", "agent development",
+          "capability gap", "specialized agent"
+        ],
+        "file_patterns": [
+          "**/agents/**"
+        ],
+        "contexts": [
+          "agent creation",
+          "capability expansion",
+          "agent development"
+        ]
+      },
+      "confidence_threshold": 0.85,
+      "description": "Creates new specialized agents for capability gaps"
+    },
+    {
+      "name": "agent-auditor",
+      "auto_activate": false,
+      "priority": "low",
+      "model_tier": "premium",
+      "triggers": {
+        "keywords": [
+          "agent audit", "agent performance", "agent quality",
+          "agent review", "agent validation"
+        ],
+        "file_patterns": [],
+        "contexts": [
+          "agent quality review",
+          "agent performance analysis",
+          "agent validation"
+        ]
+      },
+      "confidence_threshold": 0.85,
+      "description": "Audits agent quality and performance"
+    },
+    {
+      "name": "state-analyzer",
+      "auto_activate": false,
+      "priority": "low",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "state analysis", "system state", "telemetry",
+          "metrics", "usage patterns"
+        ],
+        "file_patterns": [
+          "**/telemetry/**",
+          "**/logs/**"
+        ],
+        "contexts": [
+          "state analysis",
+          "telemetry review",
+          "usage analysis"
+        ]
+      },
+      "confidence_threshold": 0.80,
+      "description": "Analyzes system state and telemetry data"
+    },
+    {
+      "name": "data-scientist",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "data analysis", "machine learning", "statistics",
+          "pandas", "numpy", "data science", "ML model",
+          "prediction", "classification"
+        ],
+        "file_patterns": [
+          "**/*.ipynb",
+          "**/*.csv",
+          "**/notebooks/**",
+          "**/data/**"
+        ],
+        "contexts": [
+          "data analysis",
+          "ML development",
+          "statistical analysis"
+        ]
+      },
+      "confidence_threshold": 0.75,
+      "description": "Data analysis and machine learning development"
+    },
+    {
+      "name": "mobile-developer",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "React Native", "iOS", "Android", "mobile app",
+          "native", "mobile development", "Expo"
+        ],
+        "file_patterns": [
+          "**/*.{ios,android}.{ts,js,tsx,jsx}",
+          "**/android/**",
+          "**/ios/**",
+          "**/mobile/**"
+        ],
+        "contexts": [
+          "mobile development",
+          "React Native",
+          "native app"
+        ]
+      },
+      "confidence_threshold": 0.80,
+      "description": "Mobile application development (React Native, iOS, Android)"
+    },
+    {
+      "name": "blockchain-developer",
+      "auto_activate": false,
+      "priority": "medium",
+      "model_tier": "balanced",
+      "triggers": {
+        "keywords": [
+          "Solidity", "smart contract", "blockchain", "Web3",
+          "Ethereum", "DeFi", "NFT", "cryptocurrency"
+        ],
+        "file_patterns": [
+          "**/*.sol",
+          "**/contracts/**",
+          "**/blockchain/**"
+        ],
+        "contexts": [
+          "smart contract development",
+          "blockchain development",
+          "Web3 integration"
+        ]
+      },
+      "confidence_threshold": 0.85,
+      "description": "Blockchain and smart contract development"
+    }
+  ],
+  "activation_policies": {
+    "max_auto_suggestions": 3,
+    "priority_order": ["critical", "high", "medium", "low"],
+    "parallel_activation_allowed": true,
+    "sequential_triggers": {
+      "implementation_workflow": [
+        "design-simplicity-advisor",
+        "domain_specialist",
+        "code-reviewer",
+        "security-auditor"
+      ]
+    },
+    "mandatory_sequences": {
+      "before_commit": ["code-reviewer"],
+      "security_related": ["security-auditor"],
+      "errors_detected": ["debug-specialist"]
+    }
+  },
+  "learning_config": {
+    "track_acceptance_rate": true,
+    "adjust_thresholds_dynamically": true,
+    "min_confidence_floor": 0.60,
+    "max_confidence_ceiling": 0.95,
+    "feedback_weight": 0.1
+  }
+}
