@@ -1,0 +1,38 @@
+{
+  "mcpServers": {
+    "oak-telemetry": {
+      "command": "node",
+      "args": [
+        "/Users/robertnyborg/Projects/claude-oak-agents/mcp/dist/telemetry-server.js"
+      ],
+      "env": {
+        "OAK_TELEMETRY_DIR": "/Users/robertnyborg/Projects/claude-oak-agents/telemetry",
+        "OAK_TELEMETRY_ENABLED": "true"
+      }
+    },
+    "oak-agents": {
+      "command": "node",
+      "args": [
+        "/Users/robertnyborg/Projects/claude-oak-agents/mcp/dist/agents-server.js"
+      ],
+      "env": {
+        "OAK_AGENTS_DIR": "/Users/robertnyborg/Projects/claude-oak-agents/agents"
+      }
+    },
+    "reddit": {
+      "command": "node",
+      "args": [
+        "/Users/robertnyborg/Projects/claude-oak-agents/mcp/dist/reddit-server.js"
+      ]
+    },
+    "github": {
+      "command": "node",
+      "args": [
+        "/Users/robertnyborg/Projects/claude-oak-agents/mcp/dist/github-server.js"
+      ],
+      "env": {
+        "GITHUB_MCP_TOKEN": "${GITHUB_MCP_TOKEN}"
+      }
+    }
+  }
+}

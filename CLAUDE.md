@@ -99,6 +99,56 @@ COMPLEXITY: [Simple/Medium/Complex]
 
 **Note**: ux-designer archived (October 2025). User workflow and UX design now handled by product-strategist and business-analyst.
 
+## MCP SERVER INTEGRATION
+
+**Status**: Active - Reddit and GitHub MCP servers integrated
+
+The system uses Model Context Protocol (MCP) servers for enhanced external integrations:
+
+### Reddit MCP Server
+- **Purpose**: Community research and market insights
+- **Available Tools**: `mcp__reddit__*` (frontpage, subreddit browsing, post details, comments, search, user posts)
+- **Use Cases**: Market research, sentiment analysis, trend tracking, user feedback
+- **Authentication**: None required (public API)
+
+### GitHub MCP Server
+- **Purpose**: Native GitHub integration with AI-aware protocol
+- **Available Tools**: `mcp__github__*` (repos, issues, PRs, actions, commits, branches, code search)
+- **Toolsets**: Repository, Issues, Pull Requests, GitHub Actions, Commits & Branches
+- **Use Cases**: Repository management, issue/PR automation, CI/CD monitoring, code analysis
+- **Authentication**: GitHub Personal Access Token (PAT) required
+- **Required Scopes**: `repo`, `read:packages`, `read:org`, `workflow`
+
+### Integration with Agents
+
+**product-strategist** can use Reddit MCP for:
+- Market research and competitive analysis
+- User feedback aggregation from developer communities
+- Feature validation through community discussions
+- Sentiment tracking for technologies and approaches
+
+**git-workflow-manager** can use GitHub MCP for:
+- Enhanced issue creation with structured data
+- PR management with natural language
+- Automated issue linking and updates
+- Repository analysis and branch management
+
+**infrastructure-specialist** can use GitHub MCP for:
+- GitHub Actions workflow analysis
+- Deployment status monitoring and debugging
+- CI/CD pipeline intelligence
+- Workflow failure diagnosis
+
+### Complementary to gh CLI
+
+GitHub MCP complements (not replaces) existing `gh` CLI integration:
+- **MCP**: Natural language interactions, structured API responses, context-aware tools, AI-optimized protocol
+- **gh CLI**: Scriptable operations, direct terminal access, existing automation workflows
+
+Use GitHub MCP for AI-driven workflows, gh CLI for scripted automation and terminal operations.
+
+**Complete Documentation**: See `docs/MCP_INTEGRATION.md` for setup, configuration, and usage examples.
+
 **PM Workflow Example**:
 ```
 1. Frame Problem
