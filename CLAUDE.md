@@ -9,17 +9,21 @@
 - **Agent Auto-Activation Hook**: `.claude/hooks/agent-activation-prompt.md` analyzes prompts and suggests relevant agents
 - **Agent Rules Configuration**: `.claude/agent-rules.json` defines trigger patterns, keywords, and confidence thresholds
 - **Agent Patterns Guide**: `.claude/AGENT_PATTERNS.md` - comprehensive guide for agent selection and workflows
+- **Domain-Specific Configurations**: `.claude/domains/` - specialized patterns for frontend, backend, infrastructure, security, and data domains
+- **Domain Router**: `core/domain_router.py` - automatic domain detection and agent recommendation
 - **Post-Execution Tracking**: `.claude/hooks/post-agent-execution.md` logs performance metrics
 - **Pre-Commit Validation**: `.claude/hooks/pre-commit-validation.md` enforces quality gates
 
 **How It Works**:
 1. User makes request
-2. Auto-activation hook analyzes keywords, file context, and patterns
-3. Suggests relevant agents based on `agent-rules.json`
-4. User accepts or continues without agents
-5. Execution tracked via telemetry for continuous improvement
+2. Domain router analyzes keywords, file context, and tech stack mentions
+3. Detects relevant domain(s) with confidence scoring
+4. Auto-activation hook suggests domain-specific agents
+5. User accepts or continues without agents
+6. Execution tracked via telemetry for continuous improvement
 
 **See `.claude/AGENT_PATTERNS.md` for complete agent selection guide, common workflows, and decision trees.**
+**See `.claude/domains/README.md` for domain-specific configuration system.**
 
 ## MAIN LLM RESTRICTIONS (CANNOT BE BYPASSED)
 
@@ -41,8 +45,13 @@ Every user request MUST be explicitly classified as:
 
 **STEP 2: IDENTIFY DOMAINS & AGENTS**
 For each classified request, determine:
-- **Primary Domain(s)**: Frontend, Backend, Infrastructure, Mobile, Blockchain, ML/AI, Legacy, Security, Performance, Testing, Documentation
-- **Required Agents**: List ALL agents needed for complete task execution
+- **Primary Domain(s)**: Use domain router (`core/domain_router.py`) to detect:
+  - Frontend (React, Vue, TypeScript, UI/UX)
+  - Backend (Node.js, Express, APIs, services)
+  - Infrastructure (AWS CDK, Docker, Lambda, deployment)
+  - Security (OWASP, IAM, vulnerabilities, encryption)
+  - Data (PostgreSQL, MongoDB, ETL, data pipelines)
+- **Required Agents**: Domain router recommends agents based on detected domains
 - **Workflow Type**: Single-agent, Sequential, Parallel, or Hybrid coordination
 
 **STEP 3: CREATE EXECUTION PLAN**
@@ -144,6 +153,66 @@ COMPLEXITY: [Simple/Medium/Complex]
 - Database design: 10-20 minutes
 - UI prototype: 20-40 minutes
 - Complete feature handoff: 60-90 minutes (problem → engineering-ready)
+
+## Domain-Specific Configuration
+
+**Status**: Active - Domain-aware agent routing enabled
+
+The system uses **domain-specific configurations** for optimized agent routing based on technical context:
+
+### Available Domains
+
+- **Frontend**: `.claude/domains/frontend.md` - React, Vue, TypeScript, Vite, UI/UX patterns
+- **Backend**: `.claude/domains/backend.md` - Node.js, Express, MongoDB, PostgreSQL, API patterns
+- **Infrastructure**: `.claude/domains/infrastructure.md` - AWS CDK, Docker, Lambda, deployment workflows
+- **Security**: `.claude/domains/security.md` - OWASP, IAM, vulnerabilities, encryption, compliance
+- **Data**: `.claude/domains/data.md` - Database design, ETL, migrations, query optimization
+
+### How Domain Detection Works
+
+1. **Automatic Analysis**: Domain router (`core/domain_router.py`) analyzes:
+   - Keywords in request text ("React component" → Frontend)
+   - File paths being modified (`serverless.yml` → Infrastructure)
+   - Tech stack mentions ("MongoDB migration" → Data)
+
+2. **Confidence Scoring**: Each domain receives a score (0.0-1.0) based on:
+   - Keyword matches (40% weight)
+   - File pattern matches (40% weight)
+   - Tech stack mentions (20% weight)
+
+3. **Agent Recommendation**: System recommends domain-specific agents:
+   - Primary agents (domain experts)
+   - Secondary agents (supporting specialists)
+   - Related agents (coordination and quality)
+
+### Examples
+
+```
+Request: "Create a button component with TypeScript"
+Files: ["src/components/Button.tsx"]
+→ Domain: Frontend (confidence: 0.85)
+→ Agents: frontend-developer, qa-specialist, git-workflow-manager
+
+Request: "Deploy Lambda function to AWS with CDK"
+Files: ["infrastructure/lib/lambda-stack.ts"]
+→ Domain: Infrastructure (confidence: 0.95)
+→ Agents: infrastructure-specialist, security-auditor, git-workflow-manager
+
+Request: "Fix SQL injection in user query"
+Files: ["src/modules/users/user.repository.ts"]
+→ Domains: Security (0.90), Backend (0.70)
+→ Agents: security-auditor, infrastructure-specialist, qa-specialist
+```
+
+### Benefits
+
+- ✅ Context-aware routing (right agents for the task)
+- ✅ Specialized workflows (domain-optimized patterns)
+- ✅ Tech stack best practices (framework-specific conventions)
+- ✅ Faster execution (skip irrelevant agents)
+- ✅ Better quality (domain expertise applied)
+
+**See `.claude/domains/README.md` for complete documentation.**
 
 ## Model Selection Strategy
 
