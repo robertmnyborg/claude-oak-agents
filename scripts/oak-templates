@@ -1,0 +1,272 @@
+#!/usr/bin/env python3
+"""
+oak-templates: Template marketplace discovery and management tool
+
+Browse, search, and deploy production-ready templates from the marketplace.
+"""
+
+import argparse
+import json
+import os
+import re
+import shutil
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
+
+# ANSI color codes
+class Color:
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    CYAN = '\033[96m'
+    MAGENTA = '\033[95m'
+    BOLD = '\033[1m'
+    END = '\033[0m'
+
+def parse_frontmatter(content: str) -> Dict:
+    """Extract YAML frontmatter from template."""
+    match = re.match(r'^---\n(.*?)\n---\n', content, re.DOTALL)
+    if not match:
+        return {}
+
+    frontmatter = {}
+    for line in match.group(1).split('\n'):
+        if ':' in line:
+            key, value = line.split(':', 1)
+            key = key.strip()
+            value = value.strip()
+
+            # Parse lists
+            if value.startswith('[') and value.endswith(']'):
+                value = [v.strip() for v in value[1:-1].split(',')]
+
+            frontmatter[key] = value
+
+    return frontmatter
+
+def get_template_files(marketplace_dir: Path) -> List[Path]:
+    """Get all template files from marketplace."""
+    templates = []
+    for category_dir in marketplace_dir.iterdir():
+        if category_dir.is_dir():
+            templates.extend(category_dir.glob('*.md'))
+    return sorted(templates)
+
+def get_template_metadata(template_path: Path) -> Optional[Dict]:
+    """Extract metadata from template file."""
+    try:
+        content = template_path.read_text()
+        metadata = parse_frontmatter(content)
+        metadata['file_path'] = template_path
+        metadata['content'] = content
+        return metadata
+    except Exception as e:
+        print(f"{Color.RED}Error reading {template_path}: {e}{Color.END}")
+        return None
+
+def list_templates(marketplace_dir: Path, category: Optional[str] = None):
+    """List all templates or by category."""
+    templates = get_template_files(marketplace_dir)
+
+    if category:
+        templates = [t for t in templates if t.parent.name == category]
+        print(f"\n{Color.BOLD}{Color.BLUE}Templates in '{category}'{Color.END}\n")
+    else:
+        print(f"\n{Color.BOLD}{Color.BLUE}Available Templates{Color.END}\n")
+
+    if not templates:
+        print(f"{Color.YELLOW}No templates found.{Color.END}")
+        return
+
+    # Group by category
+    by_category = {}
+    for template_path in templates:
+        cat = template_path.parent.name
+        metadata = get_template_metadata(template_path)
+        if metadata:
+            by_category.setdefault(cat, []).append(metadata)
+
+    for cat, cat_templates in sorted(by_category.items()):
+        print(f"{Color.CYAN}{Color.BOLD}{cat.upper()}{Color.END}")
+        for template in sorted(cat_templates, key=lambda t: t.get('template_id', '')):
+            tid = template.get('template_id', 'unknown')
+            name = template.get('template_name', 'Unknown')
+            difficulty = template.get('difficulty', 'unknown')
+            time = template.get('estimated_time', 'unknown')
+
+            # Color difficulty
+            diff_color = {
+                'beginner': Color.GREEN,
+                'intermediate': Color.YELLOW,
+                'advanced': Color.MAGENTA,
+                'expert': Color.RED
+            }.get(difficulty, '')
+
+            print(f"  {Color.BOLD}{tid}{Color.END}")
+            print(f"    {name}")
+            print(f"    {diff_color}{difficulty}{Color.END} | {time}")
+        print()
+
+def search_templates(marketplace_dir: Path, query: str):
+    """Search templates by keyword/tag."""
+    templates = get_template_files(marketplace_dir)
+    query_lower = query.lower()
+
+    matches = []
+    for template_path in templates:
+        metadata = get_template_metadata(template_path)
+        if not metadata:
+            continue
+
+        # Search in template_id, name, tags, category
+        searchable = [
+            metadata.get('template_id', ''),
+            metadata.get('template_name', ''),
+            metadata.get('category', ''),
+            template_path.parent.name
+        ]
+
+        tags = metadata.get('tags', [])
+        if isinstance(tags, list):
+            searchable.extend(tags)
+
+        if any(query_lower in str(field).lower() for field in searchable):
+            matches.append(metadata)
+
+    if not matches:
+        print(f"\n{Color.YELLOW}No templates found matching '{query}'{Color.END}")
+        return
+
+    print(f"\n{Color.BOLD}{Color.GREEN}Found {len(matches)} template(s) matching '{query}'{Color.END}\n")
+
+    for template in matches:
+        tid = template.get('template_id', 'unknown')
+        name = template.get('template_name', 'Unknown')
+        category = template.get('category', 'unknown')
+        difficulty = template.get('difficulty', 'unknown')
+
+        print(f"{Color.BOLD}{tid}{Color.END} ({category})")
+        print(f"  {name} | {difficulty}")
+    print()
+
+def show_template(marketplace_dir: Path, template_id: str):
+    """Show template details."""
+    templates = get_template_files(marketplace_dir)
+
+    for template_path in templates:
+        metadata = get_template_metadata(template_path)
+        if metadata and metadata.get('template_id') == template_id:
+            tid = metadata.get('template_id', 'unknown')
+            name = metadata.get('template_name', 'Unknown')
+            category = metadata.get('category', 'unknown')
+            difficulty = metadata.get('difficulty', 'unknown')
+            time = metadata.get('estimated_time', 'unknown')
+            tags = metadata.get('tags', [])
+            author = metadata.get('author', 'unknown')
+            version = metadata.get('version', '1.0.0')
+
+            print(f"\n{Color.BOLD}{Color.BLUE}{name}{Color.END}")
+            print(f"{Color.CYAN}ID:{Color.END} {tid}")
+            print(f"{Color.CYAN}Category:{Color.END} {category}")
+            print(f"{Color.CYAN}Difficulty:{Color.END} {difficulty}")
+            print(f"{Color.CYAN}Time:{Color.END} {time}")
+            print(f"{Color.CYAN}Tags:{Color.END} {', '.join(tags) if isinstance(tags, list) else tags}")
+            print(f"{Color.CYAN}Author:{Color.END} {author}")
+            print(f"{Color.CYAN}Version:{Color.END} {version}")
+
+            # Show content preview (first 500 chars after frontmatter)
+            content = metadata.get('content', '')
+            match = re.match(r'^---\n.*?\n---\n(.*)', content, re.DOTALL)
+            if match:
+                preview = match.group(1).strip()[:500]
+                print(f"\n{Color.BOLD}Preview:{Color.END}")
+                print(preview)
+                if len(match.group(1).strip()) > 500:
+                    print(f"\n{Color.YELLOW}... (truncated, use 'use' command to see full template){Color.END}")
+
+            print(f"\n{Color.GREEN}Use:{Color.END} ./scripts/oak-templates use {tid} <spec-name>")
+            print()
+            return
+
+    print(f"{Color.RED}Template '{template_id}' not found.{Color.END}")
+
+def use_template(marketplace_dir: Path, template_id: str, spec_name: str):
+    """Copy template to active specs."""
+    templates = get_template_files(marketplace_dir)
+
+    for template_path in templates:
+        metadata = get_template_metadata(template_path)
+        if metadata and metadata.get('template_id') == template_id:
+            # Create specs/active directory if it doesn't exist
+            active_dir = Path(marketplace_dir).parent.parent / 'active'
+            active_dir.mkdir(parents=True, exist_ok=True)
+
+            # Generate filename with date
+            date_str = datetime.now().strftime('%Y-%m-%d')
+            output_file = active_dir / f"{date_str}-{spec_name}.md"
+
+            # Copy template
+            shutil.copy(template_path, output_file)
+
+            print(f"{Color.GREEN}✓ Template '{template_id}' copied to:{Color.END}")
+            print(f"  {output_file}")
+            print(f"\n{Color.CYAN}Next steps:{Color.END}")
+            print(f"  1. Edit the spec to customize for your needs")
+            print(f"  2. Run: ./scripts/oak-run --spec {output_file}")
+            print()
+            return
+
+    print(f"{Color.RED}Template '{template_id}' not found.{Color.END}")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Oak Templates - Marketplace discovery and management',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    subparsers = parser.add_subparsers(dest='command', help='Commands')
+
+    # list command
+    list_parser = subparsers.add_parser('list', help='List all templates')
+    list_parser.add_argument('--category', help='Filter by category')
+
+    # search command
+    search_parser = subparsers.add_parser('search', help='Search templates')
+    search_parser.add_argument('query', help='Search query (keyword/tag)')
+
+    # show command
+    show_parser = subparsers.add_parser('show', help='Show template details')
+    show_parser.add_argument('template_id', help='Template ID')
+
+    # use command
+    use_parser = subparsers.add_parser('use', help='Copy template to active specs')
+    use_parser.add_argument('template_id', help='Template ID')
+    use_parser.add_argument('spec_name', help='Name for your spec file')
+
+    args = parser.parse_args()
+
+    # Find marketplace directory
+    script_dir = Path(__file__).parent
+    project_root = script_dir.parent
+    marketplace_dir = project_root / 'specs' / 'templates' / 'marketplace'
+
+    if not marketplace_dir.exists():
+        print(f"{Color.RED}Error: Marketplace directory not found at {marketplace_dir}{Color.END}")
+        sys.exit(1)
+
+    if args.command == 'list':
+        list_templates(marketplace_dir, args.category)
+    elif args.command == 'search':
+        search_templates(marketplace_dir, args.query)
+    elif args.command == 'show':
+        show_template(marketplace_dir, args.template_id)
+    elif args.command == 'use':
+        use_template(marketplace_dir, args.template_id, args.spec_name)
+    else:
+        parser.print_help()
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,311 @@
+#!/usr/bin/env python3
+"""
+oak-mode - Interactive mode switcher for Claude OaK Agents
+
+Provides three distinct interaction modes:
+1. Guided Mode - Interactive wizard for PMs and non-technical users
+2. Expert Mode - Direct control for experienced engineers
+3. Auto Mode - Automatic classification-based routing (default)
+
+Usage:
+    ./scripts/oak-mode                    # Start in configured default mode
+    ./scripts/oak-mode --guided           # Start in guided mode
+    ./scripts/oak-mode --expert           # Start in expert mode
+    ./scripts/oak-mode --auto             # Start in auto mode
+    ./scripts/oak-mode --set-default guided  # Set default mode
+    ./scripts/oak-mode --show             # Show current configuration
+"""
+
+import os
+import sys
+import json
+import argparse
+from pathlib import Path
+from typing import Dict, Optional
+
+# Color codes for terminal output
+class Colors:
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+
+class ConfigManager:
+    """Manages user configuration and preferences"""
+
+    def __init__(self):
+        self.config_dir = Path.home() / ".oak"
+        self.config_file = self.config_dir / "config.json"
+        self.config = self.load_config()
+
+    def load_config(self) -> Dict:
+        """Load configuration from ~/.oak/config.json"""
+        if not self.config_file.exists():
+            return self.get_default_config()
+
+        try:
+            with open(self.config_file) as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"{Colors.RED}Error loading config: {e}{Colors.END}", file=sys.stderr)
+            return self.get_default_config()
+
+    def get_default_config(self) -> Dict:
+        """Default configuration"""
+        return {
+            "mode": "auto",
+            "preferences": {
+                "color": True,
+                "verbose": False,
+                "auto_save": True
+            },
+            "recent_workflows": [],
+            "favorite_agents": []
+        }
+
+    def save_config(self):
+        """Save configuration to ~/.oak/config.json"""
+        # Ensure directory exists
+        self.config_dir.mkdir(parents=True, exist_ok=True)
+
+        try:
+            with open(self.config_file, 'w') as f:
+                json.dump(self.config, f, indent=2)
+            return True
+        except Exception as e:
+            print(f"{Colors.RED}Error saving config: {e}{Colors.END}", file=sys.stderr)
+            return False
+
+    def get_mode(self) -> str:
+        """Get current mode"""
+        return self.config.get("mode", "auto")
+
+    def set_mode(self, mode: str):
+        """Set current mode"""
+        if mode not in ["guided", "expert", "auto"]:
+            raise ValueError(f"Invalid mode: {mode}. Must be guided, expert, or auto")
+
+        self.config["mode"] = mode
+        self.save_config()
+
+    def get_preference(self, key: str, default=None):
+        """Get preference value"""
+        return self.config.get("preferences", {}).get(key, default)
+
+    def add_recent_workflow(self, workflow: str):
+        """Add workflow to recent list"""
+        recent = self.config.get("recent_workflows", [])
+        if workflow in recent:
+            recent.remove(workflow)
+        recent.insert(0, workflow)
+        self.config["recent_workflows"] = recent[:10]  # Keep last 10
+        self.save_config()
+
+
+def print_banner():
+    """Print welcome banner"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Claude OaK Agents - Mode Switcher{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+
+def show_mode_selector(config_mgr: ConfigManager) -> str:
+    """Interactive mode selector"""
+    current_mode = config_mgr.get_mode()
+
+    print(f"{Colors.BOLD}Select Interaction Mode:{Colors.END}\n")
+
+    modes = [
+        ("guided", "Guided Mode", "Interactive wizard for PMs and non-technical users"),
+        ("expert", "Expert Mode", "Direct control for experienced engineers"),
+        ("auto", "Auto Mode", "Automatic classification-based routing (current behavior)")
+    ]
+
+    for i, (mode_id, mode_name, description) in enumerate(modes, 1):
+        is_current = " [CURRENT]" if mode_id == current_mode else ""
+        color = Colors.GREEN if mode_id == current_mode else Colors.CYAN
+        print(f"  {color}{i}. {mode_name}{is_current}{Colors.END}")
+        print(f"     {description}\n")
+
+    while True:
+        try:
+            choice = input(f"{Colors.BOLD}Selection [1-3]: {Colors.END}").strip()
+            if choice.isdigit() and 1 <= int(choice) <= 3:
+                return modes[int(choice) - 1][0]
+            else:
+                print(f"{Colors.RED}Invalid choice. Please enter 1, 2, or 3.{Colors.END}")
+        except (EOFError, KeyboardInterrupt):
+            print(f"\n{Colors.YELLOW}Cancelled.{Colors.END}")
+            sys.exit(0)
+
+
+def launch_guided_mode(config_mgr: ConfigManager):
+    """Launch guided mode"""
+    modes_dir = Path(__file__).parent / "modes"
+    guided_script = modes_dir / "guided.py"
+
+    if not guided_script.exists():
+        print(f"{Colors.RED}Error: Guided mode not found at {guided_script}{Colors.END}")
+        sys.exit(1)
+
+    # Launch guided mode
+    os.execvp(sys.executable, [sys.executable, str(guided_script)])
+
+
+def launch_expert_mode(config_mgr: ConfigManager):
+    """Launch expert mode"""
+    modes_dir = Path(__file__).parent / "modes"
+    expert_script = modes_dir / "expert.py"
+
+    if not expert_script.exists():
+        print(f"{Colors.RED}Error: Expert mode not found at {expert_script}{Colors.END}")
+        sys.exit(1)
+
+    # Launch expert mode
+    os.execvp(sys.executable, [sys.executable, str(expert_script)])
+
+
+def launch_auto_mode(config_mgr: ConfigManager):
+    """Launch auto mode"""
+    print(f"{Colors.CYAN}Auto Mode - Classification-based routing{Colors.END}")
+    print(f"{Colors.YELLOW}Auto mode uses the existing OaK workflow:{Colors.END}")
+    print(f"  - Automatic domain detection via domain router")
+    print(f"  - Automatic agent selection based on request type")
+    print(f"  - Workflow coordination by main LLM")
+    print(f"\n{Colors.GREEN}This is the standard Claude OaK behavior.{Colors.END}")
+    print(f"\n{Colors.BOLD}Use oak-discover, oak-status, oak-analyze for insights.{Colors.END}\n")
+
+
+def show_current_config(config_mgr: ConfigManager):
+    """Display current configuration"""
+    print_banner()
+
+    config = config_mgr.config
+    mode = config.get("mode", "auto")
+
+    print(f"{Colors.BOLD}Current Configuration:{Colors.END}\n")
+    print(f"  {Colors.CYAN}Mode:{Colors.END} {mode}")
+    print(f"  {Colors.CYAN}Config File:{Colors.END} {config_mgr.config_file}")
+    print()
+
+    print(f"{Colors.BOLD}Preferences:{Colors.END}")
+    for key, value in config.get("preferences", {}).items():
+        print(f"  {Colors.CYAN}{key}:{Colors.END} {value}")
+    print()
+
+    recent = config.get("recent_workflows", [])
+    if recent:
+        print(f"{Colors.BOLD}Recent Workflows:{Colors.END}")
+        for workflow in recent[:5]:
+            print(f"  - {workflow}")
+        print()
+
+    favorites = config.get("favorite_agents", [])
+    if favorites:
+        print(f"{Colors.BOLD}Favorite Agents:{Colors.END}")
+        for agent in favorites:
+            print(f"  - {agent}")
+        print()
+
+
+def main():
+    """Main entry point"""
+    parser = argparse.ArgumentParser(
+        description="OaK Mode Switcher - Choose your interaction style",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  oak-mode                    # Launch in configured default mode
+  oak-mode --guided           # Launch guided mode
+  oak-mode --expert           # Launch expert mode
+  oak-mode --auto             # Launch auto mode
+  oak-mode --set-default expert  # Set expert as default
+  oak-mode --show             # Show current configuration
+        """
+    )
+
+    parser.add_argument('--guided', action='store_true',
+                       help='Launch guided mode (interactive wizard)')
+    parser.add_argument('--expert', action='store_true',
+                       help='Launch expert mode (direct control)')
+    parser.add_argument('--auto', action='store_true',
+                       help='Launch auto mode (classification-based)')
+    parser.add_argument('--set-default', metavar='MODE',
+                       help='Set default mode (guided/expert/auto)')
+    parser.add_argument('--show', action='store_true',
+                       help='Show current configuration')
+
+    args = parser.parse_args()
+
+    # Initialize config manager
+    config_mgr = ConfigManager()
+
+    # Handle --show
+    if args.show:
+        show_current_config(config_mgr)
+        return
+
+    # Handle --set-default
+    if args.set_default:
+        try:
+            config_mgr.set_mode(args.set_default)
+            print(f"{Colors.GREEN}Default mode set to: {args.set_default}{Colors.END}")
+        except ValueError as e:
+            print(f"{Colors.RED}Error: {e}{Colors.END}")
+            sys.exit(1)
+        return
+
+    # Determine mode
+    if args.guided:
+        mode = "guided"
+    elif args.expert:
+        mode = "expert"
+    elif args.auto:
+        mode = "auto"
+    else:
+        # No mode specified - use default or show selector
+        print_banner()
+        mode = config_mgr.get_mode()
+
+        # Show mode selector if in interactive terminal
+        if sys.stdin.isatty():
+            print(f"{Colors.CYAN}Current default mode: {mode}{Colors.END}\n")
+            print(f"Press Enter to continue with {mode} mode, or choose different mode:\n")
+
+            try:
+                choice = input(f"{Colors.BOLD}Continue with {mode}? [Y/n/1-3]: {Colors.END}").strip().lower()
+
+                if choice in ['n', 'no']:
+                    mode = show_mode_selector(config_mgr)
+                elif choice.isdigit() and 1 <= int(choice) <= 3:
+                    modes = ["guided", "expert", "auto"]
+                    mode = modes[int(choice) - 1]
+            except (EOFError, KeyboardInterrupt):
+                print(f"\n{Colors.YELLOW}Using default mode: {mode}{Colors.END}")
+
+    # Launch selected mode
+    print(f"\n{Colors.GREEN}Launching {mode} mode...{Colors.END}\n")
+
+    if mode == "guided":
+        launch_guided_mode(config_mgr)
+    elif mode == "expert":
+        launch_expert_mode(config_mgr)
+    elif mode == "auto":
+        launch_auto_mode(config_mgr)
+    else:
+        print(f"{Colors.RED}Unknown mode: {mode}{Colors.END}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(f"\n{Colors.YELLOW}Interrupted by user{Colors.END}")
+        sys.exit(0)
