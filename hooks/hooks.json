@@ -3,5 +3,25 @@
     "description": "Load squad orchestration rules and agent delegation system",
     "script": "./sessionStart.sh",
     "enabled": true
+  },
+  "pre-workflow": {
+    "description": "Execute before workflow starts - validate preconditions and log initiation",
+    "script": "./pre_workflow.sh",
+    "enabled": true
+  },
+  "post-workflow": {
+    "description": "Execute after workflow completes - log completion and calculate statistics",
+    "script": "./post_workflow.sh",
+    "enabled": true
+  },
+  "on-error": {
+    "description": "Execute when errors occur - log details, create report, suggest remediation",
+    "script": "./on_error.sh",
+    "enabled": true
+  },
+  "on-spec-change": {
+    "description": "Execute when spec files change - track evolution and regenerate YAML",
+    "script": "./on_spec_change.sh",
+    "enabled": true
   }
 }

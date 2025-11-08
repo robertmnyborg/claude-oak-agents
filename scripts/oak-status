@@ -1,0 +1,468 @@
+#!/usr/bin/env python3
+"""
+OaK System Status - Rich workflow information display
+
+Displays comprehensive status information about the OaK system including:
+- Active workflows with progress
+- Current agent execution
+- Quality gate status
+- Specification status
+- Pending reviews
+- Recent errors
+- Performance metrics
+- Recommendations
+
+Usage:
+    oak-status                  # Default detailed view
+    oak-status --brief          # Brief summary only
+    oak-status --detailed       # Maximum detail view
+    oak-status --help           # Show help
+"""
+
+import sys
+import json
+import argparse
+from pathlib import Path
+from datetime import datetime, timedelta
+from collections import defaultdict
+from typing import Dict, List, Optional, Tuple
+
+# Project paths
+PROJECT_ROOT = Path(__file__).parent.parent
+TELEMETRY_DIR = PROJECT_ROOT / "telemetry"
+SPECS_DIR = PROJECT_ROOT / "specs"
+AGENTS_DIR = PROJECT_ROOT / "agents"
+
+# ANSI color codes
+class Colors:
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    BOLD = '\033[1m'
+    END = '\033[0m'
+
+    @staticmethod
+    def good(text: str) -> str:
+        return f"{Colors.GREEN}{text}{Colors.END}"
+
+    @staticmethod
+    def warn(text: str) -> str:
+        return f"{Colors.YELLOW}{text}{Colors.END}"
+
+    @staticmethod
+    def error(text: str) -> str:
+        return f"{Colors.RED}{text}{Colors.END}"
+
+    @staticmethod
+    def info(text: str) -> str:
+        return f"{Colors.BLUE}{text}{Colors.END}"
+
+    @staticmethod
+    def highlight(text: str) -> str:
+        return f"{Colors.CYAN}{text}{Colors.END}"
+
+    @staticmethod
+    def bold(text: str) -> str:
+        return f"{Colors.BOLD}{text}{Colors.END}"
+
+
+def read_jsonl(filepath: Path) -> List[Dict]:
+    """Read JSONL file and return list of records."""
+    if not filepath.exists():
+        return []
+
+    records = []
+    try:
+        with open(filepath, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        records.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
+    except Exception:
+        pass
+
+    return records
+
+
+def get_active_workflows() -> Dict[str, List[Dict]]:
+    """Get all active workflows grouped by workflow_id."""
+    invocations = read_jsonl(TELEMETRY_DIR / "agent_invocations.jsonl")
+
+    # Filter recent invocations (last 24 hours)
+    from datetime import timezone
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(hours=24)
+
+    workflows = defaultdict(list)
+    for inv in invocations:
+        if not inv.get('workflow_id'):
+            continue
+
+        try:
+            timestamp = datetime.fromisoformat(inv['timestamp'].replace('Z', '+00:00'))
+            if timestamp < cutoff:
+                continue
+        except (KeyError, ValueError):
+            continue
+
+        workflows[inv['workflow_id']].append(inv)
+
+    return dict(workflows)
+
+
+def get_workflow_phase(invocations: List[Dict]) -> Tuple[str, int, int]:
+    """Determine workflow phase and task progress."""
+    if not invocations:
+        return "Unknown", 0, 0
+
+    # Sort by timestamp
+    sorted_invs = sorted(invocations, key=lambda x: x.get('timestamp', ''))
+
+    # Determine phase based on agent types
+    completed = sum(1 for inv in sorted_invs if inv.get('outcome', {}).get('status') == 'success')
+    total = len(sorted_invs)
+
+    # Identify phase from latest agent
+    latest_agent = sorted_invs[-1].get('agent_name', '')
+
+    if 'design-simplicity-advisor' in latest_agent or 'project-manager' in latest_agent:
+        phase = "Planning"
+    elif 'git-workflow-manager' in latest_agent:
+        phase = "Completion"
+    elif any(a in latest_agent for a in ['backend-architect', 'frontend-developer', 'infrastructure-specialist']):
+        phase = "Implementation"
+    elif any(a in latest_agent for a in ['quality-gate', 'security-auditor', 'unit-test-expert']):
+        phase = "Quality Review"
+    else:
+        phase = "Execution"
+
+    return phase, completed, total
+
+
+def get_current_execution() -> Optional[Dict]:
+    """Get currently executing agent if any."""
+    invocations = read_jsonl(TELEMETRY_DIR / "agent_invocations.jsonl")
+
+    # Find most recent invocation without completion
+    from datetime import timezone
+    now = datetime.now(timezone.utc)
+    recent_cutoff = now - timedelta(minutes=10)
+
+    for inv in reversed(invocations):
+        try:
+            timestamp = datetime.fromisoformat(inv['timestamp'].replace('Z', '+00:00'))
+            if timestamp < recent_cutoff:
+                break
+
+            # Check if this invocation is incomplete (no duration or duration is 0)
+            duration = inv.get('duration_seconds', 0)
+            if duration == 0 or duration is None:
+                elapsed = (now - timestamp).total_seconds()
+                return {
+                    'agent_name': inv.get('agent_name', 'unknown'),
+                    'task': inv.get('task_description', 'No description'),
+                    'elapsed': int(elapsed)
+                }
+        except (KeyError, ValueError):
+            continue
+
+    return None
+
+
+def get_quality_gate_status() -> Tuple[int, int, int]:
+    """Get quality gate pass/pending/fail counts."""
+    invocations = read_jsonl(TELEMETRY_DIR / "agent_invocations.jsonl")
+
+    # Filter quality-related agents in last 7 days
+    from datetime import timezone
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(days=7)
+
+    passed = 0
+    pending = 0
+    failed = 0
+
+    quality_agents = ['quality-gate', 'security-auditor', 'unit-test-expert', 'design-simplicity-advisor']
+
+    for inv in invocations:
+        if inv.get('agent_name') not in quality_agents:
+            continue
+
+        try:
+            timestamp = datetime.fromisoformat(inv['timestamp'].replace('Z', '+00:00'))
+            if timestamp < cutoff:
+                continue
+        except (KeyError, ValueError):
+            continue
+
+        status = inv.get('outcome', {}).get('status', 'unknown')
+        if status == 'success':
+            passed += 1
+        elif status == 'failure':
+            failed += 1
+        elif status in ['pending', 'in_progress']:
+            pending += 1
+
+    return passed, pending, failed
+
+
+def get_spec_status() -> Tuple[int, int]:
+    """Get active and completed spec counts."""
+    active_specs = list((SPECS_DIR / "active").glob("*.md")) if (SPECS_DIR / "active").exists() else []
+    completed_specs = list((SPECS_DIR / "completed").glob("*.md")) if (SPECS_DIR / "completed").exists() else []
+
+    return len(active_specs), len(completed_specs)
+
+
+def get_pending_reviews() -> int:
+    """Get count of agents pending review."""
+    pending_dir = AGENTS_DIR / "pending_review"
+    if not pending_dir.exists():
+        return 0
+
+    return len(list(pending_dir.glob("*.md")))
+
+
+def get_recent_errors(hours: int = 24) -> int:
+    """Get count of errors in recent time window."""
+    invocations = read_jsonl(TELEMETRY_DIR / "agent_invocations.jsonl")
+
+    from datetime import timezone
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(hours=hours)
+
+    error_count = 0
+    for inv in invocations:
+        try:
+            timestamp = datetime.fromisoformat(inv['timestamp'].replace('Z', '+00:00'))
+            if timestamp < cutoff:
+                continue
+
+            if inv.get('outcome', {}).get('status') == 'failure':
+                error_count += 1
+        except (KeyError, ValueError):
+            continue
+
+    return error_count
+
+
+def get_performance_metrics(days: int = 7) -> Dict:
+    """Calculate performance metrics over time window."""
+    invocations = read_jsonl(TELEMETRY_DIR / "agent_invocations.jsonl")
+
+    from datetime import timezone
+    now = datetime.now(timezone.utc)
+    current_cutoff = now - timedelta(days=days)
+    previous_cutoff = now - timedelta(days=days * 2)
+
+    current_durations = []
+    previous_durations = []
+    current_success = 0
+    current_total = 0
+
+    for inv in invocations:
+        try:
+            timestamp = datetime.fromisoformat(inv['timestamp'].replace('Z', '+00:00'))
+            duration = inv.get('duration_seconds', 0)
+
+            if timestamp >= current_cutoff:
+                if duration and duration > 0:
+                    current_durations.append(duration)
+                current_total += 1
+                if inv.get('outcome', {}).get('status') == 'success':
+                    current_success += 1
+            elif timestamp >= previous_cutoff:
+                if duration and duration > 0:
+                    previous_durations.append(duration)
+        except (KeyError, ValueError):
+            continue
+
+    # Calculate averages
+    avg_current = sum(current_durations) / len(current_durations) if current_durations else 0
+    avg_previous = sum(previous_durations) / len(previous_durations) if previous_durations else 0
+
+    # Calculate trend
+    if avg_previous > 0:
+        change_pct = ((avg_current - avg_previous) / avg_previous) * 100
+    else:
+        change_pct = 0
+
+    # Calculate success rate
+    success_rate = (current_success / current_total * 100) if current_total > 0 else 0
+
+    return {
+        'avg_duration': avg_current,
+        'change_pct': change_pct,
+        'success_rate': success_rate,
+        'total_tasks': current_total
+    }
+
+
+def get_recommendations(metrics: Dict, error_count: int, pending_reviews: int) -> List[str]:
+    """Generate recommendations based on system status."""
+    recommendations = []
+
+    # Check error rate
+    if error_count > 5:
+        recommendations.append(f"{Colors.error('⚠')} High error rate ({error_count} errors in 24h). Review recent failures.")
+
+    # Check pending reviews
+    if pending_reviews > 0:
+        recommendations.append(f"{Colors.warn('📋')} {pending_reviews} agent(s) pending review. Run oak-review-agent to approve.")
+
+    # Check performance degradation
+    if metrics['change_pct'] > 20:
+        recommendations.append(f"{Colors.warn('⏱')} Task duration increased {metrics['change_pct']:.1f}%. Consider optimization.")
+
+    # Check success rate
+    if metrics['success_rate'] < 80:
+        recommendations.append(f"{Colors.warn('📉')} Success rate below 80% ({metrics['success_rate']:.1f}%). Investigate failures.")
+
+    # If no issues
+    if not recommendations:
+        recommendations.append(f"{Colors.good('💡')} No issues detected. System running smoothly.")
+
+    return recommendations
+
+
+def format_duration(seconds: float) -> str:
+    """Format duration in human-readable format."""
+    if seconds < 60:
+        return f"{int(seconds)}s"
+    elif seconds < 3600:
+        return f"{int(seconds/60)}m {int(seconds%60)}s"
+    else:
+        hours = int(seconds / 3600)
+        minutes = int((seconds % 3600) / 60)
+        return f"{hours}h {minutes}m"
+
+
+def print_brief_status():
+    """Print brief status summary."""
+    workflows = get_active_workflows()
+    current_exec = get_current_execution()
+    passed, pending, failed = get_quality_gate_status()
+    active_specs, completed_specs = get_spec_status()
+    pending_reviews = get_pending_reviews()
+    error_count = get_recent_errors()
+
+    print(f"{Colors.bold('OaK Status')}: ", end='')
+
+    if current_exec:
+        print(Colors.highlight(f"Running ({current_exec['agent_name']})"), end=' ')
+    else:
+        print(Colors.good("Idle"), end=' ')
+
+    print(f"| Workflows: {len(workflows)} | Quality: {passed}✓ {failed}✗ | Errors: {error_count}")
+
+
+def print_detailed_status():
+    """Print detailed status information."""
+    workflows = get_active_workflows()
+    current_exec = get_current_execution()
+    passed, pending, failed = get_quality_gate_status()
+    active_specs, completed_specs = get_spec_status()
+    pending_reviews = get_pending_reviews()
+    error_count = get_recent_errors()
+    metrics = get_performance_metrics()
+    recommendations = get_recommendations(metrics, error_count, pending_reviews)
+
+    print(f"\n{Colors.bold('OaK System Status')}")
+    print("=" * 50)
+
+    # Active Workflows
+    print(f"\n{Colors.bold('Active Workflows')}: {len(workflows)}")
+    if workflows:
+        for wf_id, invocations in list(workflows.items())[:5]:  # Show max 5
+            # Extract workflow name from ID
+            wf_name = wf_id.split('-')[-1] if '-' in wf_id else wf_id
+            phase, completed, total = get_workflow_phase(invocations)
+
+            print(f"  {Colors.highlight('•')} {wf_id}")
+            print(f"    Phase: {Colors.info(phase)}, Tasks: {completed}/{total} complete")
+    else:
+        print(f"  {Colors.info('No active workflows')}")
+
+    # Current Execution
+    print(f"\n{Colors.bold('Current Execution')}:")
+    if current_exec:
+        print(f"  {Colors.highlight('→')} {current_exec['agent_name']} working on \"{current_exec['task']}\"")
+        print(f"    Running for {format_duration(current_exec['elapsed'])}")
+    else:
+        print(f"  {Colors.good('System idle')}")
+
+    # Quality Gates
+    print(f"\n{Colors.bold('Quality Gates')}: ", end='')
+    print(f"{Colors.good(str(passed))} passed, {Colors.warn(str(pending))} pending, {Colors.error(str(failed))} failed")
+
+    # Specifications
+    print(f"\n{Colors.bold('Specifications')}:")
+    print(f"  Active: {Colors.highlight(str(active_specs))} specs")
+    print(f"  Completed: {Colors.info(str(completed_specs))} specs")
+
+    # Pending Reviews
+    print(f"\n{Colors.bold('Pending Reviews')}: {pending_reviews} agents")
+
+    # Recent Errors
+    error_color = Colors.error if error_count > 0 else Colors.good
+    print(f"\n{Colors.bold('Recent Errors (24h)')}: {error_color(str(error_count))}")
+
+    # Performance Metrics
+    print(f"\n{Colors.bold('Performance (7 days)')}:")
+    if metrics['total_tasks'] > 0:
+        print(f"  Avg task duration: {format_duration(metrics['avg_duration'])}", end='')
+
+        if metrics['change_pct'] > 0:
+            trend = f"↑ {abs(metrics['change_pct']):.1f}%"
+            trend_color = Colors.error if metrics['change_pct'] > 10 else Colors.warn
+        elif metrics['change_pct'] < 0:
+            trend = f"↓ {abs(metrics['change_pct']):.1f}%"
+            trend_color = Colors.good
+        else:
+            trend = "→ 0%"
+            trend_color = Colors.info
+
+        print(f" ({trend_color(trend)} vs previous week)")
+        success_rate_str = f"{metrics['success_rate']:.1f}%"
+        print(f"  Success rate: {Colors.good(success_rate_str)}")
+    else:
+        print(f"  {Colors.info('No data available')}")
+
+    # Recommendations
+    print(f"\n{Colors.bold('Recommendations')}:")
+    for rec in recommendations:
+        print(f"  {rec}")
+
+    print()  # Final newline
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Display OaK system status information',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('--brief', action='store_true', help='Show brief summary')
+    parser.add_argument('--detailed', action='store_true', help='Show maximum detail')
+
+    args = parser.parse_args()
+
+    try:
+        if args.brief:
+            print_brief_status()
+        else:
+            print_detailed_status()
+    except KeyboardInterrupt:
+        print("\nInterrupted")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
