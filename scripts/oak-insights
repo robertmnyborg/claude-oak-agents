@@ -19,38 +19,15 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 import argparse
 
-# Color codes
-class Colors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    END = '\033[0m'
+# Add scripts directory to path for shared imports
+SCRIPTS_DIR = Path(__file__).parent
+sys.path.insert(0, str(SCRIPTS_DIR))
 
-def load_invocations(telemetry_file: Path) -> List[Dict]:
-    """Load agent invocations from JSONL file"""
-    invocations = []
-
-    if not telemetry_file.exists():
-        return invocations
-
-    try:
-        with open(telemetry_file, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    try:
-                        invocations.append(json.loads(line))
-                    except json.JSONDecodeError as e:
-                        print(f"{Colors.YELLOW}Warning: Skipping malformed line: {e}{Colors.END}", file=sys.stderr)
-    except Exception as e:
-        print(f"{Colors.RED}Error reading telemetry: {e}{Colors.END}", file=sys.stderr)
-
-    return invocations
+# Import shared utilities
+from shared import (
+    Colors,
+    load_invocations,
+)
 
 def calculate_agent_stats(invocations: List[Dict]) -> Dict:
     """Calculate statistics per agent"""

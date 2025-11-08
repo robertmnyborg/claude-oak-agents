@@ -1,34 +1,26 @@
 # Load Specification
 
-Load a specification file by ID and make it available to all agents in the current workflow.
+Load specification file by ID and make it available to all agents in current workflow.
 
 ## Usage
 /load-spec [spec-id]
 
 ## What This Does
-1. Locates specification file in specs/active/ or specs/completed/
-2. Parses both Markdown and YAML versions
-3. Displays spec summary (goals, design, tasks)
-4. Sets environment variables for spec-driven workflow
-5. Makes spec context available to all subsequent agent invocations
+1. Locates and parses specification files (Markdown and YAML versions)
+2. Displays spec summary with goals, design, and task status
+3. Sets environment variables for spec-driven workflow context
+4. Makes spec available to all subsequent agent invocations
 
 ## Example
 /load-spec spec-20251108-oauth2-implementation
 
 ## Agent Coordination
-1. **Main LLM**: Locates and parses spec files
-   - Reads specs/active/YYYY-MM-DD-feature-name.md
-   - Reads specs/active/YYYY-MM-DD-feature-name.yaml
-   - Validates spec format and completeness
-2. **Environment Setup**: Sets context for workflow
-   - `OAK_SPEC_ID=spec-20251108-oauth2-implementation`
-   - `OAK_SPEC_PATH=/path/to/spec/file.yaml`
-3. **All Subsequent Agents**: Receive spec context automatically
-   - Agents can reference spec sections
-   - Telemetry links to spec_id
+1. **Main LLM**: Locates, parses, and validates spec files
+2. **Environment Setup**: Sets OAK_SPEC_ID and OAK_SPEC_PATH variables
+3. **All Subsequent Agents**: Receive spec context automatically for reference and telemetry
 
 ## Output
-Spec Summary:
+Spec summary including:
 ```markdown
 ## Specification Loaded: OAuth2 Authentication Implementation
 
@@ -74,3 +66,6 @@ Spec Summary:
 - Log execution to spec's execution log (Section 5)
 - Link telemetry with spec_id
 - Validate against acceptance criteria
+
+## See Also
+For related commands, see [Git Commands](../shared/related-git-commands.md)

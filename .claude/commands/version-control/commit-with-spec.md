@@ -37,3 +37,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - Git commit created with spec reference in commit body
 - Commit hash returned
 - Changes staged automatically if not already staged
+
+## See Also
+For related commands, see [Git Commands](../shared/related-git-commands.md)

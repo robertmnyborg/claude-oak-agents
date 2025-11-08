@@ -177,6 +177,10 @@ Every backend architecture must include:
 
 **CRITICAL**: Complete this verification checklist before responding "✓ Fixed" or "✓ Complete":
 
+
+### Additional Verification
+
+Add verification checklist for common failure patterns
 ### Bug Fixes
 - [ ] **Reproduced the issue**: Verified the bug exists with sample request/data
 - [ ] **Identified root cause**: Determined why the bug occurred (logs, debugger, stack trace)

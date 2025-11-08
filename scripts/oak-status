@@ -27,45 +27,18 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
+# Add scripts directory to path for shared imports
+SCRIPTS_DIR = Path(__file__).parent
+sys.path.insert(0, str(SCRIPTS_DIR))
+
+# Import shared utilities
+from shared import Colors
+
 # Project paths
 PROJECT_ROOT = Path(__file__).parent.parent
 TELEMETRY_DIR = PROJECT_ROOT / "telemetry"
 SPECS_DIR = PROJECT_ROOT / "specs"
 AGENTS_DIR = PROJECT_ROOT / "agents"
-
-# ANSI color codes
-class Colors:
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    BOLD = '\033[1m'
-    END = '\033[0m'
-
-    @staticmethod
-    def good(text: str) -> str:
-        return f"{Colors.GREEN}{text}{Colors.END}"
-
-    @staticmethod
-    def warn(text: str) -> str:
-        return f"{Colors.YELLOW}{text}{Colors.END}"
-
-    @staticmethod
-    def error(text: str) -> str:
-        return f"{Colors.RED}{text}{Colors.END}"
-
-    @staticmethod
-    def info(text: str) -> str:
-        return f"{Colors.BLUE}{text}{Colors.END}"
-
-    @staticmethod
-    def highlight(text: str) -> str:
-        return f"{Colors.CYAN}{text}{Colors.END}"
-
-    @staticmethod
-    def bold(text: str) -> str:
-        return f"{Colors.BOLD}{text}{Colors.END}"
 
 
 def read_jsonl(filepath: Path) -> List[Dict]:
@@ -309,23 +282,23 @@ def get_recommendations(metrics: Dict, error_count: int, pending_reviews: int) -
 
     # Check error rate
     if error_count > 5:
-        recommendations.append(f"{Colors.error('⚠')} High error rate ({error_count} errors in 24h). Review recent failures.")
+        recommendations.append(f"{Colors.RED}⚠{Colors.END} High error rate ({error_count} errors in 24h). Review recent failures.")
 
     # Check pending reviews
     if pending_reviews > 0:
-        recommendations.append(f"{Colors.warn('📋')} {pending_reviews} agent(s) pending review. Run oak-review-agent to approve.")
+        recommendations.append(f"{Colors.YELLOW}📋{Colors.END} {pending_reviews} agent(s) pending review. Run oak-review-agent to approve.")
 
     # Check performance degradation
     if metrics['change_pct'] > 20:
-        recommendations.append(f"{Colors.warn('⏱')} Task duration increased {metrics['change_pct']:.1f}%. Consider optimization.")
+        recommendations.append(f"{Colors.YELLOW}⏱{Colors.END} Task duration increased {metrics['change_pct']:.1f}%. Consider optimization.")
 
     # Check success rate
     if metrics['success_rate'] < 80:
-        recommendations.append(f"{Colors.warn('📉')} Success rate below 80% ({metrics['success_rate']:.1f}%). Investigate failures.")
+        recommendations.append(f"{Colors.YELLOW}📉{Colors.END} Success rate below 80% ({metrics['success_rate']:.1f}%). Investigate failures.")
 
     # If no issues
     if not recommendations:
-        recommendations.append(f"{Colors.good('💡')} No issues detected. System running smoothly.")
+        recommendations.append(f"{Colors.GREEN}💡{Colors.END} No issues detected. System running smoothly.")
 
     return recommendations
 
@@ -351,12 +324,12 @@ def print_brief_status():
     pending_reviews = get_pending_reviews()
     error_count = get_recent_errors()
 
-    print(f"{Colors.bold('OaK Status')}: ", end='')
+    print(f"{Colors.BOLD}OaK Status{Colors.END}: ", end='')
 
     if current_exec:
-        print(Colors.highlight(f"Running ({current_exec['agent_name']})"), end=' ')
+        print(f"{Colors.CYAN}Running ({current_exec['agent_name']}){Colors.END}", end=' ')
     else:
-        print(Colors.good("Idle"), end=' ')
+        print(f"{Colors.GREEN}Idle{Colors.END}", end=' ')
 
     print(f"| Workflows: {len(workflows)} | Quality: {passed}✓ {failed}✗ | Errors: {error_count}")
 
@@ -372,69 +345,69 @@ def print_detailed_status():
     metrics = get_performance_metrics()
     recommendations = get_recommendations(metrics, error_count, pending_reviews)
 
-    print(f"\n{Colors.bold('OaK System Status')}")
+    print(f"\n{Colors.BOLD}OaK System Status{Colors.END}")
     print("=" * 50)
 
     # Active Workflows
-    print(f"\n{Colors.bold('Active Workflows')}: {len(workflows)}")
+    print(f"\n{Colors.BOLD}Active Workflows{Colors.END}: {len(workflows)}")
     if workflows:
         for wf_id, invocations in list(workflows.items())[:5]:  # Show max 5
             # Extract workflow name from ID
             wf_name = wf_id.split('-')[-1] if '-' in wf_id else wf_id
             phase, completed, total = get_workflow_phase(invocations)
 
-            print(f"  {Colors.highlight('•')} {wf_id}")
-            print(f"    Phase: {Colors.info(phase)}, Tasks: {completed}/{total} complete")
+            print(f"  {Colors.CYAN}•{Colors.END} {wf_id}")
+            print(f"    Phase: {Colors.BLUE}{phase}{Colors.END}, Tasks: {completed}/{total} complete")
     else:
-        print(f"  {Colors.info('No active workflows')}")
+        print(f"  {Colors.BLUE}No active workflows{Colors.END}")
 
     # Current Execution
-    print(f"\n{Colors.bold('Current Execution')}:")
+    print(f"\n{Colors.BOLD}Current Execution{Colors.END}:")
     if current_exec:
-        print(f"  {Colors.highlight('→')} {current_exec['agent_name']} working on \"{current_exec['task']}\"")
+        print(f"  {Colors.CYAN}→{Colors.END} {current_exec['agent_name']} working on \"{current_exec['task']}\"")
         print(f"    Running for {format_duration(current_exec['elapsed'])}")
     else:
-        print(f"  {Colors.good('System idle')}")
+        print(f"  {Colors.GREEN}System idle{Colors.END}")
 
     # Quality Gates
-    print(f"\n{Colors.bold('Quality Gates')}: ", end='')
-    print(f"{Colors.good(str(passed))} passed, {Colors.warn(str(pending))} pending, {Colors.error(str(failed))} failed")
+    print(f"\n{Colors.BOLD}Quality Gates{Colors.END}: ", end='')
+    print(f"{Colors.GREEN}{passed}{Colors.END} passed, {Colors.YELLOW}{pending}{Colors.END} pending, {Colors.RED}{failed}{Colors.END} failed")
 
     # Specifications
-    print(f"\n{Colors.bold('Specifications')}:")
-    print(f"  Active: {Colors.highlight(str(active_specs))} specs")
-    print(f"  Completed: {Colors.info(str(completed_specs))} specs")
+    print(f"\n{Colors.BOLD}Specifications{Colors.END}:")
+    print(f"  Active: {Colors.CYAN}{active_specs}{Colors.END} specs")
+    print(f"  Completed: {Colors.BLUE}{completed_specs}{Colors.END} specs")
 
     # Pending Reviews
-    print(f"\n{Colors.bold('Pending Reviews')}: {pending_reviews} agents")
+    print(f"\n{Colors.BOLD}Pending Reviews{Colors.END}: {pending_reviews} agents")
 
     # Recent Errors
-    error_color = Colors.error if error_count > 0 else Colors.good
-    print(f"\n{Colors.bold('Recent Errors (24h)')}: {error_color(str(error_count))}")
+    error_color = Colors.RED if error_count > 0 else Colors.GREEN
+    print(f"\n{Colors.BOLD}Recent Errors (24h){Colors.END}: {error_color}{error_count}{Colors.END}")
 
     # Performance Metrics
-    print(f"\n{Colors.bold('Performance (7 days)')}:")
+    print(f"\n{Colors.BOLD}Performance (7 days){Colors.END}:")
     if metrics['total_tasks'] > 0:
         print(f"  Avg task duration: {format_duration(metrics['avg_duration'])}", end='')
 
         if metrics['change_pct'] > 0:
             trend = f"↑ {abs(metrics['change_pct']):.1f}%"
-            trend_color = Colors.error if metrics['change_pct'] > 10 else Colors.warn
+            trend_color = Colors.RED if metrics['change_pct'] > 10 else Colors.YELLOW
         elif metrics['change_pct'] < 0:
             trend = f"↓ {abs(metrics['change_pct']):.1f}%"
-            trend_color = Colors.good
+            trend_color = Colors.GREEN
         else:
             trend = "→ 0%"
-            trend_color = Colors.info
+            trend_color = Colors.BLUE
 
-        print(f" ({trend_color(trend)} vs previous week)")
+        print(f" ({trend_color}{trend}{Colors.END} vs previous week)")
         success_rate_str = f"{metrics['success_rate']:.1f}%"
-        print(f"  Success rate: {Colors.good(success_rate_str)}")
+        print(f"  Success rate: {Colors.GREEN}{success_rate_str}{Colors.END}")
     else:
-        print(f"  {Colors.info('No data available')}")
+        print(f"  {Colors.BLUE}No data available{Colors.END}")
 
     # Recommendations
-    print(f"\n{Colors.bold('Recommendations')}:")
+    print(f"\n{Colors.BOLD}Recommendations{Colors.END}:")
     for rec in recommendations:
         print(f"  {rec}")
 

@@ -6,31 +6,21 @@ Run comprehensive security analysis including vulnerability scanning and depende
 /security-scan [path] [--include-deps] [--severity critical|high|medium|low]
 
 ## What This Does
-1. Scans code for security vulnerabilities
-2. Checks authentication and authorization patterns
-3. Identifies injection risks (SQL, XSS, CSRF)
-4. Validates secrets management
-5. Optionally scans dependencies for known vulnerabilities
-6. Generates security report with severity levels
+1. Scans code for security vulnerabilities and injection risks
+2. Checks authentication/authorization patterns and secrets management
+3. Optionally scans dependencies for known vulnerabilities
+4. Generates security report with prioritized remediation steps
 
 ## Example
 /security-scan src/api --include-deps --severity high
 
 ## Agent Coordination
-1. **security-auditor**: Primary security analysis
-   - Code security patterns validation
-   - Authentication/authorization review
-   - Input validation checks
-   - Secrets management audit
-2. **dependency-scanner**: Dependency security (if --include-deps)
-   - NPM/Yarn audit integration
-   - Known vulnerability database check
-   - License compliance validation
-   - Supply chain risk assessment
+1. **security-auditor**: Primary security analysis (code patterns, auth/authz, input validation)
+2. **dependency-scanner**: Dependency security if --include-deps (vulnerabilities, license compliance)
 3. **Main LLM**: Synthesizes findings and formats report
 
 ## Output
-Security Scan Report:
+Comprehensive security report including:
 ```markdown
 ## Security Scan Report
 
@@ -98,3 +88,6 @@ Security Scan Report:
 ```
 
 Returns: Comprehensive security report with prioritized remediation steps
+
+## See Also
+For related commands, see [Quality Commands](../shared/related-quality-commands.md)

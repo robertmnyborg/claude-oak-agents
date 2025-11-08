@@ -15,37 +15,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
-# ANSI color codes
-class Color:
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    CYAN = '\033[96m'
-    MAGENTA = '\033[95m'
-    BOLD = '\033[1m'
-    END = '\033[0m'
+# Add scripts directory to path for shared imports
+SCRIPTS_DIR = Path(__file__).parent
+sys.path.insert(0, str(SCRIPTS_DIR))
 
-def parse_frontmatter(content: str) -> Dict:
-    """Extract YAML frontmatter from template."""
-    match = re.match(r'^---\n(.*?)\n---\n', content, re.DOTALL)
-    if not match:
-        return {}
-
-    frontmatter = {}
-    for line in match.group(1).split('\n'):
-        if ':' in line:
-            key, value = line.split(':', 1)
-            key = key.strip()
-            value = value.strip()
-
-            # Parse lists
-            if value.startswith('[') and value.endswith(']'):
-                value = [v.strip() for v in value[1:-1].split(',')]
-
-            frontmatter[key] = value
-
-    return frontmatter
+# Import shared utilities
+from shared import (
+    Colors as Color,  # Alias to match existing code
+    parse_frontmatter_string as parse_frontmatter,  # Alias to match existing code
+)
 
 def get_template_files(marketplace_dir: Path) -> List[Path]:
     """Get all template files from marketplace."""
@@ -59,7 +37,7 @@ def get_template_metadata(template_path: Path) -> Optional[Dict]:
     """Extract metadata from template file."""
     try:
         content = template_path.read_text()
-        metadata = parse_frontmatter(content)
+        metadata, body = parse_frontmatter(content)
         metadata['file_path'] = template_path
         metadata['content'] = content
         return metadata

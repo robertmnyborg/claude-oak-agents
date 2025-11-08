@@ -11,46 +11,31 @@ related_agents: [systems-architect, debug-specialist]
 ## Tech Stack
 
 ### Infrastructure as Code (IaC)
-- **AWS CDK**: TypeScript-based infrastructure definitions
-- **Terraform**: Multi-cloud infrastructure provisioning
-- **CloudFormation**: Native AWS infrastructure templates
-- **Serverless Framework**: Serverless application deployment
+**Primary Tools**: AWS CDK, Terraform, CloudFormation, Serverless Framework
+[IaC Tools Comparison](https://www.terraform.io/intro)
 
-### Cloud Providers
-- **AWS (Primary)**:
-  - Compute: EC2, ECS, EKS, Lambda, Fargate
-  - Storage: S3, EBS, EFS, Glacier
-  - Database: RDS, DynamoDB, ElastiCache, DocumentDB
-  - Network: VPC, CloudFront, Route53, ALB/NLB, API Gateway
-  - Monitoring: CloudWatch, X-Ray, CloudTrail
-  - Security: IAM, KMS, Secrets Manager, WAF, Shield
-  - Messaging: SNS, SQS, EventBridge, Kinesis
+### Cloud Services (AWS Primary)
+**Compute**: Lambda, ECS, EC2, EKS, Fargate
+**Storage**: S3, EBS, EFS, Glacier
+**Database**: RDS, DynamoDB, ElastiCache, DocumentDB
+**Network**: VPC, CloudFront, Route53, ALB/NLB, API Gateway
+[AWS Service Overview](https://aws.amazon.com/products/)
 
-### Containerization & Orchestration
-- **Docker**: Container runtime and image management
-- **Docker Compose**: Local multi-container orchestration
-- **Kubernetes**: Container orchestration (EKS)
-- **Amazon ECS**: AWS-native container orchestration
-- **Amazon ECR**: Docker image registry
+### Containerization (Top 5)
+**Container Runtime**: Docker, Docker Compose
+**Orchestration**: Kubernetes (EKS), Amazon ECS, Amazon ECR
+[Container Platform Comparison](https://www.docker.com/)
 
-### CI/CD Platforms
-- **GitHub Actions**: Automated workflows
-- **GitLab CI/CD**: Pipeline automation
-- **AWS CodePipeline**: Native AWS CI/CD
-- **Jenkins**: Self-hosted automation server
+### CI/CD Platforms (Top 3)
+**Primary**: GitHub Actions, GitLab CI/CD, AWS CodePipeline
+[CI/CD Comparison Guide](https://about.gitlab.com/blog/2020/07/30/cicd-platform-comparison/)
 
-### Configuration Management
-- **Ansible**: Server configuration automation
-- **AWS Systems Manager**: Parameter Store, Session Manager
-- **Consul**: Service discovery and configuration
-- **Environment Variables**: `.env` files, AWS Parameter Store
-
-### Monitoring & Observability
-- **Logging**: CloudWatch Logs, ELK Stack, Datadog
-- **Metrics**: CloudWatch Metrics, Prometheus, Grafana
-- **Tracing**: AWS X-Ray, Jaeger, OpenTelemetry
-- **APM**: New Relic, Datadog APM, Sentry
-- **Alerting**: CloudWatch Alarms, PagerDuty, Opsgenie
+### Monitoring & Observability (Top 5)
+**Logging**: CloudWatch Logs, ELK Stack, Datadog
+**Metrics**: CloudWatch Metrics, Prometheus, Grafana
+**Tracing**: AWS X-Ray, OpenTelemetry
+**APM**: Datadog APM, Sentry, New Relic
+[Observability Best Practices](https://aws.amazon.com/what-is/observability/)
 
 ## Patterns & Conventions
 

@@ -1,30 +1,25 @@
 # Pull Request with Full Context
 
-Create a comprehensive pull request that includes specification, telemetry data, and complete execution context.
+Create comprehensive pull request with specification, telemetry data, and complete execution context.
 
 ## Usage
 /pr-with-context [spec-id] [--include-telemetry] [--include-agent-log]
 
 ## What This Does
-1. Gathers all relevant context for the PR
-2. Loads specification file and extracts key sections
-3. Optionally includes telemetry data showing agent performance
-4. Optionally includes agent execution log from workflow
-5. Formats comprehensive PR description with all context
-6. Creates PR using gh CLI via git-workflow-manager
+1. Gathers all relevant context including spec and agent execution data
+2. Formats comprehensive PR description with acceptance criteria
+3. Optionally includes telemetry showing agent performance metrics
+4. Creates PR using gh CLI via git-workflow-manager
 
 ## Example
 /pr-with-context spec-20251108-oauth2 --include-telemetry
 
 ## Agent Coordination
-1. **Main LLM**: Gathers context from multiple sources
-   - Reads spec file from specs/active/
-   - Queries telemetry database for workflow data
-   - Extracts agent execution log if available
+1. **Main LLM**: Gathers context (spec files, telemetry, agent logs)
 2. **git-workflow-manager**: Creates PR with enhanced description
 
 ## Output
-PR description format:
+PR with comprehensive description including:
 ```markdown
 ## Summary
 [Spec objective summary]
@@ -63,3 +58,6 @@ PR description format:
 ```
 
 Returns: PR URL for review
+
+## See Also
+For related commands, see [Git Commands](../shared/related-git-commands.md)

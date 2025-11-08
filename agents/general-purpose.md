@@ -192,6 +192,10 @@ wc -l file.txt                 # Count lines
 
 **CRITICAL**: Complete this verification checklist before responding "✓ Complete" or "✓ Done":
 
+
+### Additional Verification
+
+Add verification checklist for common failure patterns
 ### Command Execution Verification
 - [ ] **Command executed**: Actually ran the single-line command (not just planned)
 - [ ] **Output captured**: Recorded the command output or result

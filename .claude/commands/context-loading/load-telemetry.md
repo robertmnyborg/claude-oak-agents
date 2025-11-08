@@ -6,28 +6,19 @@ Load historical telemetry data for similar tasks to inform current work with dat
 /load-telemetry [task-type] [--similar-to "description"] [--time-range 7d|30d|90d]
 
 ## What This Does
-1. Queries telemetry database for similar historical tasks
-2. Analyzes agent performance patterns
-3. Identifies successful workflows and approaches
-4. Recommends optimal agents based on historical data
-5. Provides performance benchmarks and time estimates
-6. Shows common pitfalls and failure patterns
+1. Queries telemetry for similar historical tasks and analyzes agent performance patterns
+2. Identifies successful workflows and recommends optimal agents
+3. Provides performance benchmarks, time estimates, and common pitfalls
 
 ## Example
 /load-telemetry authentication --similar-to "oauth2 implementation" --time-range 30d
 
 ## Agent Coordination
-1. **Main LLM**: Queries and analyzes telemetry data
-   - Searches invocations.jsonl for similar task patterns
-   - Aggregates performance metrics
-   - Identifies success patterns
-2. **Recommendation Engine**: Suggests optimal workflow
-   - Agent selection based on historical success rates
-   - Time estimates based on similar tasks
-   - Warning about common failure modes
+1. **Main LLM**: Queries telemetry, aggregates metrics, identifies success patterns
+2. **Recommendation Engine**: Suggests optimal workflow based on historical success rates
 
 ## Output
-Telemetry Analysis:
+Data-driven analysis including:
 ```markdown
 ## Telemetry Analysis: Authentication Tasks
 
@@ -146,4 +137,7 @@ Would you like to:
 3. Customize agent selection based on your specific needs
 ```
 
-This provides actionable, data-driven recommendations based on real historical performance.
+Returns: Actionable, data-driven recommendations based on real historical performance
+
+## See Also
+For related commands, see [Project Management Commands](../shared/related-pm-commands.md)

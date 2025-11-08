@@ -25,21 +25,35 @@ pylint>=2.17.0         # Linter
 flake8>=6.1.0          # Alternative linter
 
 # ============================================================================
+# Phase 3-5 Dependencies (Workflow Intelligence, Quality, Optimization)
+# ============================================================================
+
+# Code Quality Analysis (Phase 4)
+radon>=6.0.1                    # Code complexity and maintainability metrics
+pylint>=3.3.0                   # Code linting and quality checks
+
+# Data Visualization (Phase 4)
+plotly>=6.3.1                   # Interactive dashboards and charts
+
+# Machine Learning & Analytics (Phase 5)
+scikit-learn>=1.6.0             # ML for predictive analytics and A/B testing
+scipy>=1.13.0                   # Statistical analysis
+pandas>=2.2.0                   # Data manipulation and analysis
+numpy>=2.0.0                    # Numerical computing
+
+# ============================================================================
 # Future Dependencies (Phase 6 - ML Pipeline)
 # ============================================================================
 # Uncomment when implementing Phase 6
 
-# Machine Learning
+# Deep Learning
 # torch>=2.0.0                    # PyTorch for deep RL
 # tensorflow>=2.13.0              # TensorFlow alternative
-# scikit-learn>=1.3.0             # Classical ML algorithms
 # ray[rllib]>=2.6.0               # Ray RLlib for offline RL
 # optuna>=3.3.0                   # Hyperparameter optimization
 
-# Data Processing
-# pandas>=2.0.0                   # Data manipulation
-# numpy>=1.24.0                   # Numerical computing
-# matplotlib>=3.7.0               # Visualization
+# Additional Visualization
+# matplotlib>=3.7.0               # Static visualization
 # seaborn>=0.12.0                 # Statistical visualization
 
 # Database (for large-scale telemetry)
@@ -55,14 +69,18 @@ flake8>=6.1.0          # Alternative linter
 # Installation Instructions
 # ============================================================================
 #
-# Basic installation (development tools):
+# Phase 1-2 (Basic telemetry and improvements):
+#   # No external dependencies needed - uses Python standard library only
+#
+# Phase 3-5 (Workflow Intelligence, Quality Monitoring, Optimization):
 #   pip install -r requirements.txt
+#   # Installs: radon, pylint, plotly, scikit-learn, scipy, pandas, numpy
 #
-# Minimal installation (no dev tools):
-#   # No external dependencies needed for Phases 1-2!
+# Development tools only:
+#   pip install pytest pytest-cov black mypy
 #
-# With ML dependencies (Phase 6):
-#   Uncomment ML section above, then:
+# Phase 6 (Deep RL - Future):
+#   Uncomment Phase 6 section above, then:
 #   pip install -r requirements.txt
 #
 # ============================================================================

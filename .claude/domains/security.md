@@ -10,45 +10,36 @@ related_agents: [systems-architect, debug-specialist]
 
 ## Tech Stack
 
-### Security Tools
-- **SAST (Static Analysis)**: ESLint security plugins, Semgrep, SonarQube
-- **DAST (Dynamic Analysis)**: OWASP ZAP, Burp Suite
-- **Dependency Scanning**: npm audit, Snyk, Dependabot, OWASP Dependency-Check
-- **Container Scanning**: Docker scan, Trivy, Clair, Anchore
-- **Secret Scanning**: git-secrets, TruffleHog, GitGuardian
-- **Code Review**: CodeQL, Checkmarx
+### Security Testing Tools (Top 5)
+**SAST**: ESLint security, Semgrep, SonarQube
+**DAST**: OWASP ZAP, Burp Suite
+**Dependency Scanning**: npm audit, Snyk, Dependabot
+**Container Scanning**: Docker scan, Trivy
+**Secret Scanning**: git-secrets, TruffleHog, GitGuardian
+[OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
 
-### AWS Security Services
-- **IAM**: Identity and Access Management
-- **KMS**: Key Management Service (encryption keys)
-- **Secrets Manager**: Secure credential storage
-- **WAF**: Web Application Firewall
-- **Shield**: DDoS protection
-- **GuardDuty**: Threat detection
-- **Security Hub**: Centralized security findings
-- **Inspector**: Vulnerability assessment
-- **CloudTrail**: API audit logging
-- **Config**: Resource compliance monitoring
+### AWS Security Services (Top 5)
+**Identity**: IAM, KMS, Secrets Manager
+**Protection**: WAF, Shield, GuardDuty
+**Monitoring**: Security Hub, CloudTrail, Config
+**Assessment**: Inspector, CodeQL
+[AWS Security Best Practices](https://aws.amazon.com/architecture/security-identity-compliance/)
 
-### Authentication & Authorization
-- **JWT**: JSON Web Tokens for stateless auth
-- **OAuth 2.0**: Third-party authorization
-- **SAML**: Enterprise SSO
-- **API Keys**: Service-to-service authentication
-- **MFA**: Multi-Factor Authentication (AWS Cognito, Auth0)
+### Authentication & Authorization (Top 5)
+**Token-Based**: JWT, OAuth 2.0, OpenID Connect
+**Enterprise**: SAML, MFA (AWS Cognito, Auth0)
+**Service-to-Service**: API Keys, mTLS
+[NIST Authentication Guide](https://pages.nist.gov/800-63-3/)
 
-### Encryption
-- **At Rest**: KMS, S3 encryption, RDS encryption, DynamoDB encryption
-- **In Transit**: TLS 1.2+, HTTPS, SSL certificates (ACM)
-- **End-to-End**: Application-level encryption
+### Encryption Standards
+**At Rest**: KMS, S3 encryption, RDS encryption, DynamoDB encryption
+**In Transit**: TLS 1.2+, HTTPS, ACM certificates
+**End-to-End**: Application-level encryption
+[Encryption Best Practices](https://aws.amazon.com/kms/features/)
 
-### Compliance & Standards
-- **OWASP Top 10**: Web application security risks
-- **CIS Benchmarks**: Security configuration standards
-- **PCI DSS**: Payment card security
-- **HIPAA**: Healthcare data protection
-- **GDPR**: Data privacy regulations
-- **SOC 2**: Security, availability, confidentiality
+### Compliance Frameworks (Top 5)
+**Standards**: OWASP Top 10, CIS Benchmarks, PCI DSS, HIPAA, GDPR, SOC 2
+[OWASP Top 10](https://owasp.org/www-project-top-ten/)
 
 ## Patterns & Conventions
 

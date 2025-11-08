@@ -11,34 +11,28 @@ related_agents: [spec-manager, systems-architect, dependency-scanner, debug-spec
 ## Tech Stack
 
 ### Core Technologies
-- **Runtime**: Node.js (16.x, 18.x, 20.x)
-- **Language**: TypeScript (strict mode), JavaScript ES2022+
-- **Frameworks**: Express.js, NestJS, Fastify, Koa
-- **API Styles**: REST, GraphQL (Apollo Server), gRPC
+**Runtime**: Node.js (16.x, 18.x, 20.x)
+**Language**: TypeScript (strict mode), JavaScript ES2022+
+**Frameworks**: Express.js, NestJS, Fastify, Koa - [Framework comparison](https://www.npmtrends.com/express-vs-fastify-vs-nestjs-vs-koa)
+**API Styles**: REST, GraphQL (Apollo Server), gRPC
 
-### Serverless Platforms
-- **AWS Lambda**: Serverless Framework, SAM
-- **Deployment**: Serverless Framework with Node.js runtime
-- **Event Sources**: API Gateway, SNS, SQS, DynamoDB Streams, EventBridge
+### Serverless & Databases (Top 5)
+**Serverless**: AWS Lambda, Serverless Framework, SAM
+**Relational**: PostgreSQL 14+, MySQL 8+
+**Document**: MongoDB 5+, DynamoDB
+**In-Memory**: Redis, ElastiCache
+[See database selection guide](https://aws.amazon.com/products/databases/)
 
-### Databases
-- **Relational**: PostgreSQL 14+, MySQL 8+
-- **Document**: MongoDB 5+, DynamoDB
-- **In-Memory**: Redis, ElastiCache
-- **Search**: Elasticsearch, OpenSearch
+### Message Queues & Streaming (Top 5)
+**Message Queues**: AWS SQS, RabbitMQ
+**Pub/Sub**: AWS SNS, Redis Pub/Sub
+**Streaming**: Kafka, AWS Kinesis
+[See streaming comparison](https://www.confluent.io/blog/kafka-ecosystem-ecosystem-comparison/)
 
-### Message Queues & Streaming
-- **Message Queues**: AWS SQS, RabbitMQ
-- **Pub/Sub**: AWS SNS, Redis Pub/Sub
-- **Streaming**: Kafka, AWS Kinesis
-- **Event-Driven**: EventBridge, custom event systems
-
-### Testing & Quality
-- **Unit Testing**: Jest, Mocha, Vitest
-- **Integration Testing**: Supertest, Pactum
-- **E2E Testing**: Postman, REST Client
-- **Mocking**: Sinon, jest.mock
-- **Code Quality**: ESLint, Prettier, SonarQube
+### Testing & Quality (Top 3)
+**Unit Testing**: Jest, Vitest, Supertest
+**Integration Testing**: Pactum, REST Client
+**Quality**: ESLint, Prettier, SonarQube
 
 ## Patterns & Conventions
 

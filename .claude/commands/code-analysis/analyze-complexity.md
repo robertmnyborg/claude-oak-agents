@@ -6,26 +6,22 @@ Run comprehensive complexity analysis to identify over-engineering and suggest s
 /analyze-complexity [path] [--report-format json|markdown]
 
 ## What This Does
-1. Analyzes codebase or specific path for complexity issues
-2. Identifies over-abstraction and premature optimization
-3. Calculates cyclomatic complexity metrics
-4. Flags YAGNI violations (You Aren't Gonna Need It)
-5. Suggests concrete simplifications
-6. Generates detailed complexity report
+1. Analyzes codebase for complexity issues and over-abstraction
+2. Calculates cyclomatic complexity and identifies YAGNI violations
+3. Suggests concrete simplifications with impact analysis
+4. Generates detailed complexity report with actionable recommendations
 
 ## Example
 /analyze-complexity src/auth --report-format markdown
 
 ## Agent Coordination
-1. **design-simplicity-advisor**: Primary analysis agent
-   - Scans code for complexity patterns
-   - Identifies unnecessary abstractions
-   - Calculates complexity scores
-   - Recommends simplifications
+1. **design-simplicity-advisor**: Primary analysis
+   - Scans code for complexity patterns and unnecessary abstractions
+   - Calculates complexity scores and recommends simplifications
 2. **Main LLM**: Formats and presents report
 
 ## Output
-Complexity Report Format:
+Detailed complexity report including:
 ```markdown
 ## Code Complexity Analysis Report
 
@@ -70,3 +66,6 @@ Complexity Report Format:
 ```
 
 Returns: Detailed analysis with actionable recommendations
+
+## See Also
+For related commands, see [Quality Commands](../shared/related-quality-commands.md)

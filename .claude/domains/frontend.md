@@ -11,32 +11,29 @@ related_agents: [spec-manager, systems-architect, dependency-scanner]
 ## Tech Stack
 
 ### Core Technologies
-- **Framework**: React 18+, Vue 3, Angular 15+, Next.js
-- **Language**: TypeScript (strict mode), JavaScript ES2022+
-- **Build Tools**: Vite, Webpack 5, ESBuild, Rollup, Turborepo
-- **Package Manager**: Yarn 3.5.1 (Berry), npm, pnpm
+**Frameworks**: React 18+, Vue 3, Next.js - [See State of JS 2024 comparison](https://2024.stateofjs.com/en-US/libraries/front-end-frameworks/)
+**Languages**: TypeScript (strict mode), JavaScript ES2022+
+**Build Tools**: Vite, Webpack 5 - [Complete build tool comparison](https://webpack.js.org/concepts/why-webpack/)
+**Package Manager**: Yarn 3.5.1 (Berry), npm
 
-### State Management
-- **React**: Redux Toolkit, Zustand, TanStack Query, Context API
-- **Vue**: Pinia, Vuex 4, Composition API
-- **Angular**: NgRx, RxJS
+### State Management (Top 5)
+React: **Redux Toolkit**, Zustand, TanStack Query, Context API, Pinia
+Vue: **Pinia**, Composition API, Vuex 4
+[See more options](https://thenewstack.io/redux-alternatives-how-to-manage-state-in-javascript-apps/)
 
 ### Styling Solutions
-- **CSS Frameworks**: Tailwind CSS, Bootstrap 5
-- **CSS-in-JS**: Styled Components, Emotion, CSS Modules
-- **Preprocessors**: SCSS/Sass, Less
+**CSS Frameworks**: Tailwind CSS, Bootstrap 5
+**CSS-in-JS**: Styled Components, Emotion, CSS Modules
+[See styling comparison](https://www.sitepoint.com/react-css-styling-options/)
 
-### UI Libraries
-- **React**: Material-UI (MUI), Ant Design, Chakra UI, Shadcn/ui
-- **Vue**: Vuetify, Quasar, Element Plus
-- **Component Libraries**: Radix UI, Headless UI, React Aria
+### UI Libraries (Top 5)
+React: **Material-UI (MUI)**, Chakra UI, Ant Design, Shadcn/ui
+Vue: **Vuetify**, Quasar, Element Plus
 
-### Testing & Quality
-- **Unit Testing**: Jest, Vitest, React Testing Library
-- **E2E Testing**: Cypress, Playwright, Puppeteer
-- **Linting**: ESLint (Airbnb/Standard config)
-- **Formatting**: Prettier
-- **Type Checking**: TypeScript strict mode
+### Testing & Quality (Top 3)
+**Unit Testing**: Jest, Vitest, React Testing Library
+**E2E Testing**: Cypress, Playwright
+**Quality**: ESLint, Prettier, TypeScript strict mode
 
 ## Patterns & Conventions
 

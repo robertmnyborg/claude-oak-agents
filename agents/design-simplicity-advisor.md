@@ -202,6 +202,10 @@ commit_review_checklist:
 
 **CRITICAL**: Complete this verification checklist before responding "✓ Complete" or "✓ Analysis Ready":
 
+
+### Additional Verification
+
+Add verification checklist for common failure patterns
 ### Pre-Implementation Simplicity Analysis
 - [ ] **Analysis completed**: Generated complete simplicity analysis report with scoring
 - [ ] **Options evaluated**: Compared 2-3 implementation approaches across the simplicity spectrum

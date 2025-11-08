@@ -6,32 +6,21 @@ Analyze code for performance bottlenecks and optimization opportunities.
 /performance-check [path] [--profile] [--focus api|database|rendering]
 
 ## What This Does
-1. Identifies performance bottlenecks in code
-2. Analyzes algorithmic complexity (Big O)
-3. Detects inefficient database queries (N+1 problems)
-4. Flags unnecessary re-renders (React/Vue)
-5. Identifies memory leaks and resource issues
-6. Suggests performance optimizations
+1. Identifies performance bottlenecks and analyzes algorithmic complexity
+2. Detects inefficient database queries (N+1 problems) and missing indexes
+3. Flags unnecessary re-renders and memory leaks
+4. Suggests performance optimizations with estimated impact
 
 ## Example
 /performance-check src/api --focus database
 
 ## Agent Coordination
 1. **Main LLM**: Static code analysis for performance patterns
-   - Algorithm complexity analysis
-   - Resource usage patterns
-   - Inefficient loops and operations
-2. **backend-architect** (for API/database focus):
-   - Database query optimization
-   - API endpoint performance
-   - Caching opportunities
-3. **frontend-developer** (for rendering focus):
-   - React/Vue render optimization
-   - Bundle size analysis
-   - Lazy loading opportunities
+2. **backend-architect** (API/database focus): Query optimization, caching opportunities
+3. **frontend-developer** (rendering focus): React/Vue optimization, bundle size analysis
 
 ## Output
-Performance Analysis Report:
+Actionable performance optimization roadmap including:
 ```markdown
 ## Performance Check Report
 
@@ -132,3 +121,6 @@ Performance Analysis Report:
 ```
 
 Returns: Actionable performance optimization roadmap
+
+## See Also
+For related commands, see [Quality Commands](../shared/related-quality-commands.md)

@@ -452,10 +452,38 @@ print(f"Change: {trend_data['success_rate_change']:+.1f} percentage points")
 EOF
 }
 
+oak-analyze-workflow() {
+    if [ -z "$1" ]; then
+        echo "Usage: oak-analyze-workflow <workflow-id>"
+        echo "       oak-analyze-workflow --list    # List all workflows"
+        echo "       oak-analyze-workflow           # Analyze all workflows"
+        return 1
+    fi
+
+    OAK_ROOT="${OAK_ROOT:-$HOME/Projects/claude-oak-agents}"
+    cd "$OAK_ROOT" || return 1
+
+    python3 scripts/phase3/analyze_workflow.py "$@"
+}
+
+oak-test-workflow-monitor() {
+    echo "🧪 Testing Phase 3 Workflow Monitor..."
+    OAK_ROOT="${OAK_ROOT:-$HOME/Projects/claude-oak-agents}"
+    cd "$OAK_ROOT" || return 1
+
+    python3 scripts/phase3/test_workflow_monitor.py
+}
+
 oak-help() {
     cat << 'EOF'
 OaK Agent System Commands
 ======================================================================
+
+Workflow Intelligence (Phase 3):
+  oak-analyze-workflow <id>        Analyze specific workflow performance
+  oak-analyze-workflow --list      List all workflows
+  oak-analyze-workflow             Analyze all workflows (summary)
+  oak-test-workflow-monitor        Test workflow monitoring system
 
 Workflow Coordination (Phase 2):
   oak-workflows                    Show recent multi-agent workflow stats

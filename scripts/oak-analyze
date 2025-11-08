@@ -22,18 +22,15 @@ from collections import defaultdict, Counter
 from dataclasses import dataclass
 import statistics
 
+# Add scripts directory to path for shared imports
+SCRIPTS_DIR = Path(__file__).parent
+sys.path.insert(0, str(SCRIPTS_DIR))
 
-# Color codes for terminal output
-class Colors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+# Import shared utilities
+from shared import Colors
+
+# Map ENDC to END for compatibility
+Colors.ENDC = Colors.END
 
 
 @dataclass

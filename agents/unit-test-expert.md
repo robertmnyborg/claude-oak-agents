@@ -211,6 +211,10 @@ npm test -- --watch
 
 **CRITICAL**: Complete this verification checklist before responding "✓ Tests Complete" or "✓ Coverage Verified":
 
+
+### Additional Verification
+
+Add verification checklist for common failure patterns
 ### Test Creation
 - [ ] **Tests written**: Created actual test files (not just plans or stubs)
 - [ ] **Test files saved**: Confirmed test files exist on filesystem (`.test.js`, `.spec.ts`, `_test.py`, etc.)

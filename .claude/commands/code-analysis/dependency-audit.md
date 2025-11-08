@@ -6,27 +6,20 @@ Comprehensive audit of project dependencies for vulnerabilities, licenses, and s
 /dependency-audit [--fix-auto] [--report json|markdown] [--license-check]
 
 ## What This Does
-1. Scans all dependencies for known vulnerabilities
-2. Checks for outdated packages with security patches
-3. Validates license compliance
-4. Identifies supply chain risks
-5. Recommends dependency updates
-6. Optionally auto-fixes non-breaking updates
+1. Scans dependencies for known vulnerabilities and outdated packages
+2. Validates license compliance and identifies supply chain risks
+3. Recommends updates with breaking change analysis
+4. Optionally auto-fixes non-breaking security updates
 
 ## Example
 /dependency-audit --license-check --report markdown
 
 ## Agent Coordination
-1. **dependency-scanner**: Primary audit agent
-   - NPM audit / Yarn audit integration
-   - CVE database queries
-   - License compliance checking
-   - Dependency tree analysis
-   - Supply chain risk assessment
+1. **dependency-scanner**: Primary audit (CVE database, license checking, supply chain risk)
 2. **Main LLM**: Formats report and recommendations
 
 ## Output
-Dependency Audit Report:
+Comprehensive dependency report including:
 ```markdown
 ## Dependency Audit Report
 
@@ -160,3 +153,6 @@ yarn upgrade react@18.2.0        # Review component lifecycle changes
 ```
 
 Returns: Comprehensive dependency report with prioritized remediation
+
+## See Also
+For related commands, see [Quality Commands](../shared/related-quality-commands.md)

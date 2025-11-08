@@ -246,3 +246,5 @@ Recommended: Run velocity analysis weekly or monthly to track progress on recomm
 ```
 
 This provides data-driven insights into team performance with actionable recommendations.
+## See Also
+For related commands, see [Quality Commands](../shared/related-quality-commands.md)

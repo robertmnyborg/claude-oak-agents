@@ -10,57 +10,35 @@ related_agents: [debug-specialist, dependency-scanner]
 
 ## Tech Stack
 
-### Relational Databases
-- **PostgreSQL**: 14+, 15+ (primary RDBMS)
-- **MySQL**: 8.0+ (legacy systems)
-- **Amazon RDS**: Managed PostgreSQL, MySQL
-- **Amazon Aurora**: PostgreSQL-compatible, MySQL-compatible
+### Databases (Top 10)
+**Relational**: PostgreSQL 14+, MySQL 8.0+, Amazon Aurora, Amazon RDS
+**NoSQL**: MongoDB 5.0+, DynamoDB, Redis, ElastiCache
+[Database Selection Guide](https://aws.amazon.com/products/databases/)
 
-### NoSQL Databases
-- **MongoDB**: 5.0+, 6.0+ (document store)
-- **DynamoDB**: AWS-native NoSQL (key-value, document)
-- **Redis**: In-memory cache and data store
-- **ElastiCache**: Managed Redis, Memcached
+### Data Warehouses (Top 3)
+**Cloud Platforms**: Amazon Redshift, Snowflake, Google BigQuery
+[Data Warehouse Comparison](https://aws.amazon.com/redshift/)
 
-### Data Warehouses
-- **Amazon Redshift**: Columnar data warehouse
-- **Snowflake**: Cloud data platform
-- **Google BigQuery**: Serverless analytics
+### Data Processing & ETL (Top 5)
+**Orchestration**: Apache Airflow (MWAA), AWS Glue, dbt
+**Processing**: Apache Spark (EMR), AWS Glue, dbt
+[ETL Tools Comparison](https://www.getdbt.com/)
 
-### Data Processing
-- **Apache Airflow (MWAA)**: Workflow orchestration
-- **AWS Glue**: ETL service, data catalog
-- **dbt (data build tool)**: Data transformation
-- **Apache Spark**: Distributed processing (EMR)
+### Streaming & Events (Top 5)
+**Real-Time**: Amazon Kinesis, Apache Kafka
+**Change Capture**: DynamoDB Streams, Debezium
+**Event Bus**: EventBridge, SNS/SQS
+[Streaming Architecture Guide](https://aws.amazon.com/kinesis/)
 
-### Streaming & Events
-- **Amazon Kinesis**: Real-time data streaming
-- **Apache Kafka**: Distributed event streaming
-- **DynamoDB Streams**: Change data capture
-- **EventBridge**: Event bus
+### Storage & Migration (Top 5)
+**Object Storage**: Amazon S3, S3 Glacier, EBS, EFS
+**Migration**: AWS DMS, AWS DataSync, Change Data Capture
+[Data Migration Best Practices](https://aws.amazon.com/dms/)
 
-### Data Storage
-- **Amazon S3**: Object storage (data lake)
-- **S3 Glacier**: Long-term archival
-- **EFS**: Network file system
-- **EBS**: Block storage
-
-### Migration & Sync
-- **AWS DMS**: Database Migration Service
-- **AWS DataSync**: Data transfer service
-- **Change Data Capture**: Debezium, DynamoDB Streams
-
-### Data Modeling & ORMs
-- **Mongoose**: MongoDB ODM for Node.js
-- **TypeORM**: TypeScript ORM (SQL databases)
-- **Prisma**: Next-generation ORM
-- **Sequelize**: Node.js ORM (SQL)
-
-### Query & Analytics Tools
-- **SQL**: Standard query language
-- **Elasticsearch**: Search and analytics engine
-- **OpenSearch**: AWS fork of Elasticsearch
-- **Athena**: Serverless SQL on S3
+### Data Access Layers (Top 5)
+**ORMs**: Prisma, TypeORM, Mongoose, Sequelize
+**Query Tools**: SQL, Elasticsearch, OpenSearch, Athena
+[ORM Comparison](https://www.prisma.io/docs/overview/why-prisma)
 
 ## Patterns & Conventions
 

@@ -1,32 +1,25 @@
 # Load Workflow
 
-Load a workflow by ID to view history, resume interrupted workflows, or analyze execution patterns.
+Load workflow by ID to view history, resume interrupted workflows, or analyze execution patterns.
 
 ## Usage
 /load-workflow [workflow-id]
 
 ## What This Does
-1. Queries telemetry database for workflow data
-2. Loads all agent invocations in the workflow
-3. Shows workflow history and current state
-4. Allows resuming interrupted workflows from last successful step
-5. Displays performance metrics and bottlenecks
+1. Queries telemetry database and loads all agent invocations in workflow
+2. Shows workflow history, current state, and performance metrics
+3. Allows resuming interrupted workflows from last successful step
 
 ## Example
 /load-workflow wf-20251108-abc123
 
 ## Agent Coordination
-1. **Main LLM**: Queries telemetry system
-   - Reads workflow invocations from telemetry/invocations.jsonl
-   - Reconstructs workflow sequence using parent_invocation_id
-   - Identifies current workflow state
-2. **Workflow Resume**: Sets context for continuation
-   - `OAK_WORKFLOW_ID=wf-20251108-abc123`
-   - `OAK_RESUME_FROM=inv-20251108-xyz789`
-3. **State Validation**: Ensures workflow can be resumed safely
+1. **Main LLM**: Queries telemetry and reconstructs workflow sequence
+2. **Workflow Resume**: Sets context for continuation (OAK_WORKFLOW_ID, OAK_RESUME_FROM)
+3. **State Validation**: Ensures safe resumption
 
 ## Output
-Workflow History:
+Workflow history including:
 ```markdown
 ## Workflow: wf-20251108-abc123
 
@@ -103,3 +96,6 @@ This will:
 - Continue from last completed agent
 - Preserve all previous agent outputs
 - Link new invocations to same workflow_id
+
+## See Also
+For related commands, see [Project Management Commands](../shared/related-pm-commands.md)
