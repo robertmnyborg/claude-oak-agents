@@ -1,0 +1,363 @@
+#!/usr/bin/env python3
+"""
+oak-discover - Interactive CLI tool for browsing oak agents and workflows
+
+Features:
+- List all agents by category
+- Search agents by keyword or capability
+- Show agent details and frontmatter metadata
+- Preview agent prompts
+- Interactive menu navigation
+"""
+
+import os
+import sys
+import re
+from pathlib import Path
+from typing import Dict, List, Optional
+import argparse
+
+# Color codes for terminal output
+class Colors:
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+def parse_frontmatter(content: str) -> tuple[Dict[str, any], str]:
+    """Parse YAML frontmatter from markdown file"""
+    frontmatter = {}
+    body = content
+
+    if content.startswith('---\n'):
+        parts = content.split('---\n', 2)
+        if len(parts) >= 3:
+            frontmatter_text = parts[1]
+            body = parts[2]
+
+            # Simple YAML parsing (key: value format)
+            for line in frontmatter_text.strip().split('\n'):
+                if ':' in line:
+                    key, value = line.split(':', 1)
+                    key = key.strip()
+                    value = value.strip().strip('"\'')
+
+                    # Handle list values
+                    if value.startswith('[') and value.endswith(']'):
+                        value = [v.strip() for v in value[1:-1].split(',')]
+
+                    frontmatter[key] = value
+
+    return frontmatter, body
+
+def get_agent_category(agent_type: str) -> str:
+    """Map agent_type to display category"""
+    category_map = {
+        'development': 'Development',
+        'quality': 'Quality & Testing',
+        'security': 'Security',
+        'infrastructure': 'Infrastructure',
+        'documentation': 'Documentation',
+        'meta': 'Meta & Planning',
+        'analysis': 'Analysis',
+        'utility': 'Utility'
+    }
+    return category_map.get(agent_type, 'Other')
+
+def load_agents(agents_dir: Path) -> Dict[str, Dict]:
+    """Load all agent files and parse metadata"""
+    agents = {}
+
+    if not agents_dir.exists():
+        return agents
+
+    for agent_file in agents_dir.glob('*.md'):
+        if agent_file.name == 'README.md':
+            continue
+
+        try:
+            content = agent_file.read_text()
+            frontmatter, body = parse_frontmatter(content)
+
+            # Extract first paragraph as summary
+            summary_lines = []
+            for line in body.split('\n'):
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    summary_lines.append(line)
+                    if len(summary_lines) >= 3:
+                        break
+
+            summary = ' '.join(summary_lines)[:200] + '...' if summary_lines else 'No description available'
+
+            # Determine category from agent_type in frontmatter or file content
+            agent_type = 'utility'
+            if 'agent_type' in frontmatter:
+                agent_type = frontmatter['agent_type']
+            elif 'type' in frontmatter:
+                agent_type = frontmatter['type']
+
+            agents[frontmatter.get('name', agent_file.stem)] = {
+                'file': agent_file,
+                'frontmatter': frontmatter,
+                'body': body,
+                'summary': summary,
+                'category': get_agent_category(agent_type)
+            }
+        except Exception as e:
+            print(f"{Colors.RED}Warning: Failed to parse {agent_file.name}: {e}{Colors.END}", file=sys.stderr)
+
+    return agents
+
+def list_agents_by_category(agents: Dict[str, Dict], show_details: bool = False):
+    """Display agents organized by category"""
+    # Group by category
+    by_category = {}
+    for name, agent in agents.items():
+        category = agent['category']
+        if category not in by_category:
+            by_category[category] = []
+        by_category[category].append((name, agent))
+
+    # Display
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Oak Agents Portfolio ({len(agents)} agents){Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    for category in sorted(by_category.keys()):
+        print(f"{Colors.BOLD}{Colors.CYAN}{category}:{Colors.END}")
+
+        for name, agent in sorted(by_category[category]):
+            fm = agent['frontmatter']
+            model_tier = fm.get('model_tier', 'unknown')
+            description = fm.get('description', agent['summary'])
+
+            # Color code by model tier
+            tier_color = Colors.GREEN if model_tier == 'fast' else Colors.YELLOW if model_tier == 'balanced' else Colors.RED
+
+            print(f"  {Colors.BOLD}{name}{Colors.END} [{tier_color}{model_tier}{Colors.END}]")
+
+            if show_details:
+                print(f"    {Colors.CYAN}→{Colors.END} {description}")
+                if 'tools' in fm:
+                    tools = fm['tools'] if isinstance(fm['tools'], list) else [fm['tools']]
+                    print(f"    {Colors.YELLOW}Tools:{Colors.END} {', '.join(tools)}")
+            else:
+                # Show compact description
+                desc_short = description[:70] + '...' if len(description) > 70 else description
+                print(f"    {desc_short}")
+
+        print()
+
+def search_agents(agents: Dict[str, Dict], query: str) -> List[tuple[str, Dict, float]]:
+    """Search agents by keyword, return matches with relevance score"""
+    query_lower = query.lower()
+    results = []
+
+    for name, agent in agents.items():
+        score = 0.0
+
+        # Check name (highest weight)
+        if query_lower in name.lower():
+            score += 10.0
+
+        # Check description
+        description = agent['frontmatter'].get('description', '')
+        if query_lower in description.lower():
+            score += 5.0
+
+        # Check tools
+        tools = agent['frontmatter'].get('tools', [])
+        if isinstance(tools, list) and any(query_lower in tool.lower() for tool in tools):
+            score += 3.0
+
+        # Check body content (lower weight)
+        if query_lower in agent['body'].lower():
+            score += 1.0
+
+        if score > 0:
+            results.append((name, agent, score))
+
+    # Sort by score descending
+    results.sort(key=lambda x: x[2], reverse=True)
+    return results
+
+def show_agent_details(name: str, agent: Dict):
+    """Display detailed information about an agent"""
+    fm = agent['frontmatter']
+
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.GREEN}{name}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    # Metadata
+    print(f"{Colors.BOLD}Category:{Colors.END} {agent['category']}")
+    print(f"{Colors.BOLD}Model Tier:{Colors.END} {fm.get('model_tier', 'unknown')}")
+    if 'model_rationale' in fm:
+        print(f"{Colors.BOLD}Model Rationale:{Colors.END} {fm['model_rationale']}")
+
+    print(f"\n{Colors.BOLD}Description:{Colors.END}")
+    print(f"  {fm.get('description', 'No description available')}")
+
+    if 'tools' in fm:
+        tools = fm['tools'] if isinstance(fm['tools'], list) else [fm['tools']]
+        print(f"\n{Colors.BOLD}Tools:{Colors.END} {', '.join(tools)}")
+
+    # Show first 20 lines of body
+    print(f"\n{Colors.BOLD}Prompt Preview:{Colors.END}")
+    lines = agent['body'].split('\n')[:20]
+    for line in lines:
+        if line.strip():
+            print(f"  {line}")
+
+    if len(agent['body'].split('\n')) > 20:
+        print(f"\n  {Colors.YELLOW}[... truncated, see full file at {agent['file']} ...]{Colors.END}")
+
+def show_workflow_patterns():
+    """Display common workflow patterns"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Common Workflow Patterns{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    workflows = [
+        {
+            'name': 'Simple Implementation',
+            'pattern': 'Implementation Agent → quality-gate → git-workflow-manager',
+            'use_case': 'Standard feature implementation with unified quality validation'
+        },
+        {
+            'name': 'Security-Critical Implementation',
+            'pattern': 'design-simplicity-advisor → security-auditor + backend-architect → quality-gate → git-workflow-manager',
+            'use_case': 'Authentication, authorization, data protection'
+        },
+        {
+            'name': 'Multi-Domain Architecture',
+            'pattern': 'systems-architect → [backend-architect + infrastructure-specialist] → quality-gate → git-workflow-manager',
+            'use_case': 'Cross-cutting architectural changes'
+        },
+        {
+            'name': 'Emergency Debug',
+            'pattern': 'debug-specialist → domain-specialist → quality-gate → git-workflow-manager',
+            'use_case': 'Critical production issues (highest priority)'
+        },
+        {
+            'name': 'Spec-Driven Development',
+            'pattern': 'spec-manager → agent delegation → quality-gate → git-workflow-manager',
+            'use_case': 'Complex features requiring collaborative specification'
+        }
+    ]
+
+    for wf in workflows:
+        print(f"{Colors.BOLD}{Colors.GREEN}{wf['name']}{Colors.END}")
+        print(f"  {Colors.CYAN}Pattern:{Colors.END} {wf['pattern']}")
+        print(f"  {Colors.YELLOW}Use Case:{Colors.END} {wf['use_case']}")
+        print()
+
+def interactive_menu(agents: Dict[str, Dict]):
+    """Interactive CLI menu"""
+    while True:
+        print(f"\n{Colors.BOLD}{Colors.CYAN}Oak Agent Discovery Menu{Colors.END}")
+        print("=" * 40)
+        print("1. List all agents by category")
+        print("2. List agents with details")
+        print("3. Search agents by keyword")
+        print("4. Show workflow patterns")
+        print("5. Show agent details")
+        print("q. Quit")
+        print()
+
+        choice = input(f"{Colors.BOLD}Choose an option:{Colors.END} ").strip().lower()
+
+        if choice == 'q' or choice == 'quit':
+            print("Goodbye!")
+            break
+        elif choice == '1':
+            list_agents_by_category(agents, show_details=False)
+        elif choice == '2':
+            list_agents_by_category(agents, show_details=True)
+        elif choice == '3':
+            query = input(f"{Colors.BOLD}Enter search keyword:{Colors.END} ").strip()
+            results = search_agents(agents, query)
+            if results:
+                print(f"\n{Colors.GREEN}Found {len(results)} matching agents:{Colors.END}\n")
+                for name, agent, score in results:
+                    print(f"  {Colors.BOLD}{name}{Colors.END} (score: {score:.1f})")
+                    print(f"    {agent['frontmatter'].get('description', 'No description')[:80]}...")
+                    print()
+            else:
+                print(f"\n{Colors.RED}No agents found matching '{query}'{Colors.END}")
+        elif choice == '4':
+            show_workflow_patterns()
+        elif choice == '5':
+            agent_name = input(f"{Colors.BOLD}Enter agent name:{Colors.END} ").strip()
+            if agent_name in agents:
+                show_agent_details(agent_name, agents[agent_name])
+            else:
+                print(f"\n{Colors.RED}Agent '{agent_name}' not found{Colors.END}")
+                print(f"{Colors.YELLOW}Available agents:{Colors.END} {', '.join(sorted(agents.keys()))}")
+        else:
+            print(f"{Colors.RED}Invalid option{Colors.END}")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Oak Agent Discovery Tool - Browse agents and workflows',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    parser.add_argument('--list', '-l', action='store_true',
+                       help='List all agents by category')
+    parser.add_argument('--details', '-d', action='store_true',
+                       help='Show detailed agent information when listing')
+    parser.add_argument('--search', '-s', metavar='QUERY',
+                       help='Search agents by keyword')
+    parser.add_argument('--show', metavar='AGENT',
+                       help='Show details for specific agent')
+    parser.add_argument('--workflows', '-w', action='store_true',
+                       help='Show common workflow patterns')
+    parser.add_argument('--agents-dir', default='/Users/robertnyborg/Projects/claude-oak-agents/agents',
+                       help='Path to agents directory')
+
+    args = parser.parse_args()
+
+    # Load agents
+    agents_dir = Path(args.agents_dir)
+    agents = load_agents(agents_dir)
+
+    if not agents:
+        print(f"{Colors.RED}Error: No agents found in {agents_dir}{Colors.END}", file=sys.stderr)
+        return 1
+
+    # Handle command-line options
+    if args.list:
+        list_agents_by_category(agents, show_details=args.details)
+    elif args.search:
+        results = search_agents(agents, args.search)
+        if results:
+            print(f"\n{Colors.GREEN}Found {len(results)} matching agents:{Colors.END}\n")
+            for name, agent, score in results:
+                print(f"  {Colors.BOLD}{name}{Colors.END} (score: {score:.1f})")
+                print(f"    {agent['frontmatter'].get('description', 'No description')[:80]}...")
+        else:
+            print(f"\n{Colors.RED}No agents found matching '{args.search}'{Colors.END}")
+    elif args.show:
+        if args.show in agents:
+            show_agent_details(args.show, agents[args.show])
+        else:
+            print(f"{Colors.RED}Agent '{args.show}' not found{Colors.END}", file=sys.stderr)
+            print(f"{Colors.YELLOW}Available agents:{Colors.END} {', '.join(sorted(agents.keys()))}")
+            return 1
+    elif args.workflows:
+        show_workflow_patterns()
+    else:
+        # Interactive menu
+        interactive_menu(agents)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())

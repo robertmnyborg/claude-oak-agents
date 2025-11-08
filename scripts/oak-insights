@@ -1,0 +1,356 @@
+#!/usr/bin/env python3
+"""
+oak-insights - Telemetry analytics dashboard
+
+Features:
+- Most-used agents with success rates
+- Most-used workflows
+- Average task duration by agent
+- Recent invocations
+- Performance trends
+- Recommendations based on patterns
+"""
+
+import json
+import sys
+from pathlib import Path
+from collections import defaultdict, Counter
+from datetime import datetime, timedelta
+from typing import Dict, List
+import argparse
+
+# Color codes
+class Colors:
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+def load_invocations(telemetry_file: Path) -> List[Dict]:
+    """Load agent invocations from JSONL file"""
+    invocations = []
+
+    if not telemetry_file.exists():
+        return invocations
+
+    try:
+        with open(telemetry_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        invocations.append(json.loads(line))
+                    except json.JSONDecodeError as e:
+                        print(f"{Colors.YELLOW}Warning: Skipping malformed line: {e}{Colors.END}", file=sys.stderr)
+    except Exception as e:
+        print(f"{Colors.RED}Error reading telemetry: {e}{Colors.END}", file=sys.stderr)
+
+    return invocations
+
+def calculate_agent_stats(invocations: List[Dict]) -> Dict:
+    """Calculate statistics per agent"""
+    stats = defaultdict(lambda: {
+        'total': 0,
+        'success': 0,
+        'failure': 0,
+        'durations': [],
+        'recent': []
+    })
+
+    for inv in invocations:
+        agent = inv.get('agent_name', 'unknown')
+        status = inv.get('outcome', {}).get('status', 'unknown')
+        duration = inv.get('duration_seconds', 0)
+
+        stats[agent]['total'] += 1
+        if status == 'success':
+            stats[agent]['success'] += 1
+        elif status == 'failure':
+            stats[agent]['failure'] += 1
+
+        if duration:
+            stats[agent]['durations'].append(duration)
+
+        stats[agent]['recent'].append(inv)
+
+    # Calculate averages
+    for agent in stats:
+        durations = stats[agent]['durations']
+        stats[agent]['avg_duration'] = sum(durations) / len(durations) if durations else 0
+
+        # Keep only last 5 recent invocations
+        stats[agent]['recent'] = sorted(
+            stats[agent]['recent'],
+            key=lambda x: x.get('timestamp', ''),
+            reverse=True
+        )[:5]
+
+    return dict(stats)
+
+def calculate_workflow_stats(invocations: List[Dict]) -> Dict:
+    """Calculate statistics per workflow"""
+    workflows = defaultdict(lambda: {
+        'agents': [],
+        'total_duration': 0,
+        'count': 0,
+        'success': 0,
+        'failure': 0
+    })
+
+    for inv in invocations:
+        workflow_id = inv.get('workflow_id')
+        if not workflow_id:
+            continue
+
+        status = inv.get('outcome', {}).get('status', 'unknown')
+        duration = inv.get('duration_seconds', 0)
+        agent = inv.get('agent_name', 'unknown')
+
+        workflows[workflow_id]['agents'].append(agent)
+        workflows[workflow_id]['total_duration'] += duration
+        workflows[workflow_id]['count'] += 1
+
+        if status == 'success':
+            workflows[workflow_id]['success'] += 1
+        elif status == 'failure':
+            workflows[workflow_id]['failure'] += 1
+
+    return dict(workflows)
+
+def show_agent_leaderboard(stats: Dict, limit: int = 10):
+    """Display top agents by usage"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Most-Used Agents (Top {limit}){Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    # Sort by total invocations
+    sorted_agents = sorted(stats.items(), key=lambda x: x[1]['total'], reverse=True)[:limit]
+
+    print(f"{'Rank':<5} {'Agent':<30} {'Invocations':<15} {'Success Rate':<15} {'Avg Duration':<15}")
+    print('-' * 80)
+
+    for rank, (agent, data) in enumerate(sorted_agents, 1):
+        total = data['total']
+        success = data['success']
+        success_rate = (success / total * 100) if total > 0 else 0
+        avg_duration = data['avg_duration']
+
+        # Color code success rate
+        if success_rate >= 90:
+            rate_color = Colors.GREEN
+        elif success_rate >= 70:
+            rate_color = Colors.YELLOW
+        else:
+            rate_color = Colors.RED
+
+        print(f"{rank:<5} {agent:<30} {total:<15} {rate_color}{success_rate:>5.1f}%{Colors.END}{'':>9} {avg_duration:>8.1f}s{' '*6}")
+
+def show_workflow_summary(workflow_stats: Dict, limit: int = 10):
+    """Display workflow statistics"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Most-Used Workflows (Top {limit}){Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    if not workflow_stats:
+        print(f"{Colors.YELLOW}No workflow data available{Colors.END}")
+        return
+
+    # Sort by count
+    sorted_workflows = sorted(workflow_stats.items(), key=lambda x: x[1]['count'], reverse=True)[:limit]
+
+    for workflow_id, data in sorted_workflows:
+        agents = ' → '.join(data['agents'][:5])  # Show first 5 agents
+        if len(data['agents']) > 5:
+            agents += f" ... (+{len(data['agents']) - 5} more)"
+
+        success = data['success']
+        total = data['count']
+        success_rate = (success / total * 100) if total > 0 else 0
+
+        # Color code
+        rate_color = Colors.GREEN if success_rate >= 90 else Colors.YELLOW if success_rate >= 70 else Colors.RED
+
+        print(f"{Colors.BOLD}{workflow_id}{Colors.END}")
+        print(f"  Agents: {Colors.CYAN}{agents}{Colors.END}")
+        print(f"  Invocations: {total} | Success Rate: {rate_color}{success_rate:.1f}%{Colors.END} | Total Duration: {data['total_duration']:.1f}s")
+        print()
+
+def show_recent_activity(invocations: List[Dict], limit: int = 10):
+    """Display recent agent invocations"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Recent Activity (Last {limit}){Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    # Sort by timestamp descending
+    recent = sorted(invocations, key=lambda x: x.get('timestamp', ''), reverse=True)[:limit]
+
+    for inv in recent:
+        timestamp = inv.get('timestamp', 'unknown')
+        agent = inv.get('agent_name', 'unknown')
+        task = inv.get('task_description', 'No description')[:50]
+        status = inv.get('outcome', {}).get('status', 'unknown')
+        duration = inv.get('duration_seconds', 0)
+        workflow_id = inv.get('workflow_id', '')
+
+        # Color code status
+        status_color = Colors.GREEN if status == 'success' else Colors.RED
+
+        # Parse timestamp
+        try:
+            dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+            time_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+        except:
+            time_str = timestamp[:19] if len(timestamp) >= 19 else timestamp
+
+        print(f"{Colors.BOLD}{time_str}{Colors.END} | {Colors.CYAN}{agent:<25}{Colors.END} | {status_color}{status:<10}{Colors.END} | {duration:>6.1f}s")
+        print(f"  Task: {task}")
+        if workflow_id:
+            print(f"  Workflow: {Colors.YELLOW}{workflow_id}{Colors.END}")
+        print()
+
+def show_performance_trends(stats: Dict):
+    """Show performance trends and outliers"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Performance Analysis{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    # Find slowest agents
+    print(f"{Colors.BOLD}Slowest Agents (by average duration):{Colors.END}")
+    sorted_by_duration = sorted(stats.items(), key=lambda x: x[1]['avg_duration'], reverse=True)[:5]
+    for agent, data in sorted_by_duration:
+        print(f"  {agent:<30} {data['avg_duration']:>8.1f}s (n={data['total']})")
+
+    print()
+
+    # Find agents with low success rates
+    print(f"{Colors.BOLD}Agents with Lower Success Rates:{Colors.END}")
+    low_success = []
+    for agent, data in stats.items():
+        if data['total'] >= 3:  # Only include agents with 3+ invocations
+            success_rate = (data['success'] / data['total'] * 100) if data['total'] > 0 else 0
+            if success_rate < 90:
+                low_success.append((agent, success_rate, data['total']))
+
+    low_success.sort(key=lambda x: x[1])
+    for agent, rate, total in low_success[:5]:
+        print(f"  {agent:<30} {rate:>5.1f}% (n={total})")
+
+    if not low_success:
+        print(f"  {Colors.GREEN}All agents have >90% success rate!{Colors.END}")
+
+def show_recommendations(stats: Dict, workflow_stats: Dict):
+    """Generate recommendations based on patterns"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Recommendations{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    recommendations = []
+
+    # Check for underutilized agents
+    total_invocations = sum(s['total'] for s in stats.values())
+    for agent, data in stats.items():
+        usage_pct = (data['total'] / total_invocations * 100) if total_invocations > 0 else 0
+        if data['total'] < 3 and usage_pct < 5:
+            recommendations.append({
+                'type': 'underutilized',
+                'message': f"Agent '{agent}' has only {data['total']} invocation(s). Consider if this agent is needed or needs better discovery."
+            })
+
+    # Check for slow agents
+    for agent, data in stats.items():
+        if data['avg_duration'] > 120:  # > 2 minutes
+            recommendations.append({
+                'type': 'performance',
+                'message': f"Agent '{agent}' has high average duration ({data['avg_duration']:.1f}s). Investigate performance bottlenecks."
+            })
+
+    # Check for agents with failures
+    for agent, data in stats.items():
+        if data['failure'] > 0:
+            failure_rate = (data['failure'] / data['total'] * 100) if data['total'] > 0 else 0
+            if failure_rate > 10:
+                recommendations.append({
+                    'type': 'reliability',
+                    'message': f"Agent '{agent}' has {failure_rate:.1f}% failure rate. Review error patterns."
+                })
+
+    # Check workflow patterns
+    if len(workflow_stats) > 0:
+        avg_agents_per_workflow = sum(len(w['agents']) for w in workflow_stats.values()) / len(workflow_stats)
+        if avg_agents_per_workflow > 5:
+            recommendations.append({
+                'type': 'workflow',
+                'message': f"Average workflow uses {avg_agents_per_workflow:.1f} agents. Consider simplifying workflows."
+            })
+
+    # Display
+    if recommendations:
+        for i, rec in enumerate(recommendations, 1):
+            icon = '⚠️' if rec['type'] == 'reliability' else '💡'
+            print(f"{icon}  {rec['message']}")
+    else:
+        print(f"{Colors.GREEN}No issues detected. System is performing well!{Colors.END}")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Oak Insights - Telemetry Analytics Dashboard',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    parser.add_argument('--telemetry-file',
+                       default='/Users/robertnyborg/Projects/claude-oak-agents/telemetry/agent_invocations.jsonl',
+                       help='Path to agent invocations telemetry file')
+    parser.add_argument('--limit', '-n', type=int, default=10,
+                       help='Number of items to show in lists (default: 10)')
+    parser.add_argument('--agents', '-a', action='store_true',
+                       help='Show agent leaderboard only')
+    parser.add_argument('--workflows', '-w', action='store_true',
+                       help='Show workflow summary only')
+    parser.add_argument('--recent', '-r', action='store_true',
+                       help='Show recent activity only')
+    parser.add_argument('--performance', '-p', action='store_true',
+                       help='Show performance analysis only')
+    parser.add_argument('--recommendations', action='store_true',
+                       help='Show recommendations only')
+
+    args = parser.parse_args()
+
+    # Load data
+    telemetry_file = Path(args.telemetry_file)
+    invocations = load_invocations(telemetry_file)
+
+    if not invocations:
+        print(f"{Colors.RED}Error: No telemetry data found in {telemetry_file}{Colors.END}", file=sys.stderr)
+        return 1
+
+    # Calculate stats
+    agent_stats = calculate_agent_stats(invocations)
+    workflow_stats = calculate_workflow_stats(invocations)
+
+    # Display based on flags
+    show_all = not (args.agents or args.workflows or args.recent or args.performance or args.recommendations)
+
+    if args.agents or show_all:
+        show_agent_leaderboard(agent_stats, limit=args.limit)
+
+    if args.workflows or show_all:
+        show_workflow_summary(workflow_stats, limit=args.limit)
+
+    if args.recent or show_all:
+        show_recent_activity(invocations, limit=args.limit)
+
+    if args.performance or show_all:
+        show_performance_trends(agent_stats)
+
+    if args.recommendations or show_all:
+        show_recommendations(agent_stats, workflow_stats)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())

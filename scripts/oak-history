@@ -1,0 +1,348 @@
+#!/usr/bin/env python3
+"""
+oak-history - Session analytics and command reference tool
+
+Features:
+- Show recent agent invocations
+- Group by workflow_id
+- Show task sequences
+- Duration and success rate
+- Filter by agent, date, or workflow
+"""
+
+import json
+import sys
+from pathlib import Path
+from collections import defaultdict
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+import argparse
+
+# Color codes
+class Colors:
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
+
+def load_invocations(telemetry_file: Path) -> List[Dict]:
+    """Load agent invocations from JSONL file"""
+    invocations = []
+
+    if not telemetry_file.exists():
+        return invocations
+
+    try:
+        with open(telemetry_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        invocations.append(json.loads(line))
+                    except json.JSONDecodeError as e:
+                        print(f"{Colors.YELLOW}Warning: Skipping malformed line{Colors.END}", file=sys.stderr)
+    except Exception as e:
+        print(f"{Colors.RED}Error reading telemetry: {e}{Colors.END}", file=sys.stderr)
+
+    return invocations
+
+def filter_invocations(invocations: List[Dict], agent: Optional[str] = None,
+                      date: Optional[str] = None, workflow: Optional[str] = None,
+                      days: Optional[int] = None) -> List[Dict]:
+    """Filter invocations based on criteria"""
+    filtered = invocations
+
+    # Filter by agent
+    if agent:
+        filtered = [inv for inv in filtered if inv.get('agent_name', '').lower() == agent.lower()]
+
+    # Filter by workflow
+    if workflow:
+        filtered = [inv for inv in filtered if inv.get('workflow_id', '') == workflow]
+
+    # Filter by date
+    if date:
+        try:
+            target_date = datetime.fromisoformat(date).date()
+            filtered = [
+                inv for inv in filtered
+                if datetime.fromisoformat(inv.get('timestamp', '').replace('Z', '+00:00')).date() == target_date
+            ]
+        except ValueError:
+            print(f"{Colors.RED}Invalid date format. Use YYYY-MM-DD{Colors.END}", file=sys.stderr)
+            return []
+
+    # Filter by last N days
+    if days:
+        cutoff = datetime.now() - timedelta(days=days)
+        filtered = [
+            inv for inv in filtered
+            if datetime.fromisoformat(inv.get('timestamp', '').replace('Z', '+00:00')) >= cutoff
+        ]
+
+    return filtered
+
+def group_by_workflow(invocations: List[Dict]) -> Dict[str, List[Dict]]:
+    """Group invocations by workflow_id"""
+    workflows = defaultdict(list)
+
+    for inv in invocations:
+        workflow_id = inv.get('workflow_id', 'standalone')
+        workflows[workflow_id].append(inv)
+
+    # Sort invocations within each workflow by timestamp
+    for workflow_id in workflows:
+        workflows[workflow_id].sort(key=lambda x: x.get('timestamp', ''))
+
+    return dict(workflows)
+
+def show_invocation_details(inv: Dict, show_full: bool = False):
+    """Display details for a single invocation"""
+    timestamp = inv.get('timestamp', 'unknown')
+    agent = inv.get('agent_name', 'unknown')
+    task = inv.get('task_description', 'No description')
+    status = inv.get('outcome', {}).get('status', 'unknown')
+    duration = inv.get('duration_seconds', 0)
+    invocation_id = inv.get('invocation_id', 'unknown')
+
+    # Color code status
+    status_color = Colors.GREEN if status == 'success' else Colors.RED if status == 'failure' else Colors.YELLOW
+
+    # Parse timestamp
+    try:
+        dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+        time_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+    except:
+        time_str = timestamp[:19] if len(timestamp) >= 19 else timestamp
+
+    print(f"  {Colors.BOLD}{time_str}{Colors.END} | {Colors.CYAN}{agent:<25}{Colors.END} | {status_color}{status:<10}{Colors.END} | {duration:>6.1f}s")
+    print(f"    Task: {task[:80]}")
+
+    if show_full:
+        print(f"    ID: {invocation_id}")
+
+        # Show files modified
+        files_modified = inv.get('outcome', {}).get('files_modified', [])
+        files_created = inv.get('outcome', {}).get('files_created', [])
+
+        if files_modified:
+            print(f"    Modified: {', '.join(files_modified[:5])}")
+            if len(files_modified) > 5:
+                print(f"              (+{len(files_modified) - 5} more)")
+
+        if files_created:
+            print(f"    Created:  {', '.join(files_created[:5])}")
+            if len(files_created) > 5:
+                print(f"              (+{len(files_created) - 5} more)")
+
+def show_standalone_invocations(invocations: List[Dict], limit: int = 10):
+    """Display standalone (non-workflow) invocations"""
+    standalone = [inv for inv in invocations if not inv.get('workflow_id')]
+
+    if not standalone:
+        print(f"\n{Colors.YELLOW}No standalone invocations found{Colors.END}")
+        return
+
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Standalone Invocations (Last {min(limit, len(standalone))}){Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    # Sort by timestamp descending
+    standalone = sorted(standalone, key=lambda x: x.get('timestamp', ''), reverse=True)[:limit]
+
+    for inv in standalone:
+        show_invocation_details(inv)
+        print()
+
+def show_workflow_invocations(workflows: Dict[str, List[Dict]], limit: int = 10):
+    """Display workflow-grouped invocations"""
+    if not workflows or (len(workflows) == 1 and 'standalone' in workflows):
+        print(f"\n{Colors.YELLOW}No workflow invocations found{Colors.END}")
+        return
+
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Workflow Invocations{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    # Sort workflows by most recent timestamp
+    workflow_list = [
+        (wf_id, invs) for wf_id, invs in workflows.items()
+        if wf_id != 'standalone'
+    ]
+    workflow_list.sort(key=lambda x: max(inv.get('timestamp', '') for inv in x[1]), reverse=True)
+    workflow_list = workflow_list[:limit]
+
+    for workflow_id, invocations in workflow_list:
+        # Calculate workflow stats
+        total_duration = sum(inv.get('duration_seconds', 0) for inv in invocations)
+        success_count = sum(1 for inv in invocations if inv.get('outcome', {}).get('status') == 'success')
+        success_rate = (success_count / len(invocations) * 100) if invocations else 0
+
+        # Color code success rate
+        rate_color = Colors.GREEN if success_rate >= 90 else Colors.YELLOW if success_rate >= 70 else Colors.RED
+
+        # Workflow header
+        print(f"{Colors.BOLD}{Colors.GREEN}Workflow: {workflow_id}{Colors.END}")
+        print(f"  Steps: {len(invocations)} | Total Duration: {total_duration:.1f}s | Success Rate: {rate_color}{success_rate:.1f}%{Colors.END}")
+        print()
+
+        # Show invocations in sequence
+        for i, inv in enumerate(invocations, 1):
+            parent_id = inv.get('parent_invocation_id')
+            prefix = f"  {i}. "
+            if parent_id:
+                prefix += "↳ "
+
+            print(prefix, end='')
+            show_invocation_details(inv)
+
+        print()
+
+def show_agent_sequence(invocations: List[Dict]):
+    """Display agent invocation sequence"""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Agent Invocation Sequence{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    # Sort by timestamp
+    sorted_invocations = sorted(invocations, key=lambda x: x.get('timestamp', ''))
+
+    # Build sequence
+    sequence = []
+    for inv in sorted_invocations:
+        agent = inv.get('agent_name', 'unknown')
+        status = inv.get('outcome', {}).get('status', 'unknown')
+
+        # Status icon
+        icon = '✓' if status == 'success' else '✗' if status == 'failure' else '?'
+
+        # Color
+        color = Colors.GREEN if status == 'success' else Colors.RED if status == 'failure' else Colors.YELLOW
+
+        sequence.append(f"{color}{icon} {agent}{Colors.END}")
+
+    # Print sequence
+    print("  " + " → ".join(sequence))
+    print()
+
+def show_summary_stats(invocations: List[Dict]):
+    """Show summary statistics"""
+    if not invocations:
+        return
+
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}Summary Statistics{Colors.END}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*80}{Colors.END}\n")
+
+    total = len(invocations)
+    success = sum(1 for inv in invocations if inv.get('outcome', {}).get('status') == 'success')
+    failure = sum(1 for inv in invocations if inv.get('outcome', {}).get('status') == 'failure')
+    total_duration = sum(inv.get('duration_seconds', 0) for inv in invocations)
+    avg_duration = total_duration / total if total > 0 else 0
+
+    # Unique agents
+    unique_agents = set(inv.get('agent_name', 'unknown') for inv in invocations)
+
+    # Unique workflows
+    unique_workflows = set(inv.get('workflow_id') for inv in invocations if inv.get('workflow_id'))
+
+    print(f"  Total Invocations: {total}")
+    print(f"  Success: {Colors.GREEN}{success}{Colors.END} | Failure: {Colors.RED}{failure}{Colors.END}")
+    print(f"  Success Rate: {(success/total*100) if total > 0 else 0:.1f}%")
+    print(f"  Total Duration: {total_duration:.1f}s | Average: {avg_duration:.1f}s")
+    print(f"  Unique Agents: {len(unique_agents)}")
+    print(f"  Unique Workflows: {len(unique_workflows)}")
+    print()
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Oak History - Session Analytics and Command Reference',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  oak-history                      # Show all recent invocations
+  oak-history --agent backend-architect
+  oak-history --workflow wf-20251022-abc123
+  oak-history --date 2025-10-22
+  oak-history --last-days 7
+  oak-history --limit 20
+        """
+    )
+
+    parser.add_argument('--telemetry-file',
+                       default='/Users/robertnyborg/Projects/claude-oak-agents/telemetry/agent_invocations.jsonl',
+                       help='Path to agent invocations telemetry file')
+    parser.add_argument('--agent', '-a', metavar='NAME',
+                       help='Filter by agent name')
+    parser.add_argument('--workflow', '-w', metavar='ID',
+                       help='Filter by workflow ID')
+    parser.add_argument('--date', '-d', metavar='YYYY-MM-DD',
+                       help='Filter by specific date')
+    parser.add_argument('--last-days', type=int, metavar='N',
+                       help='Show last N days only')
+    parser.add_argument('--limit', '-n', type=int, default=10,
+                       help='Number of items to show (default: 10)')
+    parser.add_argument('--full', '-f', action='store_true',
+                       help='Show full details including files modified')
+    parser.add_argument('--sequence', '-s', action='store_true',
+                       help='Show agent sequence visualization')
+    parser.add_argument('--stats', action='store_true',
+                       help='Show summary statistics')
+
+    args = parser.parse_args()
+
+    # Load data
+    telemetry_file = Path(args.telemetry_file)
+    invocations = load_invocations(telemetry_file)
+
+    if not invocations:
+        print(f"{Colors.RED}Error: No telemetry data found in {telemetry_file}{Colors.END}", file=sys.stderr)
+        return 1
+
+    # Apply filters
+    filtered = filter_invocations(
+        invocations,
+        agent=args.agent,
+        date=args.date,
+        workflow=args.workflow,
+        days=args.last_days
+    )
+
+    if not filtered:
+        print(f"{Colors.YELLOW}No invocations match the specified filters{Colors.END}")
+        return 0
+
+    # Group by workflow
+    workflows = group_by_workflow(filtered)
+
+    # Display
+    if args.stats:
+        show_summary_stats(filtered)
+
+    if args.sequence:
+        show_agent_sequence(filtered)
+
+    # If filtering by workflow, only show that workflow
+    if args.workflow:
+        if args.workflow in workflows:
+            show_workflow_invocations({args.workflow: workflows[args.workflow]}, limit=1)
+        else:
+            print(f"{Colors.RED}Workflow '{args.workflow}' not found{Colors.END}")
+    else:
+        # Show both workflows and standalone
+        show_workflow_invocations(workflows, limit=args.limit)
+        show_standalone_invocations(filtered, limit=args.limit)
+
+    # Show summary by default
+    if not (args.sequence or args.stats):
+        show_summary_stats(filtered)
+
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())
