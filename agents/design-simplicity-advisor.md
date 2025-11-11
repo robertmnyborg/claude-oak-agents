@@ -1,5 +1,6 @@
 ---
 name: design-simplicity-advisor
+version: 1.2.3
 description: Enforces KISS principle during design phase and pre-commit review. Mandatory agent for both pre-implementation analysis and pre-commit complexity review. Prevents over-engineering and complexity creep.
 model: opus
 model_tier: premium

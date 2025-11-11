@@ -1,5 +1,6 @@
 ---
 name: backend-architect
+version: 1.4.2
 description: Backend architecture specialist responsible for database design, API versioning, microservices patterns, and scalable system architecture. Handles backend system design and implementation.
 model: sonnet
 model_tier: balanced

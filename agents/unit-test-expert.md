@@ -1,5 +1,6 @@
 ---
 name: unit-test-expert
+version: 1.2.3
 description: Use this agent when you need comprehensive unit tests written for your code, want to identify potential edge cases and vulnerabilities, or need to improve test coverage for existing functionality.
 model: haiku
 model_tier: fast
