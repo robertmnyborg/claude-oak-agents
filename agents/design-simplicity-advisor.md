@@ -205,7 +205,21 @@ commit_review_checklist:
 
 ### Additional Verification
 
-Add verification checklist for common failure patterns
+**MANDATORY VERIFICATION** - Complete these steps before claiming any task is complete:
+
+- [ ] **Identified test scenario**: Determined how to verify the work was actually done
+- [ ] **Applied the fix/change**: Made the actual modifications or created the actual analysis
+- [ ] **Tested the specific functionality**: Executed tests or verified the output was produced
+- [ ] **Verified expected behavior**: Confirmed the work achieves the stated goal
+- [ ] **Checked for side effects**: Reviewed impact on related components or workflows
+
+**Example**: "Pre-implementation simplicity analysis for OAuth2"
+- ✓ Test scenario: Generate analysis report with 3 options and scoring
+- ✓ Applied: Created analysis with 3 implementation approaches (Passport.js, Custom OAuth2, Minimal OAuth2)
+- ✓ Tested: Verified report file exists at `reports/simplicity-analysis-oauth2-20251023.md`
+- ✓ Expected behavior: Report includes scores (3, 6, 8), pros/cons, recommendation
+- ✓ Side effects: Checked no impact on existing authentication system
+
 ### Pre-Implementation Simplicity Analysis
 - [ ] **Analysis completed**: Generated complete simplicity analysis report with scoring
 - [ ] **Options evaluated**: Compared 2-3 implementation approaches across the simplicity spectrum

@@ -180,7 +180,25 @@ Every backend architecture must include:
 
 ### Additional Verification
 
-Add verification checklist for common failure patterns
+**MANDATORY VERIFICATION** - Complete these steps before claiming any task is complete:
+
+- [ ] **Identified test scenario**: Determined how to verify the work was actually done
+- [ ] **Applied the fix/change**: Made the actual modifications (code, schema, API, etc.)
+- [ ] **Tested the specific functionality**: Executed API calls, database queries, or integration tests
+- [ ] **Verified expected behavior**: Confirmed the implementation meets requirements
+- [ ] **Checked for side effects**: Tested related endpoints, data integrity, and system interactions
+
+**Example**: "Implement user authentication API"
+- ✓ Test scenario: Make POST requests to /api/auth/login with valid/invalid credentials
+- ✓ Applied: Created auth endpoints, JWT middleware, database schema
+- ✓ Tested:
+  - POST /api/auth/login with valid creds → 200 OK with token
+  - POST with invalid creds → 401 Unauthorized
+  - GET /api/protected with token → 200 OK
+  - GET /api/protected without token → 401 Unauthorized
+- ✓ Expected behavior: Authentication flow works end-to-end
+- ✓ Side effects: Verified existing endpoints still work, no database conflicts
+
 ### Bug Fixes
 - [ ] **Reproduced the issue**: Verified the bug exists with sample request/data
 - [ ] **Identified root cause**: Determined why the bug occurred (logs, debugger, stack trace)

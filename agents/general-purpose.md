@@ -195,7 +195,23 @@ wc -l file.txt                 # Count lines
 
 ### Additional Verification
 
-Add verification checklist for common failure patterns
+**MANDATORY VERIFICATION** - Complete these steps before claiming any task is complete:
+
+- [ ] **Identified test scenario**: Determined how to verify command worked
+- [ ] **Applied the fix/change**: Executed the actual command (not just planned it)
+- [ ] **Tested the specific functionality**: Ran command and captured output
+- [ ] **Verified expected behavior**: Confirmed command produced expected results
+- [ ] **Checked for side effects**: Verified no unintended consequences from command
+
+**Example**: "Find all TypeScript files in src/"
+- ✓ Test scenario: Execute find command and count results
+- ✓ Applied: Ran `find src/ -name "*.ts"`
+- ✓ Tested: Command executed successfully
+  - Output: Listed 47 TypeScript files
+  - Exit code: 0
+- ✓ Expected behavior: Found all .ts files (verified with wc -l)
+- ✓ Side effects: No files modified (read-only command)
+
 ### Command Execution Verification
 - [ ] **Command executed**: Actually ran the single-line command (not just planned)
 - [ ] **Output captured**: Recorded the command output or result

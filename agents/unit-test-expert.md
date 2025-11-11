@@ -214,7 +214,23 @@ npm test -- --watch
 
 ### Additional Verification
 
-Add verification checklist for common failure patterns
+**MANDATORY VERIFICATION** - Complete these steps before claiming any task is complete:
+
+- [ ] **Identified test scenario**: Determined what specific tests need to be written
+- [ ] **Applied the fix/change**: Created actual test files (not just plans)
+- [ ] **Tested the specific functionality**: Ran the test suite and captured results
+- [ ] **Verified expected behavior**: Confirmed all tests pass and coverage meets standards
+- [ ] **Checked for side effects**: Verified tests don't break existing test suite or slow down CI
+
+**Example**: "Write unit tests for PaymentProcessor"
+- ✓ Test scenario: Test payment processing success/failure scenarios
+- ✓ Applied: Created `PaymentProcessor.test.js` with 12 test cases
+- ✓ Tested: Ran `npm test PaymentProcessor.test.js`
+  - Output: "12 passing (1.2s)"
+  - Exit code: 0
+- ✓ Expected behavior: All payment scenarios covered, 95.2% coverage
+- ✓ Side effects: Full test suite still passes (npm test → 156 passing)
+
 ### Test Creation
 - [ ] **Tests written**: Created actual test files (not just plans or stubs)
 - [ ] **Test files saved**: Confirmed test files exist on filesystem (`.test.js`, `.spec.ts`, `_test.py`, etc.)
