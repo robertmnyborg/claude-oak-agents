@@ -76,6 +76,74 @@ COMPLEXITY: [Simple/Medium/Complex]
 - "What is this error?" → INFORMATION | Context-dependent | Single read/explanation | Simple
 - "Analyze system architecture" → ANALYSIS | Architecture | systems-architect + infrastructure-specialist | Medium
 
+### ARTIFACT CLASSIFICATION RULES
+
+**ARTIFACT DETECTION**: Automatic classification for artifact requests
+
+**Detection Patterns** (any match triggers artifact classification):
+- Keywords: "artifact", "create [React/TypeScript/shadcn] [component/app/widget]", "single HTML file", "bundle to HTML"
+- Explicit: "claude.ai artifact", "artifact for claude", "share as artifact"
+- Context: Request mentions React 18 + TypeScript + shadcn/ui stack
+- Output requirement: "single file", "self-contained", "embed in conversation"
+
+**Artifact Complexity Matrix**:
+```yaml
+simple_artifacts:
+  triggers:
+    - Standard UI patterns (forms, dashboards, cards, lists)
+    - shadcn/ui components (1-3 components)
+    - Single page application
+    - No backend integration
+    - No custom architecture
+  route_to: artifacts-builder skill
+  duration: 15-30 minutes
+
+complex_artifacts:
+  triggers:
+    - Multi-page application with routing
+    - Custom state management (Redux, Zustand)
+    - Backend API integration required
+    - Non-standard tech stack (not React 18 + TypeScript + shadcn/ui)
+    - Custom build configuration
+    - oak-specific workflows needed
+  route_to: frontend-developer (artifact mode)
+  duration: 1-4 hours
+```
+
+**Artifact Routing Decision Tree**:
+```
+User Request Contains Artifact Keywords
+    ↓
+ARTIFACT CLASSIFICATION
+    ↓
+Complexity Assessment
+    ↓
+    ├─ Simple (standard patterns + shadcn/ui + single page)
+    │     ↓
+    │  Use artifacts-builder skill
+    │     - Invoke: invoke_artifact_skill(name, requirements, mode="standard")
+    │     - Output: bundle.html + source code
+    │     - Present: Share artifact with user
+    │
+    └─ Complex (multi-page OR custom OR backend integration)
+          ↓
+       Use frontend-developer (artifact mode)
+          - Invoke: frontend-developer with "artifact mode" flag
+          - Build: Custom implementation
+          - Bundle: Manual bundling if needed
+          - Present: Share with user
+```
+
+**Artifact Examples**:
+- "Create a todo list artifact" → IMPLEMENTATION | Frontend-Artifact | artifacts-builder skill | Simple
+- "Build a calculator with React and shadcn/ui" → IMPLEMENTATION | Frontend-Artifact | artifacts-builder skill | Simple
+- "Create dashboard with routing and API integration" → IMPLEMENTATION | Frontend-Artifact | frontend-developer (artifact mode) | Complex
+- "Build Vue.js widget for claude.ai" → IMPLEMENTATION | Frontend-Artifact | frontend-developer (artifact mode) | Complex
+
+**Design Guidelines for All Artifacts**:
+- ❌ Avoid: Excessive centered layouts, purple gradients, uniform rounded corners, Inter font
+- ✅ Use: Varied layouts, purpose-driven colors, contextual styling, appropriate fonts
+
 **NO BYPASS**: Main LLM CANNOT skip classification or execute without plan
 
 ## PRODUCT MANAGER CONTEXT

@@ -353,6 +353,429 @@ gantt
 - Go/no-go criteria
 - Rollback plan
 
+## Artifact Workflow Templates
+
+### Simple Artifact Workflow
+
+For claude.ai artifacts using React 18 + TypeScript + shadcn/ui stack:
+
+```yaml
+artifact_workflow_simple:
+  classification:
+    triggers:
+      - "create artifact"
+      - "claude.ai artifact"
+      - "single HTML file"
+      - "React + TypeScript + shadcn/ui"
+
+    complexity_assessment:
+      simple_indicators:
+        - Single page application
+        - Standard UI patterns (forms, dashboards, cards)
+        - shadcn/ui components (1-3 components)
+        - No backend integration
+        - No custom routing
+
+      route_to: artifacts-builder skill
+
+  workflow_steps:
+    step_1_invoke_skill:
+      agent: "artifacts-builder (skill)"
+      action: |
+        from skills.artifacts_builder import invoke_artifact_skill
+
+        result = invoke_artifact_skill(
+            artifact_name="[descriptive-name]",
+            requirements="[user requirements]",
+            mode="standard"
+        )
+      estimated_duration: "15-30 minutes"
+
+    step_2_validation:
+      checks:
+        - bundle_size: "<2MB (ideally <500KB)"
+        - design_quality: "Anti-AI slop guidelines followed"
+        - accessibility: "Keyboard navigation + ARIA labels"
+        - functionality: "All requirements implemented"
+      automated: True
+      blocking: False
+
+    step_3_presentation:
+      deliverables:
+        - bundle_html: "Single HTML file"
+        - source_code: "Project directory for reference"
+        - usage_guide: "How to use/modify artifact"
+      user_facing: True
+
+    step_4_testing_optional:
+      condition: "Only if requested or issues detected"
+      actions:
+        - Browser functionality test
+        - Responsive design check
+        - Accessibility validation
+
+  quality_standards:
+    bundle_size:
+      optimal: "<500 KB"
+      acceptable: "500 KB - 1 MB"
+      large: "1 MB - 2 MB"
+      excessive: ">2 MB (requires optimization)"
+
+    design_quality:
+      avoid:
+        - "Excessive centered layouts"
+        - "Purple gradients everywhere"
+        - "Uniform rounded corners"
+        - "Inter font as default"
+      use_instead:
+        - "Varied, intentional layouts"
+        - "Purpose-driven colors"
+        - "Contextual styling"
+        - "Appropriate typography"
+
+    accessibility:
+      required:
+        - "Keyboard navigation support"
+        - "ARIA labels for interactives"
+        - "Sufficient color contrast"
+        - "Screen reader compatibility"
+
+  timeline:
+    total_estimated: "15-30 minutes"
+    breakdown:
+      initialization: "2-5 minutes"
+      development: "10-20 minutes"
+      bundling: "1-2 minutes"
+      presentation: "2-3 minutes"
+```
+
+### Complex Artifact Workflow
+
+For artifacts requiring custom implementation beyond artifacts-builder skill capabilities:
+
+```yaml
+artifact_workflow_complex:
+  classification:
+    triggers:
+      - Multi-page application with routing
+      - Custom state management (Redux, Zustand)
+      - Backend API integration required
+      - Non-standard tech stack (Vue, Angular, etc.)
+      - Custom build configuration
+      - oak-specific workflows needed
+
+    route_to: frontend-developer (artifact mode)
+
+  workflow_steps:
+    step_1_requirements_analysis:
+      agent: frontend-developer
+      mode: artifact
+      tasks:
+        - "Analyze artifact requirements"
+        - "Determine tech stack (React/Vue/Angular)"
+        - "Identify complexity level"
+        - "Check if artifacts-builder skill sufficient"
+      decision_point: |
+        If requirements are actually simple:
+          → Recommend artifacts-builder skill instead
+          → Stop complex workflow
+        Else:
+          → Proceed with custom implementation
+      estimated_duration: "10-15 minutes"
+
+    step_2_simplicity_check:
+      agent: design-simplicity-advisor
+      purpose: "Challenge complexity before implementation"
+      validations:
+        - "Is routing really needed? (SPA with tabs instead?)"
+        - "Is Redux necessary? (Context API sufficient?)"
+        - "Can shadcn/ui components handle this?"
+        - "Can this be done with artifacts-builder skill?"
+      estimated_duration: "5-10 minutes"
+
+    step_3_implementation:
+      agent: frontend-developer
+      mode: artifact
+      tasks:
+        - "Set up project (Vite + TypeScript)"
+        - "Configure Tailwind CSS 3.4.1"
+        - "Install required components"
+        - "Implement features"
+        - "Apply anti-AI slop guidelines"
+        - "Ensure responsive design"
+      estimated_duration: "1-4 hours"
+
+    step_4_bundling:
+      agent: frontend-developer
+      tasks:
+        - "Configure Parcel bundler"
+        - "Bundle to single HTML"
+        - "Inline all assets"
+        - "Validate bundle size"
+      estimated_duration: "5-15 minutes"
+
+    step_5_quality_validation:
+      agent: quality-gate
+      checks:
+        - code_quality: "TypeScript strict mode, no lint errors"
+        - bundle_size: "<2MB recommended"
+        - design_quality: "Anti-AI slop guidelines"
+        - accessibility: "WCAG 2.1 basics"
+        - functionality: "All requirements met"
+      blocking: True
+      estimated_duration: "10-20 minutes"
+
+    step_6_git_operations:
+      agent: git-workflow-manager
+      tasks:
+        - "Commit source code"
+        - "Tag artifact version"
+        - "Update changelog (optional)"
+      estimated_duration: "5 minutes"
+
+    step_7_presentation:
+      deliverables:
+        - bundle_html: "Single HTML file with all assets"
+        - source_code: "Complete project for modification"
+        - documentation: "Usage guide and architecture notes"
+      user_facing: True
+
+  coordination_pattern:
+    phase_1_analysis:
+      mode: sequential
+      agents: [frontend-developer, design-simplicity-advisor]
+      gate: "Simplicity validated before implementation"
+
+    phase_2_implementation:
+      mode: sequential
+      agents: [frontend-developer]
+      gate: "Code complete before quality validation"
+
+    phase_3_validation:
+      mode: sequential
+      agents: [quality-gate]
+      gate: "Quality validated before git operations"
+
+    phase_4_finalization:
+      mode: sequential
+      agents: [git-workflow-manager]
+      gate: "Changes committed before presentation"
+
+  quality_standards:
+    same_as: simple_artifact_workflow
+    additional_checks:
+      - "TypeScript strict mode enabled"
+      - "No console errors/warnings"
+      - "Routing works correctly (if multi-page)"
+      - "State management implemented correctly"
+      - "API integration functional (if applicable)"
+
+  timeline:
+    total_estimated: "1.5-5 hours"
+    breakdown:
+      analysis: "10-15 minutes"
+      simplicity_check: "5-10 minutes"
+      implementation: "1-4 hours"
+      bundling: "5-15 minutes"
+      quality_validation: "10-20 minutes"
+      git_operations: "5 minutes"
+      presentation: "5-10 minutes"
+```
+
+### Artifact Bundle Size Monitoring
+
+Track bundle sizes across artifact projects for quality improvement:
+
+```yaml
+bundle_monitoring:
+  size_categories:
+    optimal:
+      threshold: "<500 KB"
+      action: "No action needed"
+      examples:
+        - "Simple calculators"
+        - "Basic forms"
+        - "Small dashboards"
+
+    acceptable:
+      threshold: "500 KB - 1 MB"
+      action: "Review for optimization opportunities"
+      examples:
+        - "Data visualization widgets"
+        - "Multi-component dashboards"
+        - "Interactive tools"
+
+    large:
+      threshold: "1 MB - 2 MB"
+      action: "Optimize before delivery"
+      optimization_strategies:
+        - "Code splitting (if multi-page)"
+        - "Lazy load components"
+        - "Optimize images/assets"
+        - "Remove unused dependencies"
+
+    excessive:
+      threshold: ">2 MB"
+      action: "BLOCKING - Must optimize"
+      investigation_required:
+        - "Check for duplicate dependencies"
+        - "Analyze bundle composition"
+        - "Consider removing heavy libraries"
+        - "May need architecture change"
+
+  monitoring_workflow:
+    step_1_measure:
+      action: "Run bundle size analysis after bundling"
+      tool: "File size check on bundle.html"
+
+    step_2_categorize:
+      action: "Determine size category (optimal/acceptable/large/excessive)"
+
+    step_3_decision:
+      if: "optimal or acceptable"
+      then: "Proceed to delivery"
+      else_if: "large"
+      then: "Optimize, then proceed"
+      else_if: "excessive"
+      then: "BLOCK delivery, must optimize"
+
+    step_4_report:
+      metrics:
+        - bundle_size_kb: "Actual size in KB"
+        - size_category: "optimal/acceptable/large/excessive"
+        - optimization_applied: "List of optimizations (if any)"
+        - final_size_kb: "Size after optimization"
+```
+
+### Artifact-Specific Quality Gates
+
+Enhanced quality validation for artifact deliverables:
+
+```yaml
+artifact_quality_gates:
+  gate_1_bundle_validation:
+    checks:
+      - name: "Bundle size within limits"
+        threshold: "<2MB"
+        blocking: True
+
+      - name: "All assets inlined"
+        validation: "No external dependencies"
+        blocking: True
+
+      - name: "Single HTML file"
+        validation: "Output is self-contained"
+        blocking: True
+
+  gate_2_design_validation:
+    checks:
+      - name: "No AI slop patterns"
+        avoid_list:
+          - "Everything centered"
+          - "Purple gradients"
+          - "Uniform rounded corners"
+          - "Inter font default"
+        blocking: False
+        action_on_fail: "Warn user, suggest improvements"
+
+      - name: "Visual hierarchy exists"
+        validation: "Clear information architecture"
+        blocking: False
+
+      - name: "Responsive design"
+        validation: "Mobile-first, works on small screens"
+        blocking: True
+
+  gate_3_accessibility_validation:
+    checks:
+      - name: "Keyboard navigation"
+        validation: "All interactive elements keyboard accessible"
+        blocking: False
+
+      - name: "ARIA labels present"
+        validation: "Screen reader compatible"
+        blocking: False
+
+      - name: "Color contrast sufficient"
+        validation: "WCAG 2.1 AA minimum"
+        blocking: False
+
+  gate_4_functionality_validation:
+    checks:
+      - name: "All requirements implemented"
+        validation: "Compare against user requirements"
+        blocking: True
+
+      - name: "No console errors"
+        validation: "Browser console clean"
+        blocking: True
+
+      - name: "shadcn/ui components work"
+        validation: "Components render and function correctly"
+        blocking: True
+
+  quality_report_format:
+    bundle_info:
+      size_kb: "[bundle size]"
+      size_category: "optimal|acceptable|large|excessive"
+
+    design_quality:
+      ai_slop_detected: "Yes|No"
+      visual_hierarchy: "Good|Acceptable|Poor"
+      responsive: "Yes|No"
+
+    accessibility:
+      keyboard_nav: "Full|Partial|None"
+      aria_labels: "Complete|Partial|Missing"
+      color_contrast: "Sufficient|Insufficient"
+
+    functionality:
+      requirements_met: "All|Most|Some|Few"
+      console_errors: "None|Minor|Major"
+      components_working: "Yes|No"
+
+    overall_decision: "PASS|PASS_WITH_WARNINGS|FAIL"
+```
+
+### When to Use Each Workflow
+
+**Decision Matrix**:
+
+```yaml
+workflow_selection:
+  artifacts_builder_skill:
+    when:
+      - User requests artifact explicitly
+      - Single page application
+      - Standard UI patterns (forms, dashboards, widgets)
+      - shadcn/ui components (1-3 components)
+      - No backend integration
+      - No custom routing
+    estimated_time: "15-30 minutes"
+    complexity: simple
+
+  frontend_developer_artifact_mode:
+    when:
+      - Multi-page with routing
+      - Custom state management (Redux, Zustand)
+      - Backend API integration
+      - Non-standard tech stack (Vue, Angular)
+      - Custom build config
+      - Complex artifact requirements
+    estimated_time: "1.5-5 hours"
+    complexity: medium to high
+
+  standard_frontend_development:
+    when:
+      - Not an artifact request
+      - Full web application
+      - Production deployment needed
+      - Complex architecture
+      - Enterprise requirements
+    estimated_time: "varies (project-dependent)"
+    complexity: high
+```
+
 ## Project Visualization Standards
 
 **Always use Mermaid diagrams for project planning:**

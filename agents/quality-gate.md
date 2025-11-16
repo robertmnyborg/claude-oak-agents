@@ -866,6 +866,306 @@ kubernetes:
   - Labels/annotations consistent
 ```
 
+**Artifact Quality Checks (Claude.ai Artifacts)**:
+```yaml
+artifacts_react_typescript:
+  bundle_validation:
+    - Bundle size < 2MB (blocking)
+    - Optimal: <500 KB, Acceptable: 500KB-1MB, Large: 1MB-2MB
+    - All assets inlined (no external dependencies)
+    - Single HTML file output (self-contained)
+
+  design_quality_anti_ai_slop:
+    - No excessive centered layouts (non-blocking, warn only)
+    - No purple gradients everywhere (non-blocking, warn only)
+    - No uniform rounded corners on all elements (non-blocking, warn only)
+    - No Inter font as default without purpose (non-blocking, warn only)
+    - Visual hierarchy exists (purpose-driven layout)
+    - Color scheme is intentional (not generic)
+    - Typography appropriate for use case
+
+  shadcn_ui_usage:
+    - Components imported correctly (@/components/ui/*)
+    - No duplicate component definitions (use pre-installed)
+    - Tailwind CSS 3.4.1 used consistently
+    - Component composition follows patterns
+    - No direct DOM manipulation in React
+
+  path_alias_validation:
+    - @/ alias configured for src/ directory
+    - All imports use @/ instead of relative paths
+    - Path alias works in TypeScript and bundler
+    - No broken import paths
+
+  accessibility_basics:
+    - Keyboard navigation functional (tab order logical)
+    - Interactive elements have ARIA labels (buttons, inputs)
+    - Color contrast sufficient (WCAG 2.1 AA minimum)
+    - Form elements have associated labels
+    - Images have alt text (if applicable)
+
+  artifact_specific_patterns:
+    - React 18 patterns (functional components, hooks)
+    - TypeScript strict mode enabled
+    - No console.log in production code
+    - Vite configuration correct
+    - Parcel bundling configured properly
+
+  quality_thresholds:
+    blocking_issues:
+      - Bundle size >2MB
+      - Bundle not self-contained (external dependencies)
+      - TypeScript errors present
+      - Console errors in browser
+      - Requirements not met
+
+    warning_issues:
+      - AI slop design patterns detected
+      - Bundle size 1-2MB (optimize recommended)
+      - Missing ARIA labels (accessibility concern)
+      - No visual hierarchy (poor UX)
+
+    pass_criteria:
+      - Bundle size <2MB
+      - All requirements implemented
+      - No console errors
+      - TypeScript compiles without errors
+      - Basic accessibility present
+
+artifact_mode_detection:
+  triggers:
+    - File path contains "artifact" directory
+    - package.json includes "@parcel/config-default"
+    - Single HTML output expected
+    - User explicitly requested artifact
+
+  apply_artifact_checks:
+    when_true: "Run artifact-specific validation"
+    when_false: "Run standard frontend validation"
+```
+
+**Artifact Example Validation (Pass)**:
+```yaml
+input:
+  artifact_type: "simple_calculator"
+  tech_stack: "React 18 + TypeScript + shadcn/ui"
+  bundle_size_kb: 450
+  implementation: "Calculator with basic operations using Button and Card components"
+
+analysis:
+  bundle_validation:
+    size: PASS (450 KB - optimal)
+    self_contained: PASS (all assets inlined)
+    output_format: PASS (single HTML file)
+
+  design_quality:
+    ai_slop_detected: NO
+    visual_hierarchy: GOOD (clear layout with functional sections)
+    color_scheme: INTENTIONAL (neutral with teal accents)
+    typography: APPROPRIATE (system fonts, readable)
+
+  shadcn_usage:
+    components_used: [Button, Card]
+    import_pattern: CORRECT (@/components/ui/button)
+    composition: GOOD (proper Card structure)
+
+  path_aliases:
+    configured: YES
+    all_imports_use_alias: YES
+
+  accessibility:
+    keyboard_nav: FULL (all buttons keyboard accessible)
+    aria_labels: COMPLETE (buttons have descriptive labels)
+    color_contrast: SUFFICIENT
+
+  artifact_patterns:
+    react_18: YES (functional components with hooks)
+    typescript_strict: YES
+    console_logs: NONE
+    vite_config: CORRECT
+    parcel_config: CORRECT
+
+overall_score: 92/100
+decision: PASS
+
+output:
+  ✅ ARTIFACT QUALITY GATE: PASS
+
+  Bundle Info:
+  - Size: 450 KB (optimal)
+  - Category: Optimal
+  - Self-contained: Yes
+
+  Design Quality:
+  - AI slop patterns: None detected
+  - Visual hierarchy: Good
+  - Layout: Intentional, functional
+
+  Accessibility:
+  - Keyboard navigation: Full
+  - ARIA labels: Complete
+  - Color contrast: Sufficient
+
+  Next Action: Proceed to git-workflow-manager
+```
+
+**Artifact Example Validation (Conditional Pass - Large Bundle)**:
+```yaml
+input:
+  artifact_type: "data_dashboard"
+  tech_stack: "React 18 + TypeScript + shadcn/ui + Chart.js"
+  bundle_size_kb: 1800
+  implementation: "Dashboard with multiple charts and data tables"
+
+analysis:
+  bundle_validation:
+    size: CONDITIONAL (1.8 MB - large, optimize recommended)
+    self_contained: PASS
+    output_format: PASS
+
+  design_quality:
+    ai_slop_detected: YES (centered layout, purple gradients)
+    visual_hierarchy: ACCEPTABLE
+    color_scheme: GENERIC (purple gradient background)
+    typography: ACCEPTABLE
+
+  shadcn_usage:
+    components_used: [Table, Card, Button, Badge]
+    import_pattern: CORRECT
+    composition: GOOD
+
+  path_aliases:
+    configured: YES
+    all_imports_use_alias: YES
+
+  accessibility:
+    keyboard_nav: PARTIAL (some chart interactions not keyboard accessible)
+    aria_labels: PARTIAL (missing on some interactive elements)
+    color_contrast: SUFFICIENT
+
+  artifact_patterns:
+    react_18: YES
+    typescript_strict: YES
+    console_logs: NONE
+    vite_config: CORRECT
+    parcel_config: CORRECT
+
+overall_score: 68/100
+decision: CONDITIONAL_PASS
+
+output:
+  ⚠️ ARTIFACT QUALITY GATE: CONDITIONAL PASS
+
+  Bundle Info:
+  - Size: 1.8 MB (large)
+  - Category: Large (optimization recommended)
+  - Optimization strategies:
+    * Code splitting (if multi-page)
+    * Lazy load Chart.js
+    * Optimize table rendering
+
+  Design Quality (Non-Blocking):
+  - AI slop detected:
+    * Excessive centered layout
+    * Purple gradient background (generic)
+  - Recommendations:
+    * Use asymmetric layout with intentional sections
+    * Choose brand-appropriate color scheme
+    * Add visual hierarchy with varied element styling
+
+  Accessibility (Non-Blocking):
+  - Keyboard navigation: Partial
+    * Add keyboard support for chart interactions
+  - ARIA labels: Partial
+    * Add aria-label to chart containers
+    * Label interactive table elements
+
+  Next Action: Proceed to git-workflow-manager with noted improvements
+  Follow-up: Create ticket for bundle optimization and design refinement
+```
+
+**Artifact Example Validation (Fail - Excessive Bundle)**:
+```yaml
+input:
+  artifact_type: "complex_app"
+  tech_stack: "React 18 + TypeScript + shadcn/ui + Heavy libraries"
+  bundle_size_kb: 3500
+  implementation: "Multi-page app with 50+ components"
+
+analysis:
+  bundle_validation:
+    size: FAIL (3.5 MB - excessive, BLOCKING)
+    self_contained: PASS
+    output_format: PASS
+
+  design_quality:
+    ai_slop_detected: YES
+    visual_hierarchy: POOR
+    color_scheme: GENERIC
+    typography: ACCEPTABLE
+
+  shadcn_usage:
+    components_used: [Multiple]
+    import_pattern: CORRECT
+    composition: OVER_COMPLEX
+
+  path_aliases:
+    configured: YES
+    all_imports_use_alias: YES
+
+  accessibility:
+    keyboard_nav: PARTIAL
+    aria_labels: MISSING (many elements)
+    color_contrast: SUFFICIENT
+
+  artifact_patterns:
+    react_18: YES
+    typescript_strict: YES
+    console_logs: 2 FOUND (BLOCKING)
+    vite_config: CORRECT
+    parcel_config: CORRECT
+
+overall_score: 45/100
+decision: FAIL
+
+output:
+  ❌ ARTIFACT QUALITY GATE: FAIL
+
+  Critical Issues (Blocking):
+  1. 🔴 BUNDLE SIZE: 3.5 MB exceeds 2 MB limit
+     → Required Action: Reduce bundle size to <2 MB
+     → Strategies:
+       * Identify and remove heavy libraries
+       * Code splitting (if multi-page)
+       * Lazy load components
+       * Optimize images/assets
+       * Consider if artifacts-builder skill sufficient
+
+  2. 🔴 CONSOLE LOGS: 2 console.log statements found in production code
+     → Required Action: Remove all console.log statements
+
+  3. 🔴 COMPLEXITY: 50+ components suggests artifact too complex
+     → Required Action: Consider if this should be:
+       * Standard web application (not artifact)
+       * Simplified to core features only
+       * Split into multiple simpler artifacts
+
+  Required Actions Before Re-submission:
+  1. Analyze bundle composition (identify large dependencies)
+  2. Remove or lazy-load heavy libraries
+  3. Remove console.log statements
+  4. Reduce component count or simplify features
+  5. Validate bundle size <2 MB
+
+  Recommendations:
+  - Consider using frontend-developer standard mode (not artifact mode)
+  - This complexity suggests full web application, not artifact
+  - If artifact required, drastically simplify scope
+
+  Next Action: REWORK REQUIRED - Return to frontend-developer
+  Consider: Route to standard web app development instead of artifact
+```
+
 ## Quality Score Calculation
 
 ### Weighted Scoring Algorithm
