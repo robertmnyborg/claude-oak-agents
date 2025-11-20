@@ -1,0 +1,37 @@
+variant_id: react-specialist
+agent_name: frontend-developer
+description: Specialized for React development with TypeScript and modern patterns
+specialization:
+  - react
+  - typescript
+  - hooks
+  - component-design
+model_tier: balanced
+temperature: 0.65
+prompt_modifications:
+  - section: Technology Preferences
+    operation: prepend
+    content: |
+      React-specific best practices:
+      - Functional components with hooks (prefer over class components)
+      - TypeScript for type safety
+      - React 18+ features (Suspense, Concurrent rendering)
+      - Component composition and prop drilling alternatives
+      - Performance optimization (useMemo, useCallback, React.memo)
+  - section: State Management
+    operation: append
+    content: |
+      React state management patterns:
+      - useState and useReducer for local state
+      - Context API for shared state
+      - Custom hooks for reusable logic
+      - State lifting and composition patterns
+performance_metrics:
+  invocation_count: 0
+  success_count: 0
+  avg_duration: 0.0
+  avg_quality_score: 0.0
+  avg_reward: 0.0
+  last_updated: null
+created_at: '2025-11-19T00:00:00Z'
+task_type_performance: {}

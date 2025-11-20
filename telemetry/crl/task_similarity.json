@@ -1,0 +1,47 @@
+{
+  "api-design": {
+    "api-design": 1.0,
+    "database-schema": 0.7,
+    "service-architecture": 0.8,
+    "authentication": 0.6,
+    "performance-optimization": 0.5,
+    "ui-implementation": 0.3,
+    "deployment": 0.4
+  },
+  "database-schema": {
+    "api-design": 0.7,
+    "database-schema": 1.0,
+    "service-architecture": 0.6,
+    "data-migration": 0.9,
+    "performance-optimization": 0.7,
+    "ui-implementation": 0.2,
+    "deployment": 0.3
+  },
+  "ui-implementation": {
+    "api-design": 0.3,
+    "database-schema": 0.2,
+    "ui-implementation": 1.0,
+    "component-design": 0.9,
+    "accessibility": 0.7,
+    "performance-optimization": 0.5,
+    "deployment": 0.4
+  },
+  "service-architecture": {
+    "api-design": 0.8,
+    "database-schema": 0.6,
+    "service-architecture": 1.0,
+    "microservices": 0.9,
+    "deployment": 0.8,
+    "performance-optimization": 0.7,
+    "ui-implementation": 0.3
+  },
+  "deployment": {
+    "api-design": 0.4,
+    "database-schema": 0.3,
+    "ui-implementation": 0.4,
+    "service-architecture": 0.8,
+    "deployment": 1.0,
+    "infrastructure": 0.9,
+    "performance-optimization": 0.6
+  }
+}

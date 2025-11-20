@@ -1,0 +1,38 @@
+variant_id: api-optimized
+agent_name: backend-architect
+description: Optimized for REST API design and implementation
+specialization:
+  - api-design
+  - rest
+  - openapi
+  - graphql
+model_tier: balanced
+temperature: 0.6
+prompt_modifications:
+  - section: Core Responsibilities
+    operation: append
+    content: |
+      Additional focus on API design best practices:
+      - RESTful principles and resource modeling
+      - OpenAPI/Swagger documentation standards
+      - API versioning strategies (header, URL, content negotiation)
+      - Rate limiting and throttling patterns
+      - Error handling and status code conventions
+  - section: Operating Instructions
+    operation: prepend
+    content: |
+      For API-related tasks, prioritize:
+      1. RESTful design patterns
+      2. Clear resource modeling and URL structure
+      3. Comprehensive OpenAPI documentation
+      4. Proper HTTP status code usage
+      5. API security (authentication, authorization, CORS)
+performance_metrics:
+  invocation_count: 0
+  success_count: 0
+  avg_duration: 0.0
+  avg_quality_score: 0.0
+  avg_reward: 0.0
+  last_updated: null
+created_at: '2025-11-19T00:00:00Z'
+task_type_performance: {}

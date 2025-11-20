@@ -6,6 +6,8 @@ Analyzes requests and file contexts to determine the most appropriate domain(s)
 for specialized agent routing. Reads domain configurations and returns matched
 domain details for optimized agent selection.
 
+Enhanced with CRL integration for variant selection based on task classification.
+
 Usage:
     from core.domain_router import DomainRouter
 
@@ -14,13 +16,20 @@ Usage:
         request_text="Create a React component with TypeScript",
         file_paths=["src/components/Button.tsx"]
     )
+
+    # CRL-enhanced routing
+    router_crl = DomainRouter(crl_enabled=True)
+    routing = router_crl.route_request(
+        request_text="Create REST API endpoints",
+        file_paths=["src/routes/api.ts"]
+    )
 """
 
 import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict, Optional, Set
+from typing import List, Dict, Optional, Set, Any
 from dataclasses import dataclass, field
 from collections import defaultdict
 
@@ -53,13 +62,14 @@ class DomainRouter:
     enabling specialized agent routing based on detected domains.
     """
 
-    def __init__(self, domains_dir: Optional[str] = None):
+    def __init__(self, domains_dir: Optional[str] = None, crl_enabled: bool = True):
         """
         Initialize the domain router.
 
         Args:
             domains_dir: Path to .claude/domains/ directory.
                         If None, uses default relative to this file.
+            crl_enabled: Enable CRL-based variant selection (default: True)
         """
         if domains_dir is None:
             # Default to .claude/domains relative to project root
@@ -68,6 +78,21 @@ class DomainRouter:
 
         self.domains_dir = Path(domains_dir)
         self.domains: Dict[str, DomainConfig] = {}
+        self.crl_enabled = crl_enabled
+
+        # Initialize CRL components if enabled
+        self.crl_coordinator = None
+        self.task_classifier = None
+        if crl_enabled:
+            try:
+                from core.crl_coordinator import CRLCoordinator
+                from core.task_classifier import TaskClassifier
+                self.crl_coordinator = CRLCoordinator()
+                self.task_classifier = TaskClassifier()
+            except ImportError:
+                print("Warning: CRL components not available, disabling CRL integration")
+                self.crl_enabled = False
+
         self.load_domains()
 
     def load_domains(self) -> None:
@@ -364,6 +389,100 @@ class DomainRouter:
             summary_lines.append(f"   Reasons: {', '.join(reasons)}")
 
         return "\n".join(summary_lines)
+
+    def route_request(
+        self,
+        user_request: str,
+        file_paths: Optional[List[str]] = None,
+        context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Route request to appropriate agent with CRL variant selection.
+
+        Process:
+        1. Detect domains (existing logic)
+        2. Select primary agent
+        3. If CRL enabled: Classify task and select variant
+        4. Return agent + variant info
+
+        Args:
+            user_request: The user's request text
+            file_paths: List of file paths being worked on
+            context: Additional context information
+
+        Returns:
+            Dictionary with routing information:
+            {
+                "agent": str,              # Primary agent name
+                "variant": str,            # Variant ID (or "default")
+                "task_type": str,          # Classified task type
+                "q_value": float,          # Q-value (CRL only)
+                "exploration": bool,       # Exploration flag (CRL only)
+                "domains": List[Dict],     # Detected domains
+                "crl_enabled": bool        # CRL status
+            }
+        """
+        if file_paths is None:
+            file_paths = []
+
+        # Step 1: Detect domains using existing logic
+        domains = self.identify_domains(user_request, file_paths)
+
+        # Step 2: Select primary agent from domains
+        primary_agent = self._select_primary_agent(domains)
+
+        # Step 3: CRL-enhanced selection
+        if self.crl_enabled and self.crl_coordinator and self.task_classifier:
+            # Classify task type
+            task_type, confidence, all_scores = self.task_classifier.classify_with_confidence(
+                user_request,
+                file_paths=file_paths
+            )
+
+            # Select variant via Q-learning
+            available_variants = self.crl_coordinator.agent_basis.list_variants(primary_agent)
+
+            if available_variants:
+                variant_id, q_value, exploration = self.crl_coordinator.q_learning.select_variant(
+                    agent_name=primary_agent,
+                    task_type=task_type,
+                    available_variants=available_variants
+                )
+
+                return {
+                    "agent": primary_agent,
+                    "variant": variant_id,
+                    "task_type": task_type,
+                    "task_type_confidence": confidence,
+                    "q_value": q_value,
+                    "exploration": exploration,
+                    "domains": domains,
+                    "crl_enabled": True
+                }
+
+        # Fallback: existing behavior without CRL
+        return {
+            "agent": primary_agent,
+            "variant": "default",
+            "domains": domains,
+            "crl_enabled": False
+        }
+
+    def _select_primary_agent(self, domains: List[Dict]) -> str:
+        """
+        Select primary agent from detected domains.
+
+        Args:
+            domains: List of detected domains with confidence scores
+
+        Returns:
+            Primary agent name (defaults to "general-purpose" if no domains)
+        """
+        if not domains:
+            return "general-purpose"
+
+        # Return primary agent from highest confidence domain
+        return domains[0]["config"].primary_agent
 
 
 def main():

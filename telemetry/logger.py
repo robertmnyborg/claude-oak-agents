@@ -51,7 +51,13 @@ class TelemetryLogger:
         workflow_id: Optional[str] = None,
         spec_id: Optional[str] = None,
         spec_section: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
+        # CRL (Continual Reinforcement Learning) fields - Phase 1
+        agent_variant: Optional[str] = None,
+        task_type: Optional[str] = None,
+        q_value: Optional[float] = None,
+        exploration: Optional[bool] = None,
+        learning_enabled: bool = False
     ) -> str:
         """
         Log an agent invocation at start time.
@@ -66,9 +72,18 @@ class TelemetryLogger:
             spec_id: Specification ID if this invocation is part of a spec-driven workflow (optional)
             spec_section: List of spec sections this invocation relates to (e.g., ["2.2.comp-1", "3.1.task-1"]) (optional)
             metadata: Additional custom metadata (optional)
+            agent_variant: Agent variant ID used (CRL Phase 1, optional)
+            task_type: Classified task type (CRL Phase 1, optional)
+            q_value: Q-value for this (task_type, variant) pair (CRL Phase 1, optional)
+            exploration: True if ε-greedy exploration, False if exploitation (CRL Phase 1, optional)
+            learning_enabled: Whether CRL was active for this invocation (CRL Phase 1, default: False)
 
         Returns:
             invocation_id: Unique identifier for this invocation
+
+        Note:
+            CRL fields are backward compatible - all new fields are optional and can be null.
+            Existing telemetry consumers are unaffected by Phase 1 additions.
         """
         invocation_id = str(uuid.uuid4())
 
@@ -84,6 +99,14 @@ class TelemetryLogger:
             "workflow_id": workflow_id,
             "spec_id": spec_id,
             "spec_section": spec_section or [],
+            # CRL Phase 1 fields (all optional, backward compatible)
+            "agent_variant": agent_variant,
+            "task_type": task_type,
+            "q_value": q_value,
+            "exploration": exploration,
+            "reward": None,  # Calculated after completion
+            "learning_enabled": learning_enabled,
+            # Standard fields
             "tools_used": [],
             "duration_seconds": None,
             "outcome": {
@@ -112,7 +135,8 @@ class TelemetryLogger:
         files_created: Optional[List[str]] = None,
         tools_used: Optional[List[str]] = None,
         tests_passed: Optional[bool] = None,
-        build_succeeded: Optional[bool] = None
+        build_succeeded: Optional[bool] = None,
+        reward: Optional[float] = None  # CRL Phase 1: Calculated reward signal
     ) -> None:
         """
         Update an invocation record with completion data.
@@ -130,6 +154,7 @@ class TelemetryLogger:
             tools_used: List of tool names used
             tests_passed: Whether tests passed
             build_succeeded: Whether build succeeded
+            reward: Calculated reward signal for CRL (CRL Phase 1, optional)
         """
         invocations = []
         updated = False
@@ -159,6 +184,9 @@ class TelemetryLogger:
                     inv["outcome"]["tests_passed"] = tests_passed
                 if build_succeeded is not None:
                     inv["outcome"]["build_succeeded"] = build_succeeded
+                # CRL Phase 1: Update reward
+                if reward is not None:
+                    inv["reward"] = reward
                 updated = True
                 break
 
