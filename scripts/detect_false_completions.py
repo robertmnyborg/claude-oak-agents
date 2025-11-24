@@ -12,6 +12,7 @@ Simple heuristic:
 
 Features:
 - Filters out test/demo workflows automatically
+- Filters out CRL experiment runs (A/B testing, exploration mode)
 - Only analyzes recent invocations (default: 30 days)
 - Requires 3+ attempts before flagging (prevents false positives from retries)
 
@@ -70,6 +71,26 @@ def is_test_invocation(invocation: Dict) -> bool:
     task = invocation.get('task_description', '').lower()
     keywords = extract_keywords(task)
     return bool(keywords & TEST_KEYWORDS)
+
+
+def is_experiment_run(invocation: Dict) -> bool:
+    """Check if invocation is from CRL experimentation system."""
+    # Check for non-default agent variants (A/B testing)
+    agent_variant = invocation.get('agent_variant')
+    if agent_variant and agent_variant != 'default':
+        return True
+
+    # Check for explicit exploration mode
+    if invocation.get('exploration') is True:
+        return True
+
+    # Check for outcome status 'unknown' with no tools used (experiment placeholder)
+    outcome = invocation.get('outcome', {})
+    tools = invocation.get('tools_used', [])
+    if outcome.get('status') == 'unknown' and len(tools) == 0:
+        return True
+
+    return False
 
 
 def calculate_overlap(keywords1: Set[str], keywords2: Set[str]) -> int:
@@ -204,7 +225,7 @@ def log_false_completion(agent_name: str, evidence: Dict, output_file: Path, dry
 
 
 def load_invocations(days_back: int = 30) -> List[Dict]:
-    """Load invocations from last N days, filtering out test invocations."""
+    """Load invocations from last N days, filtering out test invocations and experiments."""
     project_root = Path(__file__).parent.parent
     invocations_file = project_root / 'telemetry' / 'agent_invocations.jsonl'
 
@@ -217,6 +238,7 @@ def load_invocations(days_back: int = 30) -> List[Dict]:
     cutoff_date = datetime.now(timezone.utc) - timedelta(days=days_back)
     invocations = []
     test_filtered = 0
+    experiment_filtered = 0
     date_filtered = 0
 
     with open(invocations_file, 'r') as f:
@@ -232,6 +254,11 @@ def load_invocations(days_back: int = 30) -> List[Dict]:
                 test_filtered += 1
                 continue
 
+            # Filter CRL experiments
+            if is_experiment_run(inv):
+                experiment_filtered += 1
+                continue
+
             # Filter by date
             timestamp = datetime.fromisoformat(inv['timestamp'].replace('Z', '+00:00'))
             if timestamp < cutoff_date:
@@ -240,7 +267,7 @@ def load_invocations(days_back: int = 30) -> List[Dict]:
 
             invocations.append(inv)
 
-    print(f"Loaded {len(invocations)} invocations (filtered {test_filtered} test runs, {date_filtered} old entries)")
+    print(f"Loaded {len(invocations)} invocations (filtered {test_filtered} test runs, {experiment_filtered} experiments, {date_filtered} old entries)")
     return invocations
 
 
