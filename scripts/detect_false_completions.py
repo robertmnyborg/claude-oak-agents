@@ -10,10 +10,17 @@ Simple heuristic:
 - User had to ask again within 24 hours
 - Probably a false completion
 
+Features:
+- Filters out test/demo workflows automatically
+- Only analyzes recent invocations (default: 30 days)
+- Requires 3+ attempts before flagging (prevents false positives from retries)
+
 Usage:
   python3 scripts/detect_false_completions.py
   python3 scripts/detect_false_completions.py --dry-run
-  
+  python3 scripts/detect_false_completions.py --days 60
+  python3 scripts/detect_false_completions.py --dry-run --days 7
+
 Output:
   Appends to telemetry/agent_reviews.jsonl
 """
@@ -38,9 +45,12 @@ STOPWORDS = {
     'and', 'or', 'but', 'in', 'on', 'at', 'with', 'from', 'of'
 }
 
+# Test detection keywords
+TEST_KEYWORDS = {'test', 'workflow', 'demo', 'example', 'sample', 'mock'}
+
 # Configuration
 MIN_KEYWORD_OVERLAP = 2
-MIN_REPETITIONS = 1  # Ask twice = failure (1 repetition after first request = 2 total)
+MIN_REPETITIONS = 2  # Require 3+ total attempts before flagging (not just 2)
 TIME_WINDOW_HOURS = 24
 
 
@@ -48,11 +58,18 @@ def extract_keywords(text: str) -> Set[str]:
     """Extract keywords from text, removing stopwords."""
     if not text:
         return set()
-    
+
     # Simple word splitting and cleaning
     words = text.lower().replace(',', ' ').replace('.', ' ').split()
     keywords = {w.strip() for w in words if len(w) > 2 and w not in STOPWORDS}
     return keywords
+
+
+def is_test_invocation(invocation: Dict) -> bool:
+    """Check if invocation is from a test/demo workflow."""
+    task = invocation.get('task_description', '').lower()
+    keywords = extract_keywords(task)
+    return bool(keywords & TEST_KEYWORDS)
 
 
 def calculate_overlap(keywords1: Set[str], keywords2: Set[str]) -> int:
@@ -186,42 +203,87 @@ def log_false_completion(agent_name: str, evidence: Dict, output_file: Path, dry
         print(f"  Issue ID: {issue_id}")
 
 
-def main():
-    # Check for dry-run mode
-    dry_run = len(sys.argv) > 1 and sys.argv[1] == '--dry-run'
-    
-    # File paths
+def load_invocations(days_back: int = 30) -> List[Dict]:
+    """Load invocations from last N days, filtering out test invocations."""
     project_root = Path(__file__).parent.parent
     invocations_file = project_root / 'telemetry' / 'agent_invocations.jsonl'
-    reviews_file = project_root / 'telemetry' / 'agent_reviews.jsonl'
-    
-    # Read invocations
+
     if not invocations_file.exists():
         print(f"No invocations file found at {invocations_file}")
-        return
-    
+        return []
+
+    # Create timezone-aware cutoff date
+    from datetime import timezone
+    cutoff_date = datetime.now(timezone.utc) - timedelta(days=days_back)
     invocations = []
+    test_filtered = 0
+    date_filtered = 0
+
     with open(invocations_file, 'r') as f:
         for line in f:
             line = line.strip()
-            if line:
-                invocations.append(json.loads(line))
-    
-    print(f"Analyzing {len(invocations)} invocations...")
-    
+            if not line:
+                continue
+
+            inv = json.loads(line)
+
+            # Filter test invocations
+            if is_test_invocation(inv):
+                test_filtered += 1
+                continue
+
+            # Filter by date
+            timestamp = datetime.fromisoformat(inv['timestamp'].replace('Z', '+00:00'))
+            if timestamp < cutoff_date:
+                date_filtered += 1
+                continue
+
+            invocations.append(inv)
+
+    print(f"Loaded {len(invocations)} invocations (filtered {test_filtered} test runs, {date_filtered} old entries)")
+    return invocations
+
+
+def main():
+    # Check for dry-run mode and days parameter
+    dry_run = '--dry-run' in sys.argv
+    days_back = 30  # Default to 30 days
+
+    # Parse days parameter if provided
+    for i, arg in enumerate(sys.argv):
+        if arg == '--days' and i + 1 < len(sys.argv):
+            try:
+                days_back = int(sys.argv[i + 1])
+            except ValueError:
+                print(f"Invalid --days value: {sys.argv[i + 1]}")
+                return
+
+    # File paths
+    project_root = Path(__file__).parent.parent
+    reviews_file = project_root / 'telemetry' / 'agent_reviews.jsonl'
+
+    # Load invocations with filtering
+    invocations = load_invocations(days_back=days_back)
+
+    if not invocations:
+        print("No invocations to analyze.")
+        return
+
+    print(f"Analyzing {len(invocations)} invocations from last {days_back} days...")
+
     # Find false completions
     false_completions = find_repetitions(invocations)
-    
+
     if not false_completions:
         print("No false completions detected.")
         return
-    
+
     print(f"\nFound {len(false_completions)} potential false completions:\n")
-    
+
     # Log each false completion
     for fc in false_completions:
         log_false_completion(fc['agent_name'], fc, reviews_file, dry_run)
-    
+
     if not dry_run:
         print(f"\n✓ Results appended to {reviews_file}")
 
