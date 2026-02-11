@@ -1,108 +1,21 @@
-# Claude Code Configuration .gitignore
-# Prevents accidental commits of sensitive Claude data
+# OS
+.DS_Store
+Thumbs.db
 
-# Runtime data - contains conversation logs and session data
-projects/
-todos/
-shell-snapshots/
-statsig/
-ide/
-*.lock
-
-# Local settings and temporary files
-.claude/settings.local.json
-*.tmp
-*.temp
-*.log
-*.swp
-*.swo
-*~
-
-# Backup files
-backups/
-*.backup
-*.bak
-
-# Memory and cache files
-memory/cache/
-memory/temp/
-cache/
-
-# IDE and editor files
+# IDE
 .vscode/
 .idea/
 *.code-workspace
 
+# Runtime
+*.log
+*.tmp
+*.swp
+*~
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Personal API keys or tokens (if any get stored accidentally)
-*.key
-*.token
-*.secret
-*_key
-*_token
-*_secret
-api_keys/
-secrets/
-
-# Node modules from local installations
+# Node
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Package manager lock files in config
-package-lock.json
-yarn.lock
-
-# Telemetry data files (but keep infrastructure code)
-telemetry/*.jsonl
-telemetry/*.json
-!telemetry/schemas.json
-!telemetry/*.py
-!telemetry/README.md
-
-# Debug and crash data
-debug/
-crash-reports/
-
-# Auto-generated reports
-reports/
-
-# Python cache
+# Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-
-# Personal workspace settings
-workspace/
-personal/
-
-# Auto-generated documentation
-docs/generated/
-
-# Test outputs
-test-results/
-coverage/
-
-# Build artifacts
-dist/
-build/
-out/
-
