@@ -89,6 +89,24 @@ Option 2: Lambda + SQS + DynamoDB (Score: 7/10)
 | `/analyze-complexity` | Identify over-engineering and suggest simplifications |
 | `/deploy-check` | Pre-deployment validation checklist |
 
+## MCP Servers
+
+### HeyReach
+
+This repo ships a project-scoped [`.mcp.json`](.mcp.json) that connects the
+[HeyReach MCP server](https://github.com/bcharleson/heyreach-mcp) for LinkedIn
+outreach automation (campaigns, leads, conversations, analytics).
+
+Set your API key as an environment variable before launching Claude Code — the
+config reads `${HEYREACH_API_KEY}`, so the secret never lands in git:
+
+```bash
+export HEYREACH_API_KEY="your-heyreach-api-key"
+```
+
+Get the key from your HeyReach account under **Settings → API**. The server is
+fetched on demand via `npx`, so no global install is required.
+
 ## Customization
 
 Each agent is a single markdown file in `agents/`. Edit them to match your team's standards:
