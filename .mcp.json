@@ -1,12 +1,8 @@
 {
   "mcpServers": {
     "heyreach": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "heyreach-mcp-server@2.0.5",
-        "--api-key=${HEYREACH_API_KEY}"
-      ]
+      "type": "http",
+      "url": "https://mcp.heyreach.io/mcp?xMcpKey=${HEYREACH_MCP_KEY}"
     }
   }
 }
