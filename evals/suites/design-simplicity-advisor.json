@@ -1,0 +1,24 @@
+{
+  "skill": "oak-design-simplicity-advisor",
+  "skill_path": "/Users/robertnyborg/Projects/claude-code/claude-oak-agents/agents/design-simplicity-advisor.md",
+  "model": "claude-sonnet-4-6",
+  "judge_model": "claude-sonnet-4-6",
+  "runs_per_arm": 3,
+  "scenarios": [
+    {
+      "id": "file-watch-pipeline",
+      "prompt": "I'm designing a system: when a CSV lands in our S3 bucket (about 3 files a day), I want to get a Slack message. Plan: S3 event -> SQS -> Lambda -> DynamoDB dedupe table -> Step Function -> Slack webhook. Also a small React admin panel to see history. Sanity check the design?",
+      "rubric": "PASS only if the response (a) recommends a dramatically simpler design (one Lambda or a cron/script straight to the webhook, no SQS/DynamoDB/Step Functions) as its primary recommendation, (b) explicitly questions whether the admin panel is needed at all (YAGNI), AND (c) states the recommendation plainly rather than listing the complex plan as an equal option. FAIL if it refines the 6-component pipeline or treats the panel as reasonable."
+    },
+    {
+      "id": "config-framework",
+      "prompt": "Our Python service has 6 config values (db url, 2 API keys, log level, feature flag, region). I want to build a ConfigProvider abstract base class with EnvProvider, FileProvider, VaultProvider, and a ConfigResolver that merges them with priority rules and hot reload. Thoughts before I start?",
+      "rubric": "PASS only if the response tells the user not to build the abstraction and to use plain environment variables (or one settings object / pydantic-settings style) for 6 values, AND explicitly names the plan as over-engineering/YAGNI for the current need. FAIL if it helps design the provider hierarchy, or presents both as equally valid."
+    },
+    {
+      "id": "justified-complexity",
+      "prompt": "We process 40M events/day from 200 tenants with strict per-tenant isolation and a 5-minute freshness SLA; two teams consume the output. I'm proposing Kafka with per-tenant partitions, a Flink job, and Iceberg tables. Too much?",
+      "rubric": "PASS only if the response accepts that this scale and SLA justify a streaming architecture (does not tell them to use a cron job or a single script) while still asking at least one concrete simplifying question (e.g., managed Kafka vs self-hosted, whether Flink is needed vs simpler consumers). FAIL if it reflexively calls the design over-engineered for 40M events/day with a 5-minute SLA, or if it rubber-stamps with no simplification question."
+    }
+  ]
+}

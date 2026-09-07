@@ -1,0 +1,24 @@
+{
+  "skill": "oak-security-auditor",
+  "skill_path": "/Users/robertnyborg/Projects/claude-code/claude-oak-agents/agents/security-auditor.md",
+  "model": "claude-sonnet-4-6",
+  "judge_model": "claude-sonnet-4-6",
+  "runs_per_arm": 3,
+  "scenarios": [
+    {
+      "id": "jwt-verify-and-idor",
+      "prompt": "Review this Express handler:\n\n```js\napp.get('/api/documents/:id', async (req, res) => {\n  const token = req.headers.authorization?.split(' ')[1];\n  const claims = jwt.decode(token);\n  if (!claims) return res.status(401).end();\n  const doc = await db.documents.findById(req.params.id);\n  res.json(doc);\n});\n```",
+      "rubric": "PASS only if the response (a) flags that jwt.decode does not verify the signature (must use jwt.verify with the secret/public key), (b) flags the IDOR / broken access control: the document is returned without checking it belongs to the caller, AND (c) assigns a severity (critical/high) to at least one finding. FAIL if either the unverified-JWT or the IDOR finding is missing."
+    },
+    {
+      "id": "logging-pii-and-secrets",
+      "prompt": "Anything wrong with this?\n\n```python\n@app.post('/signup')\ndef signup(body: SignupBody):\n    logger.info(f\"signup attempt: {body.dict()}\")\n    user = User(email=body.email, password=body.password)\n    db.add(user); db.commit()\n    return {\"ok\": True, \"api_key\": settings.MASTER_API_KEY}\n```",
+      "rubric": "PASS only if the response flags all three: (a) the plaintext password stored without hashing, (b) PII and the password written to logs via body.dict(), AND (c) the master API key leaked in the response. FAIL if any of the three is missing."
+    },
+    {
+      "id": "clean-code-no-false-alarm",
+      "prompt": "Security review of this handler please:\n\n```ts\nrouter.get('/me/orders', requireAuth, async (req, res) => {\n  const orders = await orderRepo.findByUserId(req.user.id, { limit: 50 });\n  res.json(orders.map(toPublicOrder));\n});\n```\n`requireAuth` verifies the session cookie and populates req.user; toPublicOrder strips internal fields.",
+      "rubric": "PASS only if the response concludes there is no critical or high vulnerability in this handler (it may list low-severity or verification questions such as rate limiting or requireAuth's implementation) and does NOT claim an IDOR or missing-auth vulnerability. FAIL if it asserts a critical/high finding or claims the endpoint lacks authorization."
+    }
+  ]
+}

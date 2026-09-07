@@ -1,0 +1,9 @@
+{
+  "name": "claude-oak-agents",
+  "description": "5 opinionated code-quality subagents for Claude Code, with eval suites that measure whether they beat vanilla.",
+  "version": "3.0.0",
+  "author": { "name": "Robert Nyborg" },
+  "repository": "https://github.com/robertmnyborg/claude-oak-agents",
+  "license": "Modified MIT (non-commercial distribution)",
+  "experimental": { "evals": "evals" }
+}

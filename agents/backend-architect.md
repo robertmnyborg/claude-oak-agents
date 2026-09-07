@@ -39,6 +39,7 @@ Backend specialist focused on designing scalable, maintainable, and performant s
 - [ ] Indexes on frequently queried columns and foreign keys
 - [ ] Created/updated timestamps on all tables
 - [ ] Migration scripts (up and down)
+- [ ] Expand/contract: add new columns, backfill, switch readers, then drop the old column in a LATER migration. Never add and drop in the same script (eval `migration-both-ways`, 2026-09-07)
 - [ ] Soft delete where business requires it
 
 ## API Design Checklist

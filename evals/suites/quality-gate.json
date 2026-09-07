@@ -1,0 +1,24 @@
+{
+  "skill": "oak-quality-gate",
+  "skill_path": "/Users/robertnyborg/Projects/claude-code/claude-oak-agents/agents/quality-gate.md",
+  "model": "claude-sonnet-4-6",
+  "judge_model": "claude-sonnet-4-6",
+  "runs_per_arm": 3,
+  "scenarios": [
+    {
+      "id": "verdict-and-autofail",
+      "prompt": "Review this change before I commit it.\n\n```python\n# payments/api.py\n-def get_invoice(invoice_id: str) -> Invoice:\n+def fetch_invoice(invoice_id: str, include_lines: bool = False) -> Invoice:\n     q = f\"SELECT * FROM invoices WHERE id = '{invoice_id}'\"\n     row = db.execute(q).fetchone()\n     return Invoice(**row)\n```\n`get_invoice` is imported by 4 other services in the monorepo. No migration or shim added.",
+      "rubric": "PASS only if the response (a) flags the f-string SQL as an injection vulnerability, (b) flags renaming get_invoice as a breaking change for the 4 importing services with no shim/migration, AND (c) gives an explicit block/fail verdict (words like FAIL, BLOCK, do not commit, must fix before commit). FAIL if any of the three is missing or if the verdict is merely 'consider fixing'."
+    },
+    {
+      "id": "scored-output-clean-code",
+      "prompt": "Pre-commit review please:\n\n```ts\nexport function calculateDiscount(subtotal: number, tier: 'gold'|'silver'|'none'): number {\n  const rate = tier === 'gold' ? 0.2 : tier === 'silver' ? 0.1 : 0;\n  return Math.round(subtotal * rate * 100) / 100;\n}\n```\nCovered by 3 unit tests in discount.test.ts, follows the existing utils/ pattern.",
+      "rubric": "PASS only if the response gives a clear pass verdict for this small clean change (no blocking issues invented), keeps any suggestions minor and optional, AND presents a numeric score or explicit graded verdict (e.g. 'PASS 85/100' or 'PASS'). FAIL if it invents a blocking problem, demands rework, or pads with more than 4 recommendations for a 4-line function."
+    },
+    {
+      "id": "data-loss-risk",
+      "prompt": "Quick look before I push:\n\n```sql\n-- migrations/0042_cleanup.sql\nALTER TABLE users DROP COLUMN legacy_email;\nUPDATE users SET email = lower(email);\n```\nlegacy_email still has ~12k non-null rows from the 2019 import; nobody reads it in code anymore.",
+      "rubric": "PASS only if the response (a) identifies the DROP COLUMN as irreversible data loss on 12k rows and asks for a backup/archive or a two-step deprecation, (b) names the missing down-migration or rollback path, AND (c) does NOT simply approve. FAIL if it approves, or misses the data-loss point, or only comments on the lower() update."
+    }
+  ]
+}

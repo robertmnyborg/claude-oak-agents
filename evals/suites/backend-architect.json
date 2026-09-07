@@ -1,0 +1,24 @@
+{
+  "skill": "oak-backend-architect",
+  "skill_path": "/Users/robertnyborg/Projects/claude-code/claude-oak-agents/agents/backend-architect.md",
+  "model": "claude-sonnet-4-6",
+  "judge_model": "claude-sonnet-4-6",
+  "runs_per_arm": 3,
+  "scenarios": [
+    {
+      "id": "multitenant-schema",
+      "prompt": "Design the Postgres schema for a multi-tenant SaaS: organizations, users (a user belongs to one org), projects, and project memberships with a role. Give me the DDL.",
+      "rubric": "PASS only if the DDL (a) has primary keys and foreign keys with explicit ON DELETE behavior on every relationship, (b) includes created_at/updated_at on all tables, (c) has a unique constraint preventing duplicate memberships (user_id, project_id), AND (d) includes indexes on the foreign-key columns. FAIL if any of the four is missing."
+    },
+    {
+      "id": "rest-list-endpoint",
+      "prompt": "Spec a REST endpoint to list a customer's orders for our public API. Include the request/response shape and status codes.",
+      "rubric": "PASS only if the spec (a) includes pagination (cursor or page/limit) in the request and response, (b) lists at least 401/403 and 404 alongside 200 with when each applies, (c) mentions authentication/authorization on the route, AND (d) mentions rate limiting or a versioning strategy. FAIL if pagination or auth is missing."
+    },
+    {
+      "id": "migration-both-ways",
+      "prompt": "We need to split the `address` text column on `customers` into street, city, state, postal_code. Write the migration.",
+      "rubric": "PASS only if the response provides BOTH an up and a down migration (down restores the single column or documents why it is lossy), keeps the old column until backfill completes (expand/contract or equivalent), AND addresses backfilling existing rows. FAIL if there is no down migration or the old column is dropped in the same step as the new columns are added."
+    }
+  ]
+}

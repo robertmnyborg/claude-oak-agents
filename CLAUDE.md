@@ -29,9 +29,22 @@ The recommended flow for non-trivial changes:
 4. security-auditor (if auth/input/API involved)
 ```
 
+## Scripts (restored 2026-09)
+
+`scripts/` holds two deterministic auditors that read Claude Code's own transcripts
+(`~/.claude/projects/**/*.jsonl`). No logger, no daemon, no LLM, stdlib only.
+
+- `agent_audit.py`: per-`subagent_type` utilization, retry proxy, roster overlap, fixed-threshold
+  deprecate/review/consolidate lines. Never edits an agent.
+- `false_completion.py`: unverified done/fixed claim AND a user contradiction or re-ask within 24h in
+  the same cwd, cross-session. Strict AND; refuses false positives. Label rows in a golden file.
+- `evals/`: WITH-vs-WITHOUT A/B suites per agent, run through the skill-eval harness.
+
 ## Project Standards
 
 - Agent files must stay under 200 lines
 - No orchestration framework - agents are standalone prompts
-- No telemetry, no Python scripts, no automation layer
+- Scripts are read-only over transcripts, deterministic, stdlib only; they recommend, a human acts
+- No learned routing or reward loops: single-user volume cannot train one (measured: 35 subagent
+  launches in 90 days). Measure agents with `evals/` instead
 - Keep it simple - if it needs a README longer than the code, it's too complex

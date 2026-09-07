@@ -1,28 +1,35 @@
 # Claude OaK Agents
 
-**5 opinionated agents that make Claude Code better at building software.**
+**5 opinionated agents for Claude Code, measured against vanilla.**
 
-Claude Code is already great at writing code. These agents add the guardrails and standards that prevent the common failure modes: over-engineering, security gaps, inconsistent quality, and code that's clever instead of clear.
+Claude Code is already great at writing code. These agents add the checklists and verdict formats that prevent the common failure modes: over-engineering, unsafe migrations, missing states, and code review that hedges instead of blocking. Each one is A/B tested WITH vs WITHOUT the agent prompt; the numbers below are the current run.
 
 ## What's Included
 
-| Agent | Purpose | When It Helps |
-|-------|---------|---------------|
-| **quality-gate** | Unified code review with scoring (0-100) | Before every commit - catches security issues, breaking changes, and complexity creep |
-| **design-simplicity-advisor** | KISS enforcement | Before implementing features - prevents building a distributed system when a shell script would work |
-| **backend-architect** | Database + API design patterns | Schema design, API contracts, backend architecture decisions |
-| **frontend-developer** | UI patterns + accessibility | Component design, state management, responsive/accessible interfaces |
-| **security-auditor** | Vulnerability detection + OWASP Top 10 | Auth implementation, user input handling, API security, dependency review |
+| Agent | Purpose | A/B delta (pass-rate, 3 scenarios × 3 runs, sonnet-4-6, 2026-09-07) | Verdict |
+|-------|---------|---|---|
+| **quality-gate** | Code review with 0-100 score, auto-fail on security / breaking change / data loss | **+56 pts** (numeric verdict on clean code 0→100%; data-loss migration blocked 33→100%) | KEEP |
+| **backend-architect** | DB + API design checklists | **+56 pts** (3NF schema with FKs/indexes/timestamps 33→100%; expand/contract migration 0→100%) | KEEP |
+| **design-simplicity-advisor** | KISS enforcement | **+33 pts** (6-service pipeline and config-provider hierarchy both rejected 0→100%; one contested scenario, see below) | KEEP |
+| **frontend-developer** | Component + accessibility checklists | **+22 pts** (typed props, labels, saving/error state 0→66%; states and a11y already 100% without) | KEEP |
+| **security-auditor** | OWASP Top 10 checklist | **0 pts** (unverified JWT, IDOR, plaintext password, PII logging, leaked key: 100% in both arms; no false alarm on clean code in either) | NEUTRAL |
 
-## Why Not Just Use Claude Code Vanilla?
+Reports: `evals/results/<date>/<agent>.md`. Suites: `evals/suites/<agent>.json`. Rerun: `evals/run.sh [agent] --runs 3` (needs the `skill-eval` harness at `~/.claude/skills/skill-eval/run-eval.sh`, or set `SKILL_EVAL_RUNNER`).
 
-Claude Code (as of Feb 2025) has native subagents, teams, and planning. These agents don't replicate that. Instead they provide:
+What the evals taught us, in one run:
 
-1. **Opinionated quality scoring** - The quality-gate scores code on 8 weighted dimensions and auto-fails on security vulnerabilities or unplanned breaking changes. Claude Code doesn't do this by default.
+- **A checklist line can make the model worse.** With the original backend-architect loaded, the model dropped the old column in the same migration that added the new ones (0/3), because the checklist only said "up and down". One expand/contract line fixed it to 3/3. The prompt is now the thing under test.
+- **security-auditor earns nothing on sonnet-4-6.** Every vulnerability in the suite is caught unaided. Either the suite needs harder cases (SSRF, race conditions, auth-bypass via type confusion) or the agent goes. Neutral means it costs tokens for nothing until proven otherwise.
+- **One scenario is contested.** `justified-complexity` (40M events/day, 5-min SLA) expects the advisor to accept a streaming stack; it argued Postgres+cron handles 463 events/sec. The rubric encodes the author's assumption. Left as-is so the disagreement stays visible.
 
-2. **KISS enforcement** - The simplicity advisor actively pushes back on complexity with questions like "have you tried a shell script?" and "do you actually need this?" Vanilla Claude Code tends to build what you ask for without questioning whether you should.
+## Also in the repo: two auditors over your own transcripts
 
-3. **Domain checklists** - The backend and frontend agents carry specific checklists (database normalization, API design, component accessibility, OWASP Top 10) that serve as institutional memory.
+Claude Code writes every session to `~/.claude/projects/**/*.jsonl`, including subagent runs. Two stdlib-only scripts read those as telemetry. No logger, no daemon, no model call.
+
+- `scripts/agent_audit.py --days 90` — invocations per `subagent_type`, retry proxy, description overlap, fixed-threshold deprecate/review/consolidate lines. First run on the author's machine: 25 of 25 roster agents at zero invocations in 90 days, all 35 launches went to `general-purpose` and `Explore`. Dismiss a line by adding the name to `~/.claude/oak-audit-ignore.txt`.
+- `scripts/false_completion.py --days 7` — an assistant turn that claims done/fixed/merged with no executing tool call behind it, AND a user contradiction or re-ask within 24h in the same cwd, across sessions. Strict AND: it refuses false positives. Label rows into `~/.claude/false-completion-golden.jsonl` and the next run prints precision.
+
+History note: the 2025 version of this repo had an agent-auditor prompt, a keyword-overlap false-completion detector (100% false-positive rate on its 16 flags), and a Q-learning prompt-variant selector whose only executor was a test mock. All three are gone. The ideas survive as the two scripts and the eval suites above; the learning loop does not, because single-user volume (35 launches / 90 days) cannot train one.
 
 ## Installation
 

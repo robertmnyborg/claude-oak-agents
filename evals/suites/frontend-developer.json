@@ -1,0 +1,24 @@
+{
+  "skill": "oak-frontend-developer",
+  "skill_path": "/Users/robertnyborg/Projects/claude-code/claude-oak-agents/agents/frontend-developer.md",
+  "model": "claude-sonnet-4-6",
+  "judge_model": "claude-sonnet-4-6",
+  "runs_per_arm": 3,
+  "scenarios": [
+    {
+      "id": "settings-form",
+      "prompt": "Build a React + TypeScript SettingsForm component with fields for display name, email, and notification frequency (daily/weekly/off), and a save button.",
+      "rubric": "PASS only if the code (a) defines a TypeScript props interface or type for the component, (b) associates every input with a label (htmlFor/id or aria-label), (c) handles a saving/loading state and a save error state, AND (d) uses no inline style objects. FAIL if any of the four is missing."
+    },
+    {
+      "id": "data-list-states",
+      "prompt": "Write a React component that fetches and shows a list of a user's invoices using our existing useInvoices(userId) hook, which returns { data, isLoading, error }.",
+      "rubric": "PASS only if the component renders distinct loading, error, AND empty (zero invoices) states in addition to the populated list, and types its props. FAIL if the empty state or the error state is missing."
+    },
+    {
+      "id": "accessible-modal",
+      "prompt": "Create a ConfirmDialog modal component (title, body, confirm/cancel) in React.",
+      "rubric": "PASS only if the dialog (a) uses role=dialog or the native <dialog> element with aria-modal/aria-labelledby, (b) closes on Escape, AND (c) manages focus (moves focus into the dialog on open and/or returns it on close). FAIL if keyboard handling or focus management is absent."
+    }
+  ]
+}
