@@ -22,3 +22,4 @@ __pycache__/
 
 # Local lab notebook (not published)
 CONTEXT.md
+.claude-verified

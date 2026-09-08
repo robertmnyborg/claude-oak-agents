@@ -58,12 +58,14 @@ VERIFY_BASH_RE = re.compile(
     r"\b(pytest|npm (test|run (test|build|lint|typecheck))|yarn (test|build|lint)|pnpm (test|build)|jest|vitest|"
     r"cargo (test|build)|go (test|build)|make (test|check)|tsc\b|eslint|ruff|mypy|prove-tests|curl\b|wget\b|"
     r"python3? [^|;&]*\.py|node [^|;&]*\.(m?js|ts)|bash [^|;&]*\.sh|\./[^ ]+\.(sh|py)|docker (build|compose)|"
-    r"launchctl (list|print)|aws \w+ (describe|get|list)|kubectl (get|logs)|psql\b|gh-axi (pr|run) (view|status|list))",
+    r"launchctl (list|print)|aws \w+ (describe|get|list)|kubectl (get|logs)|psql\b|gh-axi (pr|run) (view|status|list)|"
+    r"jq\b|plutil|validate|for \w+ in .*; do)",
 )
 # Reading a file back is not verification of a behavior claim; only executing something is.
 VERIFY_LOOKBACK = 8
 WINDOW = timedelta(hours=24)
 REASK = 0.45
+PHRASE_MIN_OVERLAP = 0.10  # a contradiction phrase must also share task vocabulary (golden fp e1fe03561b)
 
 
 def is_verification(tu) -> bool:
@@ -150,7 +152,7 @@ def detect(since: datetime) -> tuple[list[dict], dict]:
                     break
                 cm = CONTRADICTION_RE.match(ptxt)
                 reask = jaccard(c["task_kw"], keywords(ptxt[:1500])) if c["task_kw"] else 0.0
-                if cm or reask >= REASK:
+                if (cm and reask >= PHRASE_MIN_OVERLAP) or reask >= REASK:
                     fid = hashlib.sha1(f"{c['session']}{c['ts'].isoformat()}".encode()).hexdigest()[:10]
                     flags.append(
                         {
@@ -209,11 +211,19 @@ def golden_precision(flags: list[dict], golden: Path) -> str | None:
         if ln.strip():
             o = json.loads(ln)
             labels[o["id"]] = o["label"]
-    scored = [labels[f["id"]] for f in flags if f["id"] in labels]
-    if not scored:
-        return "no labeled rows in window"
-    tp = sum(1 for x in scored if x == "tp")
-    return f"{tp}/{len(scored)} = {tp/len(scored):.0%}"
+    flagged = {f["id"] for f in flags}
+    scored = [labels[i] for i in flagged if i in labels]
+    fp_back = sum(1 for i, l in labels.items() if l == "fp" and i in flagged)
+    tp_lost = sum(1 for i, l in labels.items() if l == "tp" and i not in flagged)
+    parts = []
+    if scored:
+        tp = sum(1 for x in scored if x == "tp")
+        parts.append(f"{tp}/{len(scored)} = {tp/len(scored):.0%} on labeled flags")
+    else:
+        parts.append("no labeled flags in window")
+    parts.append(f"labeled fp re-flagged: {fp_back}")
+    parts.append(f"labeled tp lost: {tp_lost}")
+    return "; ".join(parts)
 
 
 def main() -> int:
